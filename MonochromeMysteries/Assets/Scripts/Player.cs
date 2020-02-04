@@ -82,7 +82,7 @@ public class Player : MonoBehaviour
     {
         Quaternion LookAtRot = Quaternion.LookRotation(obj.transform.position - transform.position);
         transform.rotation = Quaternion.Euler(0, lookHorizontal = LookAtRot.eulerAngles.y, 0);
-        cam.transform.localRotation = Quaternion.Euler(LookAtRot.eulerAngles.x, 0, lookVertical = LookAtRot.eulerAngles.z);
+        cam.transform.localRotation = Quaternion.Euler(LookAtRot.eulerAngles.x, 0, LookAtRot.eulerAngles.z);
 
     }
 
