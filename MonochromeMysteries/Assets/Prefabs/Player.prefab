@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 37e3ad64ff3f19f428343a7503cb2de7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -114,6 +114,7 @@ MonoBehaviour:
   lookHorizontal: 0
   lookVertical: 0
   verticalClamp: 60
+  cam: {fileID: 0}
   moveSpeed: 5
   canMove: 1
   possess_Distance: 3

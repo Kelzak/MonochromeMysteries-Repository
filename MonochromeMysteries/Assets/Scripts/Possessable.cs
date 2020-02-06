@@ -8,6 +8,16 @@ public abstract class Possessable : MonoBehaviour
     private bool isHighlighted = false;
     private static Possessable highlightedObject;
 
+    protected delegate void PossessionEvent();
+    protected event PossessionEvent OnPossession;
+
+    public abstract void Ability();
+
+    public void TriggerOnPossession()
+    {
+        OnPossession?.Invoke();
+    }
+
     public void TriggerHighlight()
     {
         if (!isHighlighted && this != highlightedObject)
@@ -74,5 +84,11 @@ public abstract class Possessable : MonoBehaviour
         mat.DisableKeyword("_EMISSION");
 
         isHighlighted = false;
+    }
+
+    protected void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && GetComponent<Player>() != null)
+            Ability();
     }
 }

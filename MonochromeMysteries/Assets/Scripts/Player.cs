@@ -18,7 +18,8 @@ public class Player : MonoBehaviour
     public float lookVertical;
     [HideInInspector]
     public float verticalClamp = 60;
-    private GameObject cam;
+    [HideInInspector]
+    public GameObject cam;
 
     [Header("Movement")]
     public float moveSpeed = 10f;
@@ -66,6 +67,11 @@ public class Player : MonoBehaviour
     public void EnableControls(bool on)
     {
         canMove = canLook = on;
+    }
+
+    public GameObject GetCam()
+    {
+        return cam;
     }
 
 
@@ -154,9 +160,6 @@ public class Player : MonoBehaviour
         if (target == null)
             yield break;
 
-        if(!target.GetComponent<CharacterController>())
-        target.AddComponent<CharacterController>();
-
         //Cam Shift & Alpha fade
         EnableControls(false);
         LookAt(target);
@@ -211,6 +214,8 @@ public class Player : MonoBehaviour
             field.SetValue(copy, field.GetValue(this));
         }
 
+        target.GetComponent<Possessable>().TriggerOnPossession();
+
         //If it's the main player (Ghost) then make it "disappear"
         if (gameObject == mainPlayer)
         gameObject.SetActive(false);
@@ -235,7 +240,7 @@ public class Player : MonoBehaviour
         float checkRadius = thisMaxExtents + mainPlayerMaxExtents * 2;
         bool safeExitPoint = false;
 
-        int[] multiplierOptions = { 0, -1, 1};
+        int[] multiplierOptions = { 0, 1, -1};
         Vector3 temp = exitPoint;
         for (int i = 0; i < multiplierOptions.Length && safeExitPoint == false; i++) //Diagonals
         {
@@ -269,26 +274,33 @@ public class Player : MonoBehaviour
 
         //Camera Variables
         Camera camComp = cam.GetComponent<Camera>();
-        float maxFOV = 175;
+        float maxFOV = 120;
         float minFOV = camComp.fieldOfView;
         float transitionTime = 0.5f;
         float currentTime = 0;
 
-        //Zoom out
-        while (camComp.fieldOfView < maxFOV)
-        {
-            camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, currentTime / transitionTime);
-            currentTime += Time.deltaTime;
-            yield return null;
-        }
+        
 
         //Reactivate the Player, 
         mainPlayer.SetActive(true);
         mainPlayer.GetComponent<Player>().EnableControls(false);
         mainPlayer.transform.position = exitPoint;
+        mainPlayer.transform.rotation = gameObject.transform.rotation;
+
+        //Zoom out
+        while (camComp.fieldOfView < maxFOV)
+        {
+            camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, currentTime / transitionTime);
+            cam.transform.position = Vector3.Lerp(transform.position, mainPlayer.transform.position, currentTime / transitionTime);
+
+            currentTime += Time.deltaTime;
+            yield return null;
+        }
+
+     
         cam.transform.position = mainPlayer.transform.position;
         cam.transform.SetParent(mainPlayer.transform);
-        mainPlayer.GetComponent<Player>().LookAt(gameObject);
+        
         currentTime = 0;
         possess_Vignette.SetActive(false);
 
@@ -300,6 +312,9 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
+
+        mainPlayer.GetComponent<Player>().lookHorizontal = this.lookHorizontal;
+        mainPlayer.GetComponent<Player>().lookVertical = this.lookVertical;
         //System.Type type = this.GetType();
         //System.Reflection.FieldInfo[] fields = type.GetFields();
         //foreach (System.Reflection.FieldInfo field in fields)
