@@ -6,8 +6,6 @@ using System.IO;
 public class Photographer : Person
 {
     
-    uint pictureCount = 0;
-
 
     Camera cam;
     bool screenshotQueued = false;
@@ -20,7 +18,7 @@ public class Photographer : Person
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
         base.Update();
     }
@@ -28,9 +26,9 @@ public class Photographer : Person
     //Camera
     public override void Ability()
     {
-        GetComponent<Player>().EnableControls(false);
+        Player.EnableControls(false);
         TakePhoto(Screen.width, Screen.height);
-        GetComponent<Player>().EnableControls(true);
+        Player.EnableControls(true);
     }
 
     public void TakePhoto(int width, int height)
@@ -43,18 +41,17 @@ public class Photographer : Person
     {
         if (screenshotQueued)
         {
+            //Take Picture
             screenshotQueued = false;
             RenderTexture renderTexture = cam.targetTexture;
             Texture2D renderResult = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false);
             Rect rect = new Rect(0, 0, renderTexture.width, renderTexture.height);
             renderResult.ReadPixels(rect, 0, 0);
 
-            byte[] byteArray = renderResult.EncodeToPNG();
-            pictureCount++;
-            string fileName = string.Format("/Picture-{0}.png", pictureCount);
-            System.IO.File.WriteAllBytes(PhotoLibrary.directory + fileName, byteArray);
-            Debug.Log("Saved Camera Screenshot");
+            //Store Picture In Library
+            PhotoLibrary.StorePhoto(renderResult);
 
+            //Release camera to resume as normal
             RenderTexture.ReleaseTemporary(renderTexture);
             cam.targetTexture = null;
         }

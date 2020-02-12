@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     [Header("Aiming")]
     public float lookSensitivity = 5f;
     [HideInInspector]
-    public bool canLook = true;
+    public static bool canLook = true;
 
     [HideInInspector]
     public float lookHorizontal;
@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 10f;
     [HideInInspector]
-    public bool canMove = true;
+    public static bool canMove = true;
 
     float xMovement, yMovement;
     CharacterController character;
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
     }
 
     //PUBLIC FUNCTIONS
-    public void EnableControls(bool on)
+    public static void EnableControls(bool on)
     {
         canMove = canLook = on;
     }
@@ -283,7 +283,6 @@ public class Player : MonoBehaviour
 
         //Reactivate the Player, 
         mainPlayer.SetActive(true);
-        mainPlayer.GetComponent<Player>().EnableControls(false);
         mainPlayer.transform.position = exitPoint;
         mainPlayer.transform.rotation = gameObject.transform.rotation;
 
@@ -322,7 +321,7 @@ public class Player : MonoBehaviour
         //    field.SetValue(mainPlayer.GetComponent<Player>(), field.GetValue(this));
         //}
 
-        mainPlayer.GetComponent<Player>().EnableControls(true);
+        EnableControls(true);
 
         if(gameObject != mainPlayer)
         {

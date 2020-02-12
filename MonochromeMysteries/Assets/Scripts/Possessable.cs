@@ -86,7 +86,7 @@ public abstract class Possessable : MonoBehaviour
         isHighlighted = false;
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         if (Input.GetMouseButtonDown(0) && GetComponent<Player>() != null)
             Ability();

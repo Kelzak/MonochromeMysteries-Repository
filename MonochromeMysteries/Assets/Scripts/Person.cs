@@ -13,4 +13,9 @@ public abstract class Person : Possessable
         cc = GetComponent<CharacterController>();
     }
 
+    protected override void Update()
+    {
+        base.Update();
+    }
+
 }
