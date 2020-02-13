@@ -346,6 +346,7 @@ GameObject:
   - component: {fileID: 240102507}
   - component: {fileID: 240102506}
   - component: {fileID: 240102505}
+  - component: {fileID: 240102509}
   m_Layer: 0
   m_Name: Key
   m_TagString: Selectable
@@ -428,6 +429,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &240102509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240102504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef300d362a5f68a48a573a3c5119effa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateChecker: {fileID: 1257647933}
+  glowMat: {fileID: 2100000, guid: c03e6f3140ae12f449e1d909d119e371, type: 2}
+  defaultMat: {fileID: 2100000, guid: 8806531e16410754988b2f3fa1503f53, type: 2}
 --- !u!1 &367909936
 GameObject:
   m_ObjectHideFlags: 0
