@@ -6,8 +6,15 @@ public abstract class Person : Possessable
 {
     private CharacterController cc;
 
-    void Start()
+    protected override void Awake()
     {
+        base.Awake();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
         canMove = true;
 
         cc = GetComponent<CharacterController>();

@@ -8,14 +8,35 @@ public abstract class Possessable : MonoBehaviour
     private bool isHighlighted = false;
     private static Possessable highlightedObject;
 
-    protected delegate void PossessionEvent();
+    [SerializeField]
+    protected static GameObject possessionVignette;
+    private static bool hudActive;
+    public static bool HudActive
+    {
+        get
+        {
+            return hudActive;
+        }
+        set
+        {
+            if (value)
+                possessionVignette.SetActive(true);
+            else
+                possessionVignette.SetActive(false);
+            hudActive = value;
+        }
+
+    }
+
+    protected delegate void PossessionEvent(bool active);
     protected event PossessionEvent OnPossession;
+
 
     public abstract void Ability();
 
-    public void TriggerOnPossession()
+    public void TriggerOnPossession(bool possessionActive)
     {
-        OnPossession?.Invoke();
+        OnPossession?.Invoke(possessionActive);
     }
 
     public void TriggerHighlight()
@@ -32,6 +53,25 @@ public abstract class Possessable : MonoBehaviour
         {
             highlightedObject = null;
         }
+    }
+
+    protected virtual void Awake()
+    {
+    }
+
+    protected virtual void Start()
+    {
+        if (possessionVignette == null)
+            possessionVignette = GameObject.Find("HUD").transform.Find("PossessionVignette").gameObject;
+
+        HudActive = false;
+
+        OnPossession += ToggleVignette;
+    }
+
+    public void ToggleVignette(bool possessionActive)
+    {
+        HudActive = possessionActive;
     }
 
     public static Possessable GetHighlightedObject()
@@ -90,5 +130,11 @@ public abstract class Possessable : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && GetComponent<Player>() != null)
             Ability();
+    }
+
+    private void OnDisable()
+    {
+        OnPossession -= ToggleVignette;
+
     }
 }

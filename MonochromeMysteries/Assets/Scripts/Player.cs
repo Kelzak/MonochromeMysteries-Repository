@@ -31,7 +31,6 @@ public class Player : MonoBehaviour
 
     [Header("Possession")]
     public float possess_Distance = 3;
-    public GameObject possess_Vignette;
 
     // Start is called before the first frame update
     void Start()
@@ -185,11 +184,15 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        possess_Vignette.SetActive(true);
         currentTime = 0;
         target.transform.rotation = cam.transform.rotation;
         cam.transform.SetParent(target.transform);
         cam.transform.localPosition = Vector3.zero;
+        //Get Rid of Effects of currently Possessed Objects
+        if(gameObject != mainPlayer)
+        gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
+        //Start Effect of What is Being Possessed
+        target.GetComponent<Possessable>().TriggerOnPossession(true);
 
         //Zoom out
         while (camComp.fieldOfView < maxFOV)
@@ -214,7 +217,7 @@ public class Player : MonoBehaviour
             field.SetValue(copy, field.GetValue(this));
         }
 
-        target.GetComponent<Possessable>().TriggerOnPossession();
+        
 
         //If it's the main player (Ghost) then make it "disappear"
         if (gameObject == mainPlayer)
@@ -222,6 +225,7 @@ public class Player : MonoBehaviour
         //If it's not the main player, remove player script
         else if(gameObject != mainPlayer)
         {
+
             Destroy(GetComponent<Player>());
         }
 
@@ -286,6 +290,9 @@ public class Player : MonoBehaviour
         mainPlayer.transform.position = exitPoint;
         mainPlayer.transform.rotation = gameObject.transform.rotation;
 
+        if(gameObject != mainPlayer)
+            gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
+
         //Zoom out
         while (camComp.fieldOfView < maxFOV)
         {
@@ -301,7 +308,6 @@ public class Player : MonoBehaviour
         cam.transform.SetParent(mainPlayer.transform);
         
         currentTime = 0;
-        possess_Vignette.SetActive(false);
 
         //Zoom in
         while (camComp.fieldOfView > minFOV)
@@ -311,18 +317,14 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-
+        //Make sure the player is looking in the same direction as they were in their body so that the transition isn't jarring
         mainPlayer.GetComponent<Player>().lookHorizontal = this.lookHorizontal;
         mainPlayer.GetComponent<Player>().lookVertical = this.lookVertical;
-        //System.Type type = this.GetType();
-        //System.Reflection.FieldInfo[] fields = type.GetFields();
-        //foreach (System.Reflection.FieldInfo field in fields)
-        //{
-        //    field.SetValue(mainPlayer.GetComponent<Player>(), field.GetValue(this));
-        //}
 
+        //Transition complete, return control to player
         EnableControls(true);
 
+        //If this is not the main player (Ghost) then fire any events related to leaving a host and get rid of player script
         if(gameObject != mainPlayer)
         {
             Destroy(GetComponent<Player>());

@@ -8,13 +8,45 @@ public class Photographer : Person
     
 
     Camera cam;
+    GameObject hud;
+
+    private bool hudActive = false; //NEVER EDIT THIS
+    public bool CameraLensActive //Edit this
+    {
+        get
+        {
+            return hudActive;
+        }
+        set
+        {
+            //Activate Camera HUD Based on this Value
+            if(value)
+            {
+                hud.SetActive(true);
+            }
+            else
+            {
+                hud.SetActive(false);
+            }
+            hudActive = value;
+        }
+    }
+
     bool screenshotQueued = false;
 
-    // Start is called before the first frame update
-    void Start()
+    protected override void Awake()
     {
-        cam = Camera.main;
+        base.Awake();
+    }
 
+    // Start is called before the first frame update
+    protected override void Start()
+    {
+        base.Start();
+        cam = Camera.main;
+        hud = GameObject.Find("HUD").transform.Find("Camera").gameObject;
+
+        OnPossession += ToggleHUD;
     }
 
     // Update is called once per frame
@@ -37,6 +69,11 @@ public class Photographer : Person
         screenshotQueued = true;
     }
 
+    private void ToggleHUD(bool possessionActive)
+    {
+        CameraLensActive = possessionActive;
+    }
+
     private void OnRenderObject()
     {
         if (screenshotQueued)
@@ -56,4 +93,10 @@ public class Photographer : Person
             cam.targetTexture = null;
         }
     }
+
+    private void OnDisable()
+    {
+        OnPossession -= ToggleHUD;
+    }
+
 }

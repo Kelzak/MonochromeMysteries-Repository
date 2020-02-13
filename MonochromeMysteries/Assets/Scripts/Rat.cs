@@ -8,17 +8,22 @@ public class Rat : Possessable
 
     private CharacterController cc;
 
-    // Start is called before the first frame update
-    void Start()
+    protected override void Awake()
     {
+        base.Awake();
+    }
+
+    // Start is called before the first frame update
+    protected override void Start()
+    {
+        base.Start();
+
         canMove = true;
-
-
 
         cc = GetComponent<CharacterController>();
     }
 
-    private void Update()
+    protected override void Update()
     {
         base.Update();
     }
