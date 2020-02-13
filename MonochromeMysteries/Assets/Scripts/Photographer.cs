@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
 
 public class Photographer : Person
 {
@@ -56,17 +57,45 @@ public class Photographer : Person
     }
 
     //Camera
+    bool canTakePhoto = true;
     public override void Ability()
     {
-        Player.EnableControls(false);
-        TakePhoto(Screen.width, Screen.height);
-        Player.EnableControls(true);
+        if (!GameController._instance.paused && canTakePhoto)
+        {
+            Player.EnableControls(false);
+            TakePhoto(Screen.width, Screen.height);
+            StartCoroutine(CameraFlash());
+            Player.EnableControls(true);
+        }
     }
 
     public void TakePhoto(int width, int height)
     {
         cam.targetTexture = RenderTexture.GetTemporary(width, height, 16);
         screenshotQueued = true;
+    }
+
+    float flashTime = 1f;
+    private IEnumerator CameraFlash()
+    {
+        canTakePhoto = false;
+
+        float currentTime = 0;
+        Image hudBackground = hud.GetComponent<Image>();
+        Color baseColor = hudBackground.color;
+        Color flashColor = Color.white;
+
+        hudBackground.color = flashColor;
+        yield return new WaitForSeconds(0.25f);
+
+        while(hudBackground.color != baseColor)
+        {
+            hudBackground.color = Color.Lerp(flashColor, baseColor, currentTime / flashTime);
+            currentTime += Time.deltaTime;
+            yield return null;
+        }
+
+        canTakePhoto = true;
     }
 
     private void ToggleHUD(bool possessionActive)

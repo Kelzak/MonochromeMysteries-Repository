@@ -13,6 +13,7 @@ public class PhotoLibrary : MonoBehaviour
     private uint pictureCount = 0;
 
     public GameObject menu;
+    public GameObject photoSlotPrefab;
     private GameObject noPhotosText;
     private int currentPage = 0;
 
@@ -58,7 +59,12 @@ public class PhotoLibrary : MonoBehaviour
 
     private void Start()
     {
-        noPhotosText = menu.transform.GetChild(3).gameObject;
+        noPhotosText = menu.transform.Find("Text").gameObject;
+    }
+
+    public int GetPhotoCount()
+    {
+        return scrapbook.Count;
     }
 
     public static void StorePhoto(Texture2D photo)
@@ -130,20 +136,17 @@ public class PhotoLibrary : MonoBehaviour
         }
         else if (scrapbook.Count <= 0 && noPhotosText.activeSelf == false)
         {
-            menu.transform.GetChild(3).gameObject.SetActive(true);
+            noPhotosText.SetActive(true);
         }
 
-        //Update Picture Menu based on Page
-        for(int i = currentPage * 3; i < scrapbook.Count && i < (currentPage * 3) + 3; i++)
+        //Update Picture Menu
+        for(int i = 0; i < scrapbook.Count; i++)
         {
-            if (scrapbook.Count > i)
+            if (i >= menu.transform.GetChild(0).childCount)
             {
-                menu.transform.GetChild(i % 3).gameObject.SetActive(true);
-                menu.transform.GetChild(i % 3).GetChild(0).GetComponent<Image>().sprite = _instance.scrapbook[i].image;
+                GameObject newSlot = Instantiate(photoSlotPrefab, menu.transform.GetChild(0));
+                newSlot.transform.GetChild(1).GetComponent<Image>().sprite = _instance.scrapbook[i].image;
             }
-            else
-                menu.transform.GetChild(i % 3).gameObject.SetActive(false);
-            
         }
     }
 
