@@ -32,9 +32,15 @@ public class Player : MonoBehaviour
     [Header("Possession")]
     public float possess_Distance = 3;
 
+    //KEVON'S ADDITION TO CODE//
+    bool canPickup;
+    bool hasKey;
+
     // Start is called before the first frame update
     void Start()
     {
+        hasKey = false;
+        canPickup = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -60,6 +66,38 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
             StartCoroutine(ExitPossession());
 
+    }
+
+    //PICKING UP OBJECTS
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "Selectable")
+        {
+            canPickup = true;
+            Debug.Log("CanPickUp = " + canPickup);
+
+            if (Input.GetKeyDown(KeyCode.F) && canPickup)
+            {
+                hasKey = true;
+                Destroy(other.gameObject);
+            }
+        }
+
+        if (other.gameObject.tag == "LockedDoor")
+        {
+            if (Input.GetKeyDown(KeyCode.F) && hasKey)
+            {
+                Debug.Log("You unlocked the door!");
+                Destroy(other.gameObject);
+                hasKey = false;
+                Debug.Log("You dont have the key anymore");
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        canPickup = false;
     }
 
     //PUBLIC FUNCTIONS
