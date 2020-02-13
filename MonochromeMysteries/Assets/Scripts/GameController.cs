@@ -32,6 +32,12 @@ public class GameController : MonoBehaviour
 
             }
         }
+
+        //Quitting the game
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            Application.Quit();
+        }
     }
 
 
