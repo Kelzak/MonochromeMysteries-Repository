@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour
         }
 
         //Quitting the game
-        if(Input.GetKeyDown(KeyCode.Q))
+        if(Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
