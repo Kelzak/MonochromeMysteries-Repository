@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿/* Name: Player.cs
+ * Author: Zackary Seiple
+ * Description: This script handles the player's ghost behaviours and their ability to posses 
+ * Last Updated: 2/18/2020 (Zackary Seiple)
+ * Changes: Added header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,6 +68,7 @@ public class Player : MonoBehaviour
         if(canMove)
             Movement();
 
+        if(!possessionInProgress)
         PossessionCheck();
 
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
@@ -113,6 +121,9 @@ public class Player : MonoBehaviour
 
 
     //PRIVATE FUNCTIONS
+    /// <summary>
+    /// Handles the aiming movement with the mouse
+    /// </summary>
     private void Look()
     {
         lookHorizontal += Input.GetAxis("Mouse X") * lookSensitivity;
@@ -121,6 +132,10 @@ public class Player : MonoBehaviour
         cam.transform.localRotation = Quaternion.Euler(lookVertical, 0, 0);
     }
 
+    /// <summary>
+    /// Function that can be called, forces the Player GameObject to look at a given GameObject
+    /// </summary>
+    /// <param name="obj">The GameObject to be looked at</param>
     private void LookAt(GameObject obj)
     {
         Quaternion LookAtRot = Quaternion.LookRotation(obj.transform.position - transform.position);
@@ -129,14 +144,16 @@ public class Player : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// Handles the movement of the player
+    /// </summary>
     private void Movement()
     {
         xMovement = Input.GetAxis("Horizontal");
         yMovement = Input.GetAxis("Vertical");
 
         Vector3 velocity = (transform.right * xMovement * moveSpeed) + (transform.forward * yMovement * moveSpeed);
-        if(!character.isGrounded)
+
         {
             velocity += Physics.gravity;
         }
@@ -144,6 +161,10 @@ public class Player : MonoBehaviour
         character.Move(velocity * Time.deltaTime);
     }
 
+    /// <summary>
+    /// Called Every Frame in Update. Checks in front of the player for set distance in order to see if any objects
+    /// are possessable and should be highlighted
+    /// </summary>
     private void PossessionCheck()
     {
         GameObject target = null;
@@ -189,6 +210,11 @@ public class Player : MonoBehaviour
     }
 
     bool possessionInProgress = false;
+    /// <summary>
+    /// Handles the possession transition into another GameObject
+    /// </summary>
+    /// <param name="target">The target GameObject to possess</param>
+    /// <returns></returns>
     private IEnumerator Possess(GameObject target)
     {
         possessionInProgress = true;
@@ -270,9 +296,15 @@ public class Player : MonoBehaviour
         possessionInProgress = false;
     }
 
+    /// <summary>
+    /// Handles the exiting of a possessed Object
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ExitPossession()
     {
         possessionInProgress = true;
+
+        GetComponent<Possessable>().TriggerHighlight();
 
         //Find a point with enough space to exit to once possession ends
         Vector3 exitPoint = gameObject.transform.position;
@@ -325,6 +357,7 @@ public class Player : MonoBehaviour
 
         //Reactivate the Player, 
         mainPlayer.SetActive(true);
+        mainPlayer.GetComponent<Player>().possessionInProgress = true;
         mainPlayer.transform.position = exitPoint;
         mainPlayer.transform.rotation = gameObject.transform.rotation;
 
@@ -361,9 +394,10 @@ public class Player : MonoBehaviour
 
         //Transition complete, return control to player
         EnableControls(true);
+        mainPlayer.GetComponent<Player>().possessionInProgress = false;
 
         //If this is not the main player (Ghost) then fire any events related to leaving a host and get rid of player script
-        if(gameObject != mainPlayer)
+        if (gameObject != mainPlayer)
         {
             Destroy(GetComponent<Player>());
         }

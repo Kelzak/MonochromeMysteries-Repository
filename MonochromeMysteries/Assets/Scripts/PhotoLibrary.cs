@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿/* Name: PhotoLibrary.cs
+ * Author: Zackary Seiple
+ * Description: Contains a library of all the photos taken by the Photographer. Also controls the menu containing all the photos
+ * Last Updated: 2/18/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -8,7 +15,6 @@ public class PhotoLibrary : MonoBehaviour
 {
     public static PhotoLibrary _instance;
 
-    public static string directory;
     private List<Photo> scrapbook;
     private uint pictureCount = 0;
 
@@ -21,6 +27,9 @@ public class PhotoLibrary : MonoBehaviour
     //Called anytime a photo is taken/deleted/or page is changed
     private event ScrapbookEvent OnScrapbookChange;
 
+    /// <summary>
+    /// The photo structure that contains the image associated with a photo as well as the clues featured in the photo
+    /// </summary>
     private struct Photo
     {
         public Photo(Sprite image, params GameObject[] cluesFeatured)
@@ -48,9 +57,6 @@ public class PhotoLibrary : MonoBehaviour
     void Awake()
     {
         _instance = this;
-        directory = Application.dataPath + "/_GameData/pictures";
-
-        Directory.CreateDirectory(directory);
 
         scrapbook = new List<Photo>();
 
@@ -62,20 +68,26 @@ public class PhotoLibrary : MonoBehaviour
         noPhotosText = menu.transform.Find("Text").gameObject;
     }
 
+    /// <summary>
+    /// Getter for the number of photos currently possessed by the player
+    /// </summary>
+    /// <returns>An integer representing the number of photos currently in the scrapbook</returns>
     public int GetPhotoCount()
     {
         return scrapbook.Count;
     }
 
+    /// <summary>
+    /// Crops and turns the photo from the Photographer into a sprite to be put into an image and placed in scrapbook
+    /// </summary>
+    /// <param name="photo">The Texture2D photo taken by the Photographer</param>
     public static void StorePhoto(Texture2D photo)
     {
         photo = _instance.CropPhoto(photo, 160 * 2, 150 * 2);
 
+
         _instance.pictureCount++;
-        
-        string fileName = string.Format("/Picture-{0}.png", _instance.pictureCount);
-        
-        System.IO.File.WriteAllBytes(PhotoLibrary.directory + fileName, photo.EncodeToPNG());
+
         Sprite newSprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), Vector2.zero, 100f);
         newSprite.name = string.Format("Photo-{0}", _instance.pictureCount);
         newSprite.texture.Apply();
@@ -85,6 +97,13 @@ public class PhotoLibrary : MonoBehaviour
         Debug.Log("Saved Camera Screenshot");
     }
 
+    /// <summary>
+    /// Crops the photo from the center while preserving image quality
+    /// </summary>
+    /// <param name="original">The original photo to be cropped</param>
+    /// <param name="targetWidth">The target width in pixels to crop the photo to</param>
+    /// <param name="targetHeight">The target height in pixels to crop the photo to</param>
+    /// <returns>A Texture2D consisting of the cropped photo</returns>
     private Texture2D CropPhoto(Texture2D original, int targetWidth, int targetHeight)
     {
         int originalWidth = original.width;
@@ -127,6 +146,9 @@ public class PhotoLibrary : MonoBehaviour
         return textureResult;
     }
 
+    /// <summary>
+    /// Updates the UI Menu to visually reflect the number of photos contained in the scrapbook
+    /// </summary>
     private void UpdateUI()
     {
         //Decide Whether to display "No Photos" Text
@@ -155,8 +177,4 @@ public class PhotoLibrary : MonoBehaviour
         OnScrapbookChange -= UpdateUI;
     }
 
-    private void OnApplicationQuit()
-    {
-        Directory.Delete(directory, true);
-    }
 }

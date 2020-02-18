@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿/* Name: GameController.cs
+ * Author: Zackary Seiple
+ * Description: Handles the basic functions of the game including pulling up menus and pausing
+ * Last Updated: 2/18/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +23,9 @@ public class GameController : MonoBehaviour
     }
 
     // Update is called once per frame
+    /// <summary>
+    /// Checks each frame for inputs to open the photograph collection menu and to exit the game
+    /// </summary>
     void Update()
     {
         //Photo Library Menu
@@ -40,7 +50,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Toggles the Game Pausing
+    /// </summary>
     public static void TogglePause()
     {
         _instance.paused = !_instance.paused;

@@ -1,22 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿/* Name: Photographer.cs
+ * Author: Zackary Seiple
+ * Description: Contains the behaviour and ability of the Photographer Character. Handles taking pictures and sending them to
+ *              the PhotoLibrary to be cropped and stored
+ * Last Updated: 2/18/2020 (Zackary Seiple)
+ * Changes: Added header
+ */
+
+using System.Collections;
 using UnityEngine;
-using System.IO;
 using UnityEngine.UI;
 
 public class Photographer : Person
 {
     
-
     Camera cam;
     GameObject hud;
 
-    private bool hudActive = false; //NEVER EDIT THIS
-    public bool CameraLensActive //Edit this
+    private bool cameraLensActive = false; //NEVER EDIT THIS
+    public bool CameraLensActive //Controls the camera HUD popping up: Edit this
     {
         get
         {
-            return hudActive;
+            return cameraLensActive;
         }
         set
         {
@@ -29,16 +34,11 @@ public class Photographer : Person
             {
                 hud.SetActive(false);
             }
-            hudActive = value;
+            cameraLensActive = value;
         }
     }
 
     bool screenshotQueued = false;
-
-    protected override void Awake()
-    {
-        base.Awake();
-    }
 
     // Start is called before the first frame update
     protected override void Start()
@@ -63,19 +63,29 @@ public class Photographer : Person
         if (!GameController._instance.paused && canTakePhoto)
         {
             Player.EnableControls(false);
-            TakePhoto(Screen.width, Screen.height);
             StartCoroutine(CameraFlash());
+            TakePhoto(Screen.width, Screen.height);
             Player.EnableControls(true);
         }
     }
 
+    /// <summary>
+    /// Pause camera texture for a frame and queue it up to save screen capture
+    /// </summary>
+    /// <param name="width">The width in pixels of the screen capture</param>
+    /// <param name="height">The height in pixels of the screen capture</param>
     public void TakePhoto(int width, int height)
     {
+        //Pause the camera texture and process the photo in the next OnRenderObject() call
         cam.targetTexture = RenderTexture.GetTemporary(width, height, 16);
         screenshotQueued = true;
     }
 
     float flashTime = 1f;
+    /// <summary>
+    /// Coroutine that makes the screen flash white and fade out when taking a picture
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator CameraFlash()
     {
         canTakePhoto = false;
@@ -86,7 +96,7 @@ public class Photographer : Person
         Color flashColor = Color.white;
 
         hudBackground.color = flashColor;
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.5f);
 
         while(hudBackground.color != baseColor)
         {
@@ -98,10 +108,19 @@ public class Photographer : Person
         canTakePhoto = true;
     }
 
+    /// <summary>
+    /// Activates and deactivates the Camera Lens HUD
+    /// </summary>
+    /// <param name="possessionActive">Turns camera lens HUD on if true, off if false</param>
     private void ToggleHUD(bool possessionActive)
     {
         CameraLensActive = possessionActive;
     }
+
+    //private Clue DetectClues()
+    //{
+
+    //}
 
     private void OnRenderObject()
     {
@@ -114,12 +133,18 @@ public class Photographer : Person
             Rect rect = new Rect(0, 0, renderTexture.width, renderTexture.height);
             renderResult.ReadPixels(rect, 0, 0);
 
+            //Detect Clues in Photo
+
+            //Release camera to retrun to normal
+            RenderTexture.ReleaseTemporary(renderTexture);
+            cam.targetTexture = null;
+
             //Store Picture In Library
             PhotoLibrary.StorePhoto(renderResult);
 
-            //Release camera to resume as normal
-            RenderTexture.ReleaseTemporary(renderTexture);
-            cam.targetTexture = null;
+         
+            
+            
         }
     }
 
