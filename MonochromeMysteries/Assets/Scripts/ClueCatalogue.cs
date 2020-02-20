@@ -41,29 +41,61 @@ public class ClueCatalogue : MonoBehaviour
     /// Find a Clue in the clues array based on the given GameObject
     /// </summary>
     /// <param name="obj">The GameObject to search for</param>
-    /// <returns>Clue struct that is associated with obj if found, null if not found</returns>
-    public Clue? FindClue(GameObject obj)
+    /// <returns>Index that is associated with obj if found, -1 if not found</returns>
+    public int FindClue(GameObject obj)
     {
-        foreach(Clue clue in clues)
+        for(int i = 0; i < clues.Length; i++)
         {
-            if (clue.@object == obj)
-                return clue;
+            if (clues[i].@object == obj)
+                return i;
         }
-        return null;
+        return -1;
     }
 
     /// <summary>
     /// Find a Clue in the clues array based on given string name
     /// </summary>
     /// <param name="name">The string name to search for</param>
-    /// <returns>Clue struct that is associated with the name string if found, null if not found</returns>
-    public Clue? FindClue(string name)
+    /// <returns>index that is associated with the name string if found, -1 if not found</returns>
+    public int FindClue(string name)
     {
-        foreach(Clue clue in clues)
+        for(int i = 0; i < clues.Length; i++)
         {
-            if (clue.name == name)
-                return clue;
+            if (clues[i].name == name)
+                return i;
         }
-        return null;
+        return -1;
+    }
+
+    public int[] DetectCluesOnScreen(float posX = 0, float posY = 0, float width = 1920, float height = 1080, float detectionDistance = 8)
+    {
+
+        //Create List of indexes
+        List<int> cluesDetected = new List<int>();
+
+        //Selecting only camera part of the screen
+        Rect screenSpace = new Rect(posX, posY, width, height);
+
+        RaycastHit hit = new RaycastHit();
+        GameObject currObj;
+        Vector3 objScreenPoint = Vector3.zero;
+
+        //Check if clue is in area of screen, if it's close enough, and if it's visible
+        for (int i = 0; i < clues.Length; i++)
+        {
+            currObj = clues[i].@object;
+            if ( screenSpace.Contains(objScreenPoint = Camera.main.WorldToScreenPoint(currObj.transform.position)) &&
+                objScreenPoint.z < detectionDistance &&
+                objScreenPoint.z > 0)
+            {
+                if (Physics.Raycast(transform.position, currObj.transform.position - transform.position, out hit, Mathf.Infinity, ~0, QueryTriggerInteraction.Ignore) &&
+                    hit.collider.gameObject == currObj)
+                    cluesDetected.Add(i);
+            }
+        }
+
+        Debug.Log(objScreenPoint.ToString() + " clues detected: " + cluesDetected.Count);
+        //Debug.Log("clues detected: " + cluesDetected.Count /*+ " name:" + hit.collider.gameObject.name*/);
+        return cluesDetected.ToArray();
     }
 }

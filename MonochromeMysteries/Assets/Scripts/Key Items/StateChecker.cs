@@ -40,7 +40,7 @@ public class StateChecker : MonoBehaviour, ISubject
     {
         this.isGhost = sight;
         NotifyObservers();
-        Debug.Log("notify observers");
+        //Debug.Log("notify observers");
     }
     // Start is called before the first frame update
     void Start()

@@ -32,10 +32,10 @@ public class GameController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Tab))
         {
             TogglePause();
-            PhotoLibrary._instance.menu.SetActive(paused);
+            PhotoLibrary._instance.photoCollectionMenu.gameObject.SetActive(paused);
             if (PhotoLibrary._instance.GetPhotoCount() > 3)
             {
-                Transform grid = PhotoLibrary._instance.menu.transform.GetChild(0);
+                Transform grid = PhotoLibrary._instance.photoCollectionMenu.transform.GetChild(0);
                 Vector3 topPos = grid.position;
                 topPos.y = 225;
                 grid.position = topPos;

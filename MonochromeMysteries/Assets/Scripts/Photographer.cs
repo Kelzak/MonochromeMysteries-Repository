@@ -7,6 +7,7 @@
  */
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,7 @@ public class Photographer : Person
     
     Camera cam;
     GameObject hud;
+    Rect newRect;
 
     private bool cameraLensActive = false; //NEVER EDIT THIS
     public bool CameraLensActive //Controls the camera HUD popping up: Edit this
@@ -46,6 +48,8 @@ public class Photographer : Person
         base.Start();
         cam = Camera.main;
         hud = GameObject.Find("HUD").transform.Find("Camera").gameObject;
+
+        Debug.Log(newRect.xMin + " " + newRect.xMax + " | " + newRect.yMin + " " + newRect.yMax);
 
         OnPossession += ToggleHUD;
     }
@@ -117,10 +121,6 @@ public class Photographer : Person
         CameraLensActive = possessionActive;
     }
 
-    //private Clue DetectClues()
-    //{
-
-    //}
 
     private void OnRenderObject()
     {
@@ -133,18 +133,20 @@ public class Photographer : Person
             Rect rect = new Rect(0, 0, renderTexture.width, renderTexture.height);
             renderResult.ReadPixels(rect, 0, 0);
 
-            //Detect Clues in Photo
-
             //Release camera to retrun to normal
             RenderTexture.ReleaseTemporary(renderTexture);
             cam.targetTexture = null;
 
-            //Store Picture In Library
-            PhotoLibrary.StorePhoto(renderResult);
 
-         
-            
-            
+            //Store Picture In Library
+            float width = hud.transform.Find("Lens").GetComponent<RectTransform>().sizeDelta.x;
+            float height = hud.transform.Find("Lens").GetComponent<RectTransform>().sizeDelta.y;
+            Debug.Log(width + " " + height);
+            PhotoLibrary.StorePhoto(renderResult, 
+                                    ClueCatalogue._instance.DetectCluesOnScreen(Screen.width / 2 -  width / 2, 
+                                                                                Screen.height / 2 - height / 2,
+                                                                                width,
+                                                                                height));
         }
     }
 

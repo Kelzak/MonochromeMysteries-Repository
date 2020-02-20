@@ -18,7 +18,8 @@ public class PhotoLibrary : MonoBehaviour
     private List<Photo> scrapbook;
     private uint pictureCount = 0;
 
-    public GameObject menu;
+    public GameObject photoCollectionMenu;
+    //public GameObject examinePhotoMenu;
     public GameObject photoSlotPrefab;
     private GameObject noPhotosText;
     private int currentPage = 0;
@@ -32,25 +33,30 @@ public class PhotoLibrary : MonoBehaviour
     /// </summary>
     private struct Photo
     {
-        public Photo(Sprite image, params GameObject[] cluesFeatured)
+        public Photo(Sprite image, params int[] cluesFeatured)
         {
             this.image = image;
             this.cluesFeatured = cluesFeatured;
-        }
-        
-        public Photo(Sprite image)
-        {
-            this.image = image;
-            cluesFeatured = new GameObject[0];
+
+            labelText = detailsText = "";
+            foreach(int x in cluesFeatured)
+            {
+                if (labelText != "")
+                    labelText += ", ";
+                labelText += ClueCatalogue._instance.clues[x].name;
+                detailsText += ClueCatalogue._instance.clues[x].name + ":\n";
+                detailsText += ClueCatalogue._instance.clues[x].description + "\n\n";
+            }
         }
 
-        public void SetClues(params GameObject[] clues)
+        public void SetClues(params int[] clues)
         {
             cluesFeatured = clues;
         }
 
         public Sprite image;
-        public GameObject[] cluesFeatured;
+        public int[] cluesFeatured;
+        public string labelText, detailsText;
     }
 
     // Start is called before the first frame update
@@ -65,8 +71,34 @@ public class PhotoLibrary : MonoBehaviour
 
     private void Start()
     {
-        noPhotosText = menu.transform.Find("Text").gameObject;
+        noPhotosText = photoCollectionMenu.transform.Find("NoPhotosText").gameObject;
     }
+
+    //public void ExaminePhoto(GameObject photoSlot)
+    //{
+    //    Debug.Log("Clicked");
+    //    StartCoroutine(ExaminePhotoTransition(photoSlot));
+    //}
+
+    //private IEnumerator ExaminePhotoTransition(GameObject photoSlot)
+    //{
+    //    RectTransform source = photoSlot.GetComponent<RectTransform>();
+    //    RectTransform target = examinePhotoMenu.transform.GetChild(0).GetComponent<RectTransform>();
+
+    //    Vector2 startSize = source.sizeDelta;
+    //    Vector2 startPos = source.position;
+
+    //    float currentTime = 0, transitionTime = 0.25f;
+    //    while (source.sizeDelta != target.sizeDelta || source.position != target.position)
+    //    {
+    //        Debug.Log("running: " + currentTime);
+    //        source.sizeDelta = Vector2.Lerp(startSize, target.sizeDelta, currentTime / transitionTime);
+    //        source.position = Vector2.Lerp(startPos, target.position, currentTime / transitionTime);
+
+    //        currentTime += Time.unscaledDeltaTime;
+    //        yield return null;
+    //    }
+    //}
 
     /// <summary>
     /// Getter for the number of photos currently possessed by the player
@@ -81,7 +113,8 @@ public class PhotoLibrary : MonoBehaviour
     /// Crops and turns the photo from the Photographer into a sprite to be put into an image and placed in scrapbook
     /// </summary>
     /// <param name="photo">The Texture2D photo taken by the Photographer</param>
-    public static void StorePhoto(Texture2D photo)
+    /// <param name="clues">An array of ints representing the indexes of clues in ClueCatalogue</param>
+    public static void StorePhoto(Texture2D photo, params int[] clues)
     {
         photo = _instance.CropPhoto(photo, 160 * 2, 150 * 2);
 
@@ -91,10 +124,14 @@ public class PhotoLibrary : MonoBehaviour
         Sprite newSprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), Vector2.zero, 100f);
         newSprite.name = string.Format("Photo-{0}", _instance.pictureCount);
         newSprite.texture.Apply();
-        _instance.scrapbook.Add(new Photo(newSprite));
+        _instance.scrapbook.Add(new Photo(newSprite, clues));
 
         _instance.OnScrapbookChange?.Invoke();
-        Debug.Log("Saved Camera Screenshot");
+    }
+
+    public static void StorePhoto(Texture2D photo)
+    {
+        StorePhoto(photo, new int[0]);
     }
 
     /// <summary>
@@ -164,10 +201,12 @@ public class PhotoLibrary : MonoBehaviour
         //Update Picture Menu
         for(int i = 0; i < scrapbook.Count; i++)
         {
-            if (i >= menu.transform.GetChild(0).childCount)
+            if (i >= photoCollectionMenu.transform.GetChild(0).childCount)
             {
-                GameObject newSlot = Instantiate(photoSlotPrefab, menu.transform.GetChild(0));
-                newSlot.transform.GetChild(1).GetComponent<Image>().sprite = _instance.scrapbook[i].image;
+                GameObject newSlot = Instantiate(photoSlotPrefab, photoCollectionMenu.transform.GetChild(0));
+                newSlot.transform.Find("Image").GetComponent<Image>().sprite = _instance.scrapbook[i].image;
+                newSlot.transform.Find("Label").GetComponent<Text>().text = _instance.scrapbook[i].labelText;
+                //newSlot.GetComponent<Button>().onClick.AddListener(() => { ExaminePhoto(newSlot); });
             }
         }
     }

@@ -12,7 +12,7 @@ using UnityEngine;
 
 public class Rat : Possessable
 {
-    private float camOffsetForward = -0.5f;
+    private readonly float camOffsetForward = -0.5f;
 
     private CharacterController cc;
 
