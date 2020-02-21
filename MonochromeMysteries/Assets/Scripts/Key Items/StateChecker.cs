@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿// created my matt kirchoff
+// checks and updates observers to see if is ghost or not
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +12,7 @@ public class StateChecker : MonoBehaviour, ISubject
 {
     private List<IObserver> observers = new List<IObserver>();
 
+    int[] temp;
 
     public GameObject player;
 
@@ -38,8 +43,11 @@ public class StateChecker : MonoBehaviour, ISubject
     //sets the bool and then sends it to observers (items)
     public void SetSight(bool sight)
     {
-        this.isGhost = sight;
-        NotifyObservers();
+        foreach(int x in temp)
+        {
+            this.isGhost = sight;
+            NotifyObservers();
+        }
         //Debug.Log("notify observers");
     }
     // Start is called before the first frame update
@@ -51,8 +59,10 @@ public class StateChecker : MonoBehaviour, ISubject
     // Update is called once per frame
     void Update()
     {
+        temp = ClueCatalogue._instance.DetectCluesOnScreen();
+
         //checks if player is active (if in ghost form)
-        if(player.activeInHierarchy)
+        if (player.activeInHierarchy)
         {
             SetSight(true);
         }

@@ -6,11 +6,7 @@ using UnityEngine;
 public class Item : MonoBehaviour, IObserver
 {
     public StateChecker stateChecker;
-
-    public Material glowMat;
-    public Material defaultMat;
-
-    Renderer rend;
+    GameObject item;
 
     private bool isGhost;
 
@@ -23,7 +19,7 @@ public class Item : MonoBehaviour, IObserver
     // Start is called before the first frame update
     void Start()
     {
-        rend = this.GetComponent<Renderer>();
+        item = this.gameObject;
 
         // adds this object to observer list in statechecker
         stateChecker.RegisterObserver(this);
@@ -35,9 +31,9 @@ public class Item : MonoBehaviour, IObserver
         //changes materials 
         if(isGhost == true)
         {
-            this.rend.material = glowMat;
+            item.GetComponent<Outline>().enabled = true;
         }
         else
-            this.rend.material = defaultMat;
-    }
+            item.GetComponent<Outline>().enabled = false;
+        }
 }
