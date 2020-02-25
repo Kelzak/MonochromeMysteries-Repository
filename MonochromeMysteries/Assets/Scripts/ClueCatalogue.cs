@@ -95,7 +95,7 @@ public class ClueCatalogue : MonoBehaviour
             }
         }
 
-        Debug.Log(objScreenPoint.ToString() + " clues detected: " + cluesDetected.Count);
+        //Debug.Log(objScreenPoint.ToString() + " clues detected: " + cluesDetected.Count);
         //Debug.Log("clues detected: " + cluesDetected.Count /*+ " name:" + hit.collider.gameObject.name*/);
         return cluesDetected.ToArray();
     }
