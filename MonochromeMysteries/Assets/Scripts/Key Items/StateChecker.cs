@@ -43,11 +43,14 @@ public class StateChecker : MonoBehaviour, ISubject
     //sets the bool and then sends it to observers (items)
     public void SetSight(bool sight)
     {
-        foreach(int x in temp)
+        this.isGhost = sight;
+        NotifyObservers();
+
+        /*foreach (int x in temp)
         {
             this.isGhost = sight;
             NotifyObservers();
-        }
+        }*/
         //Debug.Log("notify observers");
     }
     // Start is called before the first frame update
@@ -59,7 +62,7 @@ public class StateChecker : MonoBehaviour, ISubject
     // Update is called once per frame
     void Update()
     {
-        temp = ClueCatalogue._instance.DetectCluesOnScreen();
+        //temp = ClueCatalogue._instance.DetectCluesOnScreen();
 
         //checks if player is active (if in ghost form)
         if (player.activeInHierarchy)
