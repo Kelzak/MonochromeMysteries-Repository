@@ -35,6 +35,7 @@ public class ClueCatalogue : MonoBehaviour
     void Start()
     {
         _instance = this;
+
     }
 
     /// <summary>
