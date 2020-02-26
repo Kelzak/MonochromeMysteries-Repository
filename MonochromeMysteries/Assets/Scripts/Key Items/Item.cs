@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/*
+ * Created by Matt Kirchoff
+ * item script for outlining during ghost vision
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
