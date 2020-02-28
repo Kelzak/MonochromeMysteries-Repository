@@ -1,5 +1,7 @@
-﻿// created my matt kirchoff
-// checks and updates observers to see if is ghost or not
+﻿/*
+ * Created by Matt Kirchoff
+ * Ghost or not, sends info to items for outlines
+ */
 
 
 using System.Collections;
