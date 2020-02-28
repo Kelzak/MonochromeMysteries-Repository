@@ -1,8 +1,8 @@
 ﻿/* Name: PhotoLibrary.cs
  * Author: Zackary Seiple
  * Description: Contains a library of all the photos taken by the Photographer. Also controls the menu containing all the photos
- * Last Updated: 2/18/2020 (Zackary Seiple)
- * Changes: Added Header
+ * Last Updated: 2/25/2020 (Zackary Seiple)
+ * Changes: Added Photo Examining
  */
 
 using System.Collections;
@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class PhotoLibrary : MonoBehaviour
 {
@@ -17,6 +18,21 @@ public class PhotoLibrary : MonoBehaviour
 
     private List<Photo> scrapbook;
     private uint pictureCount = 0;
+
+    private GameObject selectedSlot;
+    [HideInInspector]
+    public GameObject SelectedSlot
+    {
+        get { return selectedSlot; }
+        set
+        {
+            //Handle highlights
+            if (selectedSlot != null)
+                Destroy(selectedSlot.GetComponent<Outline>());
+            selectedSlot = value;
+            selectedSlot.AddComponent<Outline>().OutlineColor = Color.yellow;
+        }
+    }
 
     public GameObject photoCollectionMenu;
     public GameObject photoSlotPrefab;
@@ -32,15 +48,45 @@ public class PhotoLibrary : MonoBehaviour
     /// <summary>
     /// The photo structure that contains the image associated with a photo as well as the clues featured in the photo
     /// </summary>
-    private struct Photo
+    public class Photo
     {
+
+        [Header("Photo Elements")]
+        public GameObject photoSlot;
+        public Sprite image;
+        public int[] cluesFeatured;
+        public string labelText, detailsText;
+
+        [Header("Submenu")]
+        public RectTransform subMenu;
+        private bool subMenu_Active = false;
+        private float subMenu_TransitionTime = 0.25f;
+
         public Photo(GameObject photoSlot, Sprite image, params int[] cluesFeatured)
         {
             this.image = image;
             this.cluesFeatured = cluesFeatured;
             this.photoSlot = photoSlot;
 
-            photoSlot.GetComponent<Button>().onClick.AddListener(() => { _instance.ExaminePhoto(_instance.FindPhotoFromObject(photoSlot)); });
+            this.subMenu = photoSlot.transform.Find("Submenu").GetComponent<RectTransform>();
+
+            //Prepare Examine and Delete Buttons
+            photoSlot.transform.Find("Submenu").Find("ExamineButton").GetComponent<Button>().onClick.AddListener(
+                () => { _instance.ExaminePhoto(_instance.FindPhotoFromObject(photoSlot)); });
+            photoSlot.transform.Find("Submenu").Find("DeleteButton").GetComponent<Button>().onClick.AddListener(
+                () => { _instance.RemovePhoto(_instance.FindPhotoFromObject(photoSlot)); });
+
+            //OnPointerEnter
+            EventTrigger.Entry onPointerEnterEntry = new EventTrigger.Entry();
+            onPointerEnterEntry.eventID = EventTriggerType.PointerEnter;
+            onPointerEnterEntry.callback.AddListener((eventData) => { _instance.selectedSlot = eventData.selectedObject; _instance.StartCoroutine(ToggleSubMenu(true)); });
+            photoSlot.GetComponent<EventTrigger>().triggers.Add(onPointerEnterEntry);
+            //OnPointerExit
+            EventTrigger.Entry onPointerExitEntry = new EventTrigger.Entry();
+            onPointerExitEntry.eventID = EventTriggerType.PointerExit;
+            onPointerExitEntry.callback.AddListener((eventData) => { _instance.selectedSlot = null; _instance.StartCoroutine(ToggleSubMenu(false)); });
+            photoSlot.GetComponent<EventTrigger>().triggers.Add(onPointerExitEntry);
+
 
             labelText = detailsText = "";
             foreach(int x in cluesFeatured)
@@ -53,6 +99,12 @@ public class PhotoLibrary : MonoBehaviour
             }
         }
 
+        public void Deconstruct()
+        {
+            Destroy(photoSlot);
+            Destroy(image);
+        }
+
         public void SetClues(params int[] clues)
         {
             cluesFeatured = clues;
@@ -63,10 +115,38 @@ public class PhotoLibrary : MonoBehaviour
             this.photoSlot = photoSlot;
         }
 
-        public GameObject photoSlot;
-        public Sprite image;
-        public int[] cluesFeatured;
-        public string labelText, detailsText;
+        public IEnumerator ToggleSubMenu(bool active)
+        {
+            if (subMenu_Active == active)
+                yield break;
+
+            Vector3 startPos = Vector3.zero;
+            Vector3 endPos = startPos;
+            float shiftValue = subMenu.sizeDelta.x + photoSlot.GetComponentInParent<GridLayoutGroup>().cellSize.x / 2;
+            Debug.Log(subMenu_Active);
+            if (!subMenu_Active)
+                endPos.x += shiftValue * GameController.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
+            else
+            {
+                startPos.x += shiftValue * GameController.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
+            }
+
+            subMenu_Active = !subMenu_Active;
+            bool startBool = subMenu_Active;
+            
+
+            float currentTime = 0;
+            while(startPos != endPos && subMenu_Active == startBool)
+            {
+                subMenu.anchoredPosition = Vector3.Lerp(startPos, endPos, currentTime / subMenu_TransitionTime);
+                currentTime += Time.unscaledDeltaTime;
+                yield return null;
+            }
+            subMenu.anchoredPosition = endPos;
+        }
+
+        
+
     }
 
     // Start is called before the first frame update
@@ -86,21 +166,15 @@ public class PhotoLibrary : MonoBehaviour
         photoGrid = photoCollectionMenu.transform.Find("Grid").gameObject;
     }
 
-    private Photo FindPhotoFromObject(GameObject obj)
-    {
-        for(int i = 0; i < scrapbook.Count; i++)
-        {
-            if (scrapbook[i].photoSlot == obj)
-                return scrapbook[i];
-        }
-
-        return new Photo();
-    }
-
     bool examining = false;
+    /// <summary>
+    /// Toggle the examining of a specific photo
+    /// </summary>
+    /// <param name="photo">The Photo in scrapbook to be examined</param>
     private void ExaminePhoto(Photo photo)
     {
         Debug.Log(examining);
+        //If not examining, start examining
         if (examining == false)
         {
             examining = true;
@@ -111,6 +185,7 @@ public class PhotoLibrary : MonoBehaviour
             examinePhotoSlot.Find("Label").GetComponent<Text>().text = photo.labelText;
             examinePhotoMenu.transform.Find("Description").GetComponent<Text>().text = photo.detailsText;
 
+            //If no details, then there are no clues featured, no need to have description so just center the picture
             if(photo.detailsText == "")
             {
                 examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = true;
@@ -119,16 +194,19 @@ public class PhotoLibrary : MonoBehaviour
             examinePhotoMenu.SetActive(true);
             photoGrid.SetActive(false);
 
+            //Let the photo be clicked to exit examining mode
             examinePhotoMenu.transform.Find("PhotoSlot").GetComponent<Button>().onClick.AddListener(() => { ExaminePhoto(photo); });
 
         }
-        //Stop Examining
+        //If examining, stop examining
         else if(examining == true)
         {
             examining = false;
 
+            //No need to have the menu be clickable
             examinePhotoMenu.transform.Find("PhotoSlot").GetComponent<Button>().onClick.RemoveAllListeners();
 
+            //if the description was removed, put it back
             if (photo.detailsText == "")
             {
                 examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = false;
@@ -136,9 +214,6 @@ public class PhotoLibrary : MonoBehaviour
             examinePhotoMenu.SetActive(false);
             photoGrid.SetActive(true);
         }
-
-        
-
 
     }
 
@@ -178,6 +253,35 @@ public class PhotoLibrary : MonoBehaviour
     public static void StorePhoto(Texture2D photo)
     {
         StorePhoto(photo, new int[0]);
+    }
+
+    /// <summary>
+    /// Remove a photo from the scrapbook
+    /// </summary>
+    /// <param name="photo">Photo struct to be removed</param>
+    public void RemovePhoto(Photo photo)
+    {
+       int indexToRemove = _instance.scrapbook.FindIndex((Photo photoI) => { return photoI.image == photo.image && 
+                                                                 photoI.labelText == photo.labelText &&
+                                                                 photoI.detailsText == photo.detailsText; });
+        if (indexToRemove != -1)
+        {
+            //Destroy Photo Slot GameObject
+            _instance.scrapbook[indexToRemove].Deconstruct();
+            //Remove from Scrapbook
+            _instance.scrapbook.RemoveAt(indexToRemove);
+        }
+
+        _instance.OnScrapbookChange?.Invoke();
+    }
+
+    /// <summary>
+    /// Remove a photo from the scrapbook
+    /// </summary>
+    /// <param name="photoSlot">The photo slot GameObject to be removed</param>
+    public void RemovePhoto(GameObject photoSlot)
+    {
+        RemovePhoto(_instance.FindPhotoFromObject(photoSlot));
     }
 
     /// <summary>
@@ -254,9 +358,19 @@ public class PhotoLibrary : MonoBehaviour
         }
     }
 
+    private Photo FindPhotoFromObject(GameObject obj)
+    {
+        for (int i = 0; i < scrapbook.Count; i++)
+        {
+            if (scrapbook[i].photoSlot == obj)
+                return scrapbook[i];
+        }
+
+        return null;
+    }
+
     private void OnDisable()
     {
         OnScrapbookChange -= UpdateUI;
     }
-
 }

@@ -13,6 +13,7 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     public static GameController _instance;
+    public static Canvas mainHUD;
 
     public bool paused = false;
 
@@ -20,6 +21,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         _instance = this;
+        mainHUD = GameObject.Find("HUD").GetComponent<Canvas>();
     }
 
     // Update is called once per frame

@@ -81,6 +81,7 @@ public abstract class Possessable : MonoBehaviour
         HudActive = false;
 
         OnPossession += ToggleVignette;
+        OnPossession += ToggleMeshRenderer;
     }
 
     /// <summary>
@@ -90,6 +91,14 @@ public abstract class Possessable : MonoBehaviour
     public void ToggleVignette(bool possessionActive)
     {
         HudActive = possessionActive;
+    }
+
+    public void ToggleMeshRenderer(bool possessionActive)
+    {
+        if(GetComponent<MeshRenderer>())
+        {
+            GetComponent<MeshRenderer>().enabled = !possessionActive;
+        }
     }
 
     /// <summary>
@@ -165,6 +174,8 @@ public abstract class Possessable : MonoBehaviour
     private void OnDisable()
     {
         OnPossession -= ToggleVignette;
+        OnPossession -= ToggleMeshRenderer;
+
 
     }
 }
