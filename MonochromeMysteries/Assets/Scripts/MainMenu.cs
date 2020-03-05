@@ -146,7 +146,10 @@ public class MainMenu : MonoBehaviour
 
         //Return player controls if moving out of main menu
         if (!active)
+        {
             Player.SetControlsActive(true);
+            GameController.menuActive = GameController._instance.paused;
+        }
         //Entering menu so turn menu on and static off
         else
         {
@@ -160,7 +163,7 @@ public class MainMenu : MonoBehaviour
             photographer.CameraLensActive = true;
 
         if (active == false)
-            GameController.menuActive = GameController._instance.paused;
+            
 
         Debug.Log("Ending TV Transition");
         tvTransitionInProgress = false;

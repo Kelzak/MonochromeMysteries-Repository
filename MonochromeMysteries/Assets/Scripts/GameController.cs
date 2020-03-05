@@ -75,7 +75,6 @@ public class GameController : MonoBehaviour
 
     public void TriggerMainMenu()
     {
-        Debug.Log("TV Transition: " + MainMenu._instance.tvTransitionInProgress + " | In Range: " + MainMenu.IsInRange() + " | " + menuActive + " | " + MainMenu.active);
         if (!MainMenu._instance.tvTransitionInProgress && MainMenu.IsInRange() && (!menuActive || MainMenu.active))
             MainMenu._instance.StartCoroutine(MainMenu._instance.TriggerTV());
     }
@@ -118,12 +117,10 @@ public class GameController : MonoBehaviour
         Television startTV = MainMenu._instance.TVs[0];
         MainMenu._instance.SetCurrentTV(startTV);
 
-        
-
         Vector3 target = transform.forward;
         target.z += soul.GetComponent<MeshRenderer>().bounds.size.z;
         soul.transform.position = startTV.transform.TransformPoint(target);
-        cam.transform.localRotation = startTV.transform.Find("CamPoint").rotation;
+        soul.transform.rotation = startTV.transform.Find("CamPoint").rotation;
 
         yield return new WaitForFixedUpdate();
 
