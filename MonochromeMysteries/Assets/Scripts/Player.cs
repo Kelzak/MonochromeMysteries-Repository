@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
         if (mainPlayer == null)
             mainPlayer = gameObject;
 
-        cam = transform.GetChild(0).gameObject;
+        cam = Camera.main.gameObject;
         character = GetComponent<CharacterController>();
     }
 
@@ -109,7 +109,7 @@ public class Player : MonoBehaviour
     }
 
     //PUBLIC FUNCTIONS
-    public static void EnableControls(bool on)
+    public static void SetControlsActive(bool on)
     {
         canMove = canLook = on;
     }
@@ -224,7 +224,7 @@ public class Player : MonoBehaviour
             yield break;
 
         //Cam Shift & Alpha fade
-        EnableControls(false);
+        SetControlsActive(false);
         LookAt(target);
 
         //VARIABLES
@@ -269,7 +269,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        EnableControls(true);
+        SetControlsActive(true);
         //End Camera Shift & Alpha Fade
 
         //Copy Player Script and all its public fields
@@ -344,7 +344,7 @@ public class Player : MonoBehaviour
         }
 
         //START TRANSITION TO EXIT POSSESSION
-        EnableControls(false);
+        SetControlsActive(false);
 
         //Camera Variables
         Camera camComp = cam.GetComponent<Camera>();
@@ -393,7 +393,7 @@ public class Player : MonoBehaviour
         mainPlayer.GetComponent<Player>().lookVertical = this.lookVertical;
 
         //Transition complete, return control to player
-        EnableControls(true);
+        SetControlsActive(true);
         mainPlayer.GetComponent<Player>().possessionInProgress = false;
 
         //If this is not the main player (Ghost) then fire any events related to leaving a host and get rid of player script

@@ -66,10 +66,10 @@ public class Photographer : Person
     {
         if (!GameController._instance.paused && canTakePhoto)
         {
-            Player.EnableControls(false);
+            Player.SetControlsActive(false);
             StartCoroutine(CameraFlash());
             TakePhoto(Screen.width, Screen.height);
-            Player.EnableControls(true);
+            Player.SetControlsActive(true);
         }
     }
 

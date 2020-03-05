@@ -167,7 +167,7 @@ public abstract class Possessable : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (Input.GetMouseButtonDown(0) && GetComponent<Player>() != null)
+        if (Input.GetMouseButtonDown(0) && GetComponent<Player>() != null && !GameController.menuActive)
             Ability();
     }
 

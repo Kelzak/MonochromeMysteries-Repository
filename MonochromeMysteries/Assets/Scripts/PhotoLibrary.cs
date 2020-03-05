@@ -68,6 +68,7 @@ public class PhotoLibrary : MonoBehaviour
             this.cluesFeatured = cluesFeatured;
             this.photoSlot = photoSlot;
 
+            if(photoSlot.transform.Find("Submenu").GetComponent<RectTransform>())
             this.subMenu = photoSlot.transform.Find("Submenu").GetComponent<RectTransform>();
 
             //Prepare Examine and Delete Buttons

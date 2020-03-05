@@ -50,7 +50,7 @@ public class Item : MonoBehaviour, IObserver
             item.GetComponent<Outline>().enabled = false;
 
 
-        dist = Vector3.Distance(this.transform.position, player.transform.position);
+        //dist = Vector3.Distance(this.transform.position, player.transform.position);
         //Debug.Log("Dist: " + dist);
         if (dist < playerDistGlow)
         {
