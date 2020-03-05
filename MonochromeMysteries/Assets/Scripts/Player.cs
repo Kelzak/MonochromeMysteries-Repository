@@ -156,6 +156,26 @@ public class Player : MonoBehaviour
         }
     }
 
+    public bool IsInside()
+    {
+        bool isInside;
+
+        Ray indoorCheck;
+        indoorCheck = new Ray(transform.position, transform.up);
+        //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
+
+        if (Physics.Raycast(indoorCheck, 100f))
+        {
+            isInside = true;
+        }
+        else
+        {
+            isInside = false;
+        }
+        //Debug.Log("Is inside: " + isInside);
+        return isInside;
+    }
+
     private void OnTriggerExit(Collider other)
     {
         canPickup = false;
