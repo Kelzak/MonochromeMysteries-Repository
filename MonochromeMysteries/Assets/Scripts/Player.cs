@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
             StartCoroutine(ExitPossession());
 
-        IsOutside();
+        IsInside();
 
     }
 
@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
         return cam;
     }
 
-    public bool IsOutside()
+    public bool IsInside()
     {
         bool isInside;
 
@@ -137,7 +137,7 @@ public class Player : MonoBehaviour
         {
             isInside = false;
         }
-        //Debug.Log("Is inside: " + isInside);
+        Debug.Log("Is inside: " + isInside);
         return isInside;
     }
 

@@ -40,7 +40,7 @@ public class NavPerson : MonoBehaviour
     public AudioSource audioSource;
     private AudioClip step;
     public bool isFemale;
-    public float walkSoundInterval;
+    public float walkSoundInterval = .5f;
     public AudioClip[] maleSteps;
     public AudioClip[] femaleSteps;
     public AudioClip[] indoorSteps;
@@ -114,7 +114,7 @@ public class NavPerson : MonoBehaviour
         {
             isInside = false;
         }
-        Debug.Log("Is inside: " + isInside);
+        //Debug.Log("Is inside: " + isInside);
         return isInside;
     }
 
@@ -122,27 +122,27 @@ public class NavPerson : MonoBehaviour
     {
         if(!agent.isStopped)
         {
-            audioSource.volume = 3f;
+            audioSource.volume = .5f;
             int rand;
             if (IsInside() == true)
             {
                 rand = Random.Range(0, indoorSteps.Length);
                 step = indoorSteps[rand];
-                audioSource.volume = .25f;
+                audioSource.volume = .5f;
                 audioSource.PlayOneShot(step);
             }
             else if (isFemale)
             {
                 rand = Random.Range(0, femaleSteps.Length);
                 step = femaleSteps[rand];
-                audioSource.volume = .25f;
+                audioSource.volume = .4f;
                 audioSource.PlayOneShot(step);
             }
             else
             {
                 rand = Random.Range(0, maleSteps.Length);
                 step = maleSteps[rand];
-                audioSource.volume = .25f;
+                audioSource.volume = .4f;
                 audioSource.PlayOneShot(step);
             }
             
