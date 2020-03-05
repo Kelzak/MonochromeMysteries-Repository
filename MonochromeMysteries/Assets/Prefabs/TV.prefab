@@ -1737,8 +1737,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: TriggerMainMenu
+      - m_Target: {fileID: 11500000, guid: 214e838bf2783c64a9395abed47c57b7, type: 3}
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

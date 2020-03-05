@@ -32,10 +32,6 @@ public class GameController : MonoBehaviour
 
         //Initialize Game
         StartCoroutine(InitializeGame());
-        //MainMenu.active = true;
-        //menuActive = true;
-        //Player.SetControlsActive(false);
-        //TogglePause();
     }
 
     // Update is called once per frame

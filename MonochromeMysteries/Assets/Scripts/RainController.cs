@@ -25,14 +25,14 @@ public class RainController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(player.IsInside() == true)
-        {
-            PlaySound(0);
-        }
-        else
-        {
-            PlaySound(1);
-        }
+        //if(player.IsInside() == true)
+        //{
+        //    PlaySound(0);
+        //}
+        //else
+        //{
+        //    PlaySound(1);
+        //}
             
     }
     void PlaySound(int index)

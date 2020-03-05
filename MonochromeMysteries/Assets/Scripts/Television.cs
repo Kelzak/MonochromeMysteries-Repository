@@ -41,7 +41,6 @@ public class Television : MonoBehaviour
             if (x.gameObject.GetComponent<Player>())
             {
                 found = true;
-
             }
         }
 
