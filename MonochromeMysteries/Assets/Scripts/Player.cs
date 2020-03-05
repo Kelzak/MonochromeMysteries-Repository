@@ -74,6 +74,8 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
             StartCoroutine(ExitPossession());
 
+        IsInside();
+
     }
 
     //PICKING UP OBJECTS
@@ -117,6 +119,26 @@ public class Player : MonoBehaviour
     public GameObject GetCam()
     {
         return cam;
+    }
+
+    public bool IsInside()
+    {
+        bool isInside;
+
+        Ray indoorCheck;
+        indoorCheck = new Ray(transform.position, transform.up);
+        //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
+
+        if (Physics.Raycast(indoorCheck, 100f))
+        {
+            isInside = true;
+        }
+        else
+        {
+            isInside = false;
+        }
+        Debug.Log("Is inside: " + isInside);
+        return isInside;
     }
 
 
