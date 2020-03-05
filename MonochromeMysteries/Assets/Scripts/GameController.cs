@@ -95,14 +95,14 @@ public class GameController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Player.SetControlsActive(false);
+            Player.EnableControls(false);
             Time.timeScale = 0;
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            Player.SetControlsActive(true);
+            Player.EnableControls(true);
             Time.timeScale = 1;
         }
     }

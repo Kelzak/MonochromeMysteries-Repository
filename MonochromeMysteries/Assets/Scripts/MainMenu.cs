@@ -99,7 +99,7 @@ public class MainMenu : MonoBehaviour
         //Take away player controls if moving into main menu
         if (active)
         {
-            Player.SetControlsActive(false);
+            Player.EnableControls(false);
         }
         //Exiting menu so return to static
         else
@@ -144,10 +144,10 @@ public class MainMenu : MonoBehaviour
             yield return null;
         }
 
-        //Return player controls if moving out of main menu
+        //Return player controls if moving out of main menu AFTER TRANSITION
         if (!active)
         {
-            Player.SetControlsActive(true);
+            Player.EnableControls(true);
             GameController.menuActive = GameController._instance.paused;
         }
         //Entering menu so turn menu on and static off
