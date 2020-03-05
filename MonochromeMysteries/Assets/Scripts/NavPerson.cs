@@ -9,7 +9,7 @@ using UnityEngine.AI;
 
 public class NavPerson : MonoBehaviour
 {
-
+    
     public Transform[] targetLocations;
     private GameObject player;
     //used to help determine movement
@@ -37,9 +37,18 @@ public class NavPerson : MonoBehaviour
     //distance until person stops when player gets close
     public float playerDistStop = 5f;
 
+    public AudioSource audioSource;
+    private AudioClip step;
+    public bool isFemale;
+    public float walkSoundInterval;
+    public AudioClip[] maleSteps;
+    public AudioClip[] femaleSteps;
+    public AudioClip[] indoorSteps;
+
 
     void Start()
     {
+
         player = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
         agent.isStopped = true;
@@ -47,6 +56,10 @@ public class NavPerson : MonoBehaviour
         //calculates the random times based off wait time
         randWaitTimeMin = waitTime / 2;
         randWaitTimeMax = waitTime * 2;
+
+        audioSource = this.GetComponent<AudioSource>();
+        audioSource.volume = .5f;
+        InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
     }
 
     [System.Obsolete]
@@ -85,6 +98,57 @@ public class NavPerson : MonoBehaviour
 
     }
 
+    public bool IsInside()
+    {
+        bool isInside;
+
+        Ray indoorCheck;
+        indoorCheck = new Ray(transform.position, transform.up);
+        //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
+
+        if (Physics.Raycast(indoorCheck, 100f))
+        {
+            isInside = true;
+        }
+        else
+        {
+            isInside = false;
+        }
+        Debug.Log("Is inside: " + isInside);
+        return isInside;
+    }
+
+    void WalkAudio()
+    {
+        if(!agent.isStopped)
+        {
+            audioSource.volume = 3f;
+            int rand;
+            if (IsInside() == true)
+            {
+                rand = Random.Range(0, indoorSteps.Length);
+                step = indoorSteps[rand];
+                audioSource.volume = .25f;
+                audioSource.PlayOneShot(step);
+            }
+            else if (isFemale)
+            {
+                rand = Random.Range(0, femaleSteps.Length);
+                step = femaleSteps[rand];
+                audioSource.volume = .25f;
+                audioSource.PlayOneShot(step);
+            }
+            else
+            {
+                rand = Random.Range(0, maleSteps.Length);
+                step = maleSteps[rand];
+                audioSource.volume = .25f;
+                audioSource.PlayOneShot(step);
+            }
+            
+        }
+
+    }
     void Move()
     { 
         if (isPath == true)
