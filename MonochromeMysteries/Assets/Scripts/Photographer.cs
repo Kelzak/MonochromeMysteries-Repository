@@ -116,7 +116,7 @@ public class Photographer : Person
     /// Activates and deactivates the Camera Lens HUD
     /// </summary>
     /// <param name="possessionActive">Turns camera lens HUD on if true, off if false</param>
-    private void ToggleHUD(bool possessionActive)
+    public void ToggleHUD(bool possessionActive)
     {
         CameraLensActive = possessionActive;
     }

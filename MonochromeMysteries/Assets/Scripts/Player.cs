@@ -8,6 +8,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.UI;
+
 
 public class Player : MonoBehaviour
 {
@@ -42,6 +45,20 @@ public class Player : MonoBehaviour
     //KEVON'S ADDITION TO CODE//
     bool canPickup;
     bool hasKey;
+    public PPSettings ppvToggle;
+    public static bool hasCamera;
+    public Photographer photographer;
+
+    public Text pickUpInstructions;
+    public Text possessionInstructions;
+    public Text pictureTakingInstructions;
+    public Text itemSpecificInstructions;
+    public bool hasPossessedForTheFirstTime;
+
+    private void Awake()
+    {
+        //ppvToggle.Toggle(true);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -54,27 +71,43 @@ public class Player : MonoBehaviour
         if (mainPlayer == null)
             mainPlayer = gameObject;
 
-        cam = Camera.main.gameObject;
+        cam = transform.GetChild(0).gameObject;
         character = GetComponent<CharacterController>();
     }
 
-   
+
 
     // Update is called once per frame
     void Update()
     {
-        if(canLook)
+        if (canLook)
             Look();
-        if(canMove)
+        if (canMove)
             Movement();
 
-        if(!possessionInProgress)
-        PossessionCheck();
+        if (!possessionInProgress)
+            PossessionCheck();
 
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
             StartCoroutine(ExitPossession());
 
-        IsInside();
+        if (gameObject.GetComponent<Photographer>())
+        {
+            ppvToggle.Toggle(false);
+        }
+        else
+        {
+            ppvToggle.Toggle(true);
+        }
+
+        if (!hasPossessedForTheFirstTime)
+        {
+            possessionInstructions.gameObject.SetActive(true);
+        }
+        else
+        {
+            possessionInstructions.gameObject.SetActive(false);
+        }
 
     }
 
@@ -83,19 +116,37 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.tag == "Selectable")
         {
+            if (other.gameObject.GetComponent<Item>().itemName == "Camera")
+            {
+                Debug.Log("Text should appear");
+                pickUpInstructions.gameObject.SetActive(true);
+            }
             canPickup = true;
             Debug.Log("CanPickUp = " + canPickup);
 
             if (Input.GetKeyDown(KeyCode.F) && canPickup)
             {
-                hasKey = true;
-                Destroy(other.gameObject);
+                if (gameObject.tag == "Photographer" && other.gameObject.GetComponent<Item>().itemName == "Camera")
+                {
+                    Debug.Log("Picking up Camera...");
+                    hasCamera = true;
+                    photographer.ToggleHUD(true);
+                    Destroy(other.gameObject);
+                    pictureTakingInstructions.gameObject.SetActive(true);
+                    pickUpInstructions.gameObject.SetActive(false);
+                    itemSpecificInstructions.gameObject.SetActive(false);
+                }
+                else if (gameObject.tag == "Manager" && other.gameObject.GetComponent<Item>().itemName == "Key")
+                {
+                    hasKey = true;
+                    Destroy(other.gameObject);
+                }
             }
         }
 
         if (other.gameObject.tag == "LockedDoor")
         {
-            if (Input.GetKeyDown(KeyCode.F) && hasKey)
+            if (Input.GetKeyDown(KeyCode.F) && hasKey && gameObject.tag == "Manager")
             {
                 Debug.Log("You unlocked the door!");
                 Destroy(other.gameObject);
@@ -108,10 +159,11 @@ public class Player : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         canPickup = false;
+        pickUpInstructions.gameObject.SetActive(false);
     }
 
     //PUBLIC FUNCTIONS
-    public static void SetControlsActive(bool on)
+    public static void EnableControls(bool on)
     {
         canMove = canLook = on;
     }
@@ -119,26 +171,6 @@ public class Player : MonoBehaviour
     public GameObject GetCam()
     {
         return cam;
-    }
-
-    public bool IsInside()
-    {
-        bool isInside;
-
-        Ray indoorCheck;
-        indoorCheck = new Ray(transform.position, transform.up);
-        //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
-
-        if (Physics.Raycast(indoorCheck, 100f))
-        {
-            isInside = true;
-        }
-        else
-        {
-            isInside = false;
-        }
-        Debug.Log("Is inside: " + isInside);
-        return isInside;
     }
 
 
@@ -217,7 +249,7 @@ public class Player : MonoBehaviour
         }
 
         //If there are no targets, clear the highlighted one
-        if(target == null && Possessable.GetHighlightedObject() != null)
+        if (target == null && Possessable.GetHighlightedObject() != null)
         {
             Possessable.GetHighlightedObject().TriggerHighlight();
         }
@@ -239,6 +271,8 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     private IEnumerator Possess(GameObject target)
     {
+        hasPossessedForTheFirstTime = true;
+        itemSpecificInstructions.gameObject.SetActive(true);
         possessionInProgress = true;
 
         //No Target 
@@ -246,7 +280,7 @@ public class Player : MonoBehaviour
             yield break;
 
         //Cam Shift & Alpha fade
-        SetControlsActive(false);
+        EnableControls(false);
         LookAt(target);
 
         //VARIABLES
@@ -275,23 +309,23 @@ public class Player : MonoBehaviour
         cam.transform.SetParent(target.transform);
         cam.transform.localPosition = Vector3.zero;
         //Get Rid of Effects of currently Possessed Objects
-        if(gameObject != mainPlayer)
-        gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
+        if (gameObject != mainPlayer)
+            gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
         //Start Effect of What is Being Possessed
         target.GetComponent<Possessable>().TriggerOnPossession(true);
 
         //Zoom out
         while (camComp.fieldOfView < maxFOV)
         {
-            camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, currentTime / (transitionTime /4f));
+            camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, currentTime / (transitionTime / 4f));
             Color goalColor = mat.color;
-            goalColor.a = Mathf.Lerp(minAlpha, maxAlpha, currentTime / (transitionTime /4f));
+            goalColor.a = Mathf.Lerp(minAlpha, maxAlpha, currentTime / (transitionTime / 4f));
             mat.color = goalColor;
             currentTime += Time.deltaTime;
             yield return null;
         }
 
-        SetControlsActive(true);
+        EnableControls(true);
         //End Camera Shift & Alpha Fade
 
         //Copy Player Script and all its public fields
@@ -303,13 +337,13 @@ public class Player : MonoBehaviour
             field.SetValue(copy, field.GetValue(this));
         }
 
-        
+
 
         //If it's the main player (Ghost) then make it "disappear"
         if (gameObject == mainPlayer)
-        gameObject.SetActive(false);
+            gameObject.SetActive(false);
         //If it's not the main player, remove player script
-        else if(gameObject != mainPlayer)
+        else if (gameObject != mainPlayer)
         {
 
             Destroy(GetComponent<Player>());
@@ -336,17 +370,17 @@ public class Player : MonoBehaviour
         float checkRadius = thisMaxExtents + mainPlayerMaxExtents * 2;
         bool safeExitPoint = false;
 
-        int[] multiplierOptions = { 0, 1, -1};
+        int[] multiplierOptions = { 0, 1, -1 };
         Vector3 temp = exitPoint;
         for (int i = 0; i < multiplierOptions.Length && safeExitPoint == false; i++) //Diagonals
         {
-            for(int j = multiplierOptions.Length - 1; j > 0 && safeExitPoint == false; j--) //Cardinal Directions
+            for (int j = multiplierOptions.Length - 1; j > 0 && safeExitPoint == false; j--) //Cardinal Directions
             {
                 //temp = new Vector3(exitPoint.x + checkRadius * multiplierOptions[i], exitPoint.y, exitPoint.z + checkRadius * multiplierOptions[j]);
-                temp = transform.position + ( transform.forward * checkRadius * multiplierOptions[j] ) + ( transform.right * checkRadius * multiplierOptions[i] );
+                temp = transform.position + (transform.forward * checkRadius * multiplierOptions[j]) + (transform.right * checkRadius * multiplierOptions[i]);
                 Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents);
                 safeExitPoint = true;
-                foreach(Collider x in hit)
+                foreach (Collider x in hit)
                 {
                     if (x.gameObject.tag != "Floor")
                         safeExitPoint = false;
@@ -354,7 +388,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if(safeExitPoint) //Safe exit point with no collisions found
+        if (safeExitPoint) //Safe exit point with no collisions found
         {
             exitPoint = temp;
         }
@@ -366,7 +400,7 @@ public class Player : MonoBehaviour
         }
 
         //START TRANSITION TO EXIT POSSESSION
-        SetControlsActive(false);
+        EnableControls(false);
 
         //Camera Variables
         Camera camComp = cam.GetComponent<Camera>();
@@ -375,7 +409,7 @@ public class Player : MonoBehaviour
         float transitionTime = 0.5f;
         float currentTime = 0;
 
-        
+
 
         //Reactivate the Player, 
         mainPlayer.SetActive(true);
@@ -383,7 +417,7 @@ public class Player : MonoBehaviour
         mainPlayer.transform.position = exitPoint;
         mainPlayer.transform.rotation = gameObject.transform.rotation;
 
-        if(gameObject != mainPlayer)
+        if (gameObject != mainPlayer)
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
 
         //Zoom out
@@ -396,10 +430,10 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-     
+
         cam.transform.position = mainPlayer.transform.position;
         cam.transform.SetParent(mainPlayer.transform);
-        
+
         currentTime = 0;
 
         //Zoom in
@@ -415,7 +449,7 @@ public class Player : MonoBehaviour
         mainPlayer.GetComponent<Player>().lookVertical = this.lookVertical;
 
         //Transition complete, return control to player
-        SetControlsActive(true);
+        EnableControls(true);
         mainPlayer.GetComponent<Player>().possessionInProgress = false;
 
         //If this is not the main player (Ghost) then fire any events related to leaving a host and get rid of player script

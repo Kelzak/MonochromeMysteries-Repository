@@ -19,6 +19,8 @@ public class Item : MonoBehaviour, IObserver
     private bool isGhost;
     private bool isClose;
 
+    public string itemName;
+
     //gets data sent fron statechecker
     public void UpdateData(bool check)
     {
