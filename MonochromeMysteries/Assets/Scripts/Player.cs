@@ -164,9 +164,14 @@ public class Player : MonoBehaviour
         indoorCheck = new Ray(transform.position, transform.up);
         //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
 
-        if (Physics.Raycast(indoorCheck, 100f))
+        if (Physics.Raycast(indoorCheck, out hit))
         {
-            isInside = true;
+            if (hit.collider.CompareTag("balcony"))
+            {
+                isInside = false;
+            }
+            else
+                isInside = true;
         }
         else
         {
@@ -284,6 +289,8 @@ public class Player : MonoBehaviour
     }
 
     bool possessionInProgress = false;
+    private RaycastHit hit;
+
     /// <summary>
     /// Handles the possession transition into another GameObject
     /// </summary>
