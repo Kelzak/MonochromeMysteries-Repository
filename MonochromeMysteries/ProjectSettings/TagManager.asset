@@ -8,6 +8,7 @@ TagManager:
   - LockedDoor
   - Selectable
   - Photographer
+  - balcony
   layers:
   - Default
   - TransparentFX
