@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class MainMenu : MonoBehaviour
     private bool playerInTVRange = false;
     private GameObject currentMenu;
     private Television currentTV;
+    //0 is Resume, 1 is New Game
+    
 
     public Television[] TVs;
 
@@ -30,8 +33,10 @@ public class MainMenu : MonoBehaviour
         cam = Camera.main;
 
         TVs = FindObjectsOfType<Television>();
-    }
 
+       
+
+    }
     // Update is called once per frame
     void Update()
     {
@@ -49,6 +54,16 @@ public class MainMenu : MonoBehaviour
     public static bool IsInRange()
     {
         return _instance.playerInTVRange;
+    }
+
+    public void ChangeFromInitialOptions()
+    {
+        foreach(Television instance in TVs)
+        {
+            //Turn new game button off and resume on
+            instance.SwapButtons(false, Television.ButtonName.NewGame, Television.ButtonName.Continue);
+            instance.SwapButtons(true, Television.ButtonName.Resume);
+        }
     }
 
     public void SetCurrentTV(Television set)
