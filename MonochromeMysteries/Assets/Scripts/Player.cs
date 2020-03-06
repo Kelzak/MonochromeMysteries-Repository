@@ -218,8 +218,8 @@ public class Player : MonoBehaviour
     private void LookAt(GameObject obj)
     {
         Quaternion LookAtRot = Quaternion.LookRotation(obj.transform.position - transform.position);
-        transform.rotation = Quaternion.Euler(0, lookHorizontal = LookAtRot.eulerAngles.y, 0);
-        cam.transform.localRotation = Quaternion.Euler(LookAtRot.eulerAngles.x, 0, LookAtRot.eulerAngles.z);
+        transform.rotation = Quaternion.Euler(0, LookAtRot.eulerAngles.y, 0);
+        cam.transform.localRotation = Quaternion.identity;//Quaternion.Euler(LookAtRot.eulerAngles.x, 0, LookAtRot.eulerAngles.z);
 
     }
 
@@ -306,10 +306,22 @@ public class Player : MonoBehaviour
         if (target == null)
             yield break;
 
+        if (target.GetComponent<NavPerson>())
+        {
+            target.GetComponent<NavPerson>().enabled = false;
+        }
+
+
         //Cam Shift & Alpha fade
         EnableControls(false);
-        LookAt(target);
 
+        //Look at what is about to be possessed
+        cam.transform.parent = null;
+        Vector3 direction = (target.transform.position - transform.position);
+        cam.transform.rotation = Quaternion.LookRotation(direction);
+        direction.y = 0;
+        transform.rotation = Quaternion.LookRotation(direction);
+        
         //VARIABLES
         float minFOV = 5, maxFOV;
         float minAlpha = 0, maxAlpha = 1;
@@ -319,20 +331,21 @@ public class Player : MonoBehaviour
         maxFOV = camComp.fieldOfView;
         Material mat = target.GetComponent<MeshRenderer>().material;
 
+
         //Zoom in
         while (camComp.fieldOfView > minFOV && mat.color.a > minAlpha)
         {
-            camComp.fieldOfView = Mathf.Lerp(maxFOV, minFOV, currentTime / transitionTime);
+            camComp.fieldOfView = Mathf.Lerp(maxFOV, minFOV, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             Color goalColor = mat.color;
-            goalColor.a = Mathf.Lerp(maxAlpha, minAlpha, currentTime / transitionTime);
+            goalColor.a = Mathf.Lerp(maxAlpha, minAlpha, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             mat.color = goalColor;
-            cam.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, currentTime / transitionTime);
+            cam.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             currentTime += Time.deltaTime;
             yield return null;
         }
 
         currentTime = 0;
-        target.transform.rotation = cam.transform.rotation;
+        target.transform.rotation = gameObject.transform.rotation;
         cam.transform.SetParent(target.transform);
         cam.transform.localPosition = Vector3.zero;
         //Get Rid of Effects of currently Possessed Objects
@@ -341,18 +354,22 @@ public class Player : MonoBehaviour
         //Start Effect of What is Being Possessed
         target.GetComponent<Possessable>().TriggerOnPossession(true);
 
+        Quaternion startRot = cam.transform.localRotation;
         //Zoom out
         while (camComp.fieldOfView < maxFOV)
         {
-            camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, currentTime / (transitionTime / 4f));
+            camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             Color goalColor = mat.color;
-            goalColor.a = Mathf.Lerp(minAlpha, maxAlpha, currentTime / (transitionTime / 4f));
+            goalColor.a = Mathf.Lerp(minAlpha, maxAlpha, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
+            cam.transform.localRotation = Quaternion.Lerp(startRot, Quaternion.identity, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             mat.color = goalColor;
             currentTime += Time.deltaTime;
             yield return null;
         }
 
-        EnableControls(true);
+        lookHorizontal = cam.transform.rotation.eulerAngles.y;
+        lookVertical = cam.transform.rotation.eulerAngles.x;
+     
         //End Camera Shift & Alpha Fade
 
         //Copy Player Script and all its public fields
@@ -364,7 +381,7 @@ public class Player : MonoBehaviour
             field.SetValue(copy, field.GetValue(this));
         }
 
-
+        EnableControls(true);
 
         //If it's the main player (Ghost) then make it "disappear"
         if (gameObject == mainPlayer)
@@ -372,7 +389,8 @@ public class Player : MonoBehaviour
         //If it's not the main player, remove player script
         else if (gameObject != mainPlayer)
         {
-
+            if (GetComponent<NavPerson>())
+                GetComponent<NavPerson>().enabled = true;
             Destroy(GetComponent<Player>());
         }
 
@@ -395,6 +413,7 @@ public class Player : MonoBehaviour
         float mainPlayerMaxExtents = Mathf.Max(mainPlayer.GetComponent<MeshRenderer>().bounds.extents.x, mainPlayer.GetComponent<MeshRenderer>().bounds.extents.z);
         float thisMaxExtents = Mathf.Max(gameObject.GetComponent<MeshRenderer>().bounds.extents.x, gameObject.GetComponent<MeshRenderer>().bounds.extents.z);
         float checkRadius = thisMaxExtents + mainPlayerMaxExtents * 2;
+        Vector3 closestPointOnFloor = Vector3.zero;
         bool safeExitPoint = false;
 
         int[] multiplierOptions = { 0, 1, -1 };
@@ -403,20 +422,22 @@ public class Player : MonoBehaviour
         {
             for (int j = multiplierOptions.Length - 1; j > 0 && safeExitPoint == false; j--) //Cardinal Directions
             {
-                //temp = new Vector3(exitPoint.x + checkRadius * multiplierOptions[i], exitPoint.y, exitPoint.z + checkRadius * multiplierOptions[j]);
                 temp = transform.position + (transform.forward * checkRadius * multiplierOptions[j]) + (transform.right * checkRadius * multiplierOptions[i]);
                 Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents);
                 safeExitPoint = true;
-                foreach (Collider x in hit)
+                for (int k = 0; k < hit.Length; k++)
                 {
-                    if (x.gameObject.tag != "Floor")
+                    if (hit[k].gameObject.tag != "Floor")
                         safeExitPoint = false;
+                    else
+                        closestPointOnFloor = hit[k].ClosestPointOnBounds(transform.position);
                 }
             }
         }
 
         if (safeExitPoint) //Safe exit point with no collisions found
         {
+            temp.y = closestPointOnFloor.y + mainPlayer.GetComponent<MeshRenderer>().bounds.extents.y;
             exitPoint = temp;
         }
         else //No possible exit points found, can't unpossess here
@@ -436,13 +457,14 @@ public class Player : MonoBehaviour
         float transitionTime = 0.5f;
         float currentTime = 0;
 
-
-
         //Reactivate the Player, 
         mainPlayer.SetActive(true);
         mainPlayer.GetComponent<Player>().possessionInProgress = true;
         mainPlayer.transform.position = exitPoint;
-        mainPlayer.transform.rotation = gameObject.transform.rotation;
+        Vector3 direction = (transform.position - exitPoint).normalized;
+        direction.y = 0;
+        
+        mainPlayer.transform.rotation = Quaternion.LookRotation(direction);
 
         if (gameObject != mainPlayer)
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
@@ -451,7 +473,8 @@ public class Player : MonoBehaviour
         while (camComp.fieldOfView < maxFOV)
         {
             camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, currentTime / transitionTime);
-            cam.transform.position = Vector3.Lerp(transform.position, mainPlayer.transform.position, currentTime / transitionTime);
+            cam.transform.position = Vector3.Lerp(transform.position, mainPlayer.transform.position, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
+            cam.transform.rotation = Quaternion.Lerp(transform.rotation, mainPlayer.transform.rotation, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
 
             currentTime += Time.deltaTime;
             yield return null;
@@ -460,20 +483,23 @@ public class Player : MonoBehaviour
 
         cam.transform.position = mainPlayer.transform.position;
         cam.transform.SetParent(mainPlayer.transform);
+        cam.transform.localRotation = Quaternion.identity;
 
         currentTime = 0;
 
         //Zoom in
         while (camComp.fieldOfView > minFOV)
         {
-            camComp.fieldOfView = Mathf.Lerp(maxFOV, minFOV, currentTime / transitionTime);
+            camComp.fieldOfView = Mathf.Lerp(maxFOV, minFOV, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             currentTime += Time.deltaTime;
             yield return null;
         }
 
+        
+
         //Make sure the player is looking in the same direction as they were in their body so that the transition isn't jarring
-        mainPlayer.GetComponent<Player>().lookHorizontal = this.lookHorizontal;
-        mainPlayer.GetComponent<Player>().lookVertical = this.lookVertical;
+        mainPlayer.GetComponent<Player>().lookHorizontal = cam.transform.rotation.eulerAngles.y;
+        mainPlayer.GetComponent<Player>().lookVertical = cam.transform.rotation.eulerAngles.x;
 
         //Transition complete, return control to player
         EnableControls(true);
@@ -482,6 +508,8 @@ public class Player : MonoBehaviour
         //If this is not the main player (Ghost) then fire any events related to leaving a host and get rid of player script
         if (gameObject != mainPlayer)
         {
+            if (GetComponent<NavPerson>())
+                GetComponent<NavPerson>().enabled = true;
             Destroy(GetComponent<Player>());
         }
 

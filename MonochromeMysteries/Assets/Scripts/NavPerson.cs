@@ -194,4 +194,15 @@ public class NavPerson : MonoBehaviour
         }
        
     }
+
+    private void OnDisable()
+    {
+        GetComponent<NavMeshAgent>().isStopped = true;
+
+    }
+
+    private void OnEnable()
+    {
+        GetComponent<NavMeshAgent>().isStopped = false;
+    }
 }

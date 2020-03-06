@@ -110,15 +110,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainPlayer: {fileID: 0}
   lookSensitivity: 10
-  canLook: 1
   lookHorizontal: 0
   lookVertical: 0
   verticalClamp: 60
   cam: {fileID: 0}
   moveSpeed: 5
-  canMove: 1
   possess_Distance: 3
-  possess_Vignette: {fileID: 0}
+  ppvToggle: {fileID: 0}
+  photographer: {fileID: 0}
+  pickUpInstructions: {fileID: 0}
+  possessionInstructions: {fileID: 0}
+  pictureTakingInstructions: {fileID: 0}
+  itemSpecificInstructions: {fileID: 0}
+  hasPossessedForTheFirstTime: 0
 --- !u!143 &3522378898957226858
 CharacterController:
   m_ObjectHideFlags: 0
@@ -192,7 +196,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0
