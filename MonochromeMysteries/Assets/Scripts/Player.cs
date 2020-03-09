@@ -1,6 +1,6 @@
 ﻿/* Name: Player.cs
  * Author: Zackary Seiple
- * Description: This script handles the player's ghost behaviours and their ability to posses 
+ * Description: This script handles the player's ghost behaviours and their ability to posses
  * Last Updated: 2/18/2020 (Zackary Seiple)
  * Changes: Added header
  */
@@ -14,6 +14,9 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    private AudioSource[] audioSources;
+    private AudioSource audioSource;
+
     [HideInInspector]
     public GameObject mainPlayer = null;
 
@@ -55,6 +58,15 @@ public class Player : MonoBehaviour
     public Text itemSpecificInstructions;
     public bool hasPossessedForTheFirstTime;
 
+    //UI Images and Texts
+    public Sprite photographerImage;
+    public Sprite ratImage;
+    public Image characterImage;
+    public Text characterName;
+    public Sprite cameraImage;
+    public Image itemImage;
+    public Text itemName;
+
     private void Awake()
     {
         //ppvToggle.Toggle(true);
@@ -63,6 +75,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audioSources = this.GetComponents<AudioSource>();
+
         hasKey = false;
         canPickup = false;
         Cursor.visible = false;
@@ -91,14 +105,15 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
             StartCoroutine(ExitPossession());
 
-        //if (gameObject.GetComponent<Photographer>())
-        //{
-        //    ppvToggle.Toggle(false);
-        //}
-        //else
-        //{
-        //    ppvToggle.Toggle(true);
-        //}
+
+        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>())
+        {
+            ppvToggle.Toggle(false);
+        }
+        else
+        {
+            ppvToggle.Toggle(true);
+        }
 
         if (!hasPossessedForTheFirstTime)
         {
@@ -109,7 +124,37 @@ public class Player : MonoBehaviour
             possessionInstructions.gameObject.SetActive(false);
         }
 
-    }
+        if (hasCamera && gameObject.GetComponent<Photographer>())
+        {
+            itemImage.sprite = cameraImage;
+            itemName.text = "Camera";
+        }
+        else
+        {
+            itemImage.sprite = null;
+            itemName.text = null;
+        }
+
+        if (gameObject.GetComponent<Photographer>())
+        {
+            characterImage.sprite = photographerImage;
+            characterName.text = "\"The Photographer\"";
+        }
+        else if (gameObject.GetComponent<Rat>())
+        {
+            itemImage.transform.parent.gameObject.SetActive(false);
+            characterImage.sprite = ratImage;
+            characterName.text = "\"The Rat\"";
+        }
+        else
+        {
+            itemImage.gameObject.SetActive(true);
+            characterImage.sprite = null;
+            characterName.text = null;
+        }
+
+
+}
 
     //PICKING UP OBJECTS
     private void OnTriggerStay(Collider other)
@@ -136,7 +181,7 @@ public class Player : MonoBehaviour
                     pickUpInstructions.gameObject.SetActive(false);
                     itemSpecificInstructions.gameObject.SetActive(false);
                 }
-                else if (gameObject.tag == "Manager" && other.gameObject.GetComponent<Item>().itemName == "Key")
+                else if (other.gameObject.GetComponent<Item>().itemName == "Key")
                 {
                     hasKey = true;
                     Destroy(other.gameObject);
@@ -146,8 +191,9 @@ public class Player : MonoBehaviour
 
         if (other.gameObject.tag == "LockedDoor")
         {
-            if (Input.GetKeyDown(KeyCode.F) && hasKey && gameObject.tag == "Manager")
+            if (Input.GetKeyDown(KeyCode.F) && hasKey)
             {
+                audioSources[0].Play();
                 Debug.Log("You unlocked the door!");
                 Destroy(other.gameObject);
                 hasKey = false;
@@ -302,7 +348,7 @@ public class Player : MonoBehaviour
         itemSpecificInstructions.gameObject.SetActive(true);
         possessionInProgress = true;
 
-        //No Target 
+        //No Target
         if (target == null)
             yield break;
 
@@ -321,7 +367,7 @@ public class Player : MonoBehaviour
         cam.transform.rotation = Quaternion.LookRotation(direction);
         direction.y = 0;
         transform.rotation = Quaternion.LookRotation(direction);
-        
+
         //VARIABLES
         float minFOV = 5, maxFOV;
         float minAlpha = 0, maxAlpha = 1;
@@ -373,7 +419,7 @@ public class Player : MonoBehaviour
 
         lookHorizontal = cam.transform.rotation.eulerAngles.y;
         lookVertical = cam.transform.rotation.eulerAngles.x;
-     
+
         //End Camera Shift & Alpha Fade
 
         //Copy Player Script and all its public fields
@@ -502,7 +548,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        
+
 
         //Make sure the player is looking in the same direction as they were in their body so that the transition isn't jarring
         mainPlayer.GetComponent<Player>().lookHorizontal = cam.transform.rotation.eulerAngles.y;

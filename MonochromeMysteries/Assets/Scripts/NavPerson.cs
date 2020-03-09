@@ -58,7 +58,7 @@ public class NavPerson : MonoBehaviour
         randWaitTimeMax = waitTime * 2;
 
         audioSource = this.GetComponent<AudioSource>();
-        audioSource.volume = .5f;
+        audioSource.volume = .75f;
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
     }
 

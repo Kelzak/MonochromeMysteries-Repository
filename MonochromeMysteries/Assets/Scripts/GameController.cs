@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
 
     public bool paused = false;
 
+    private AudioSource[] audioSources;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +35,7 @@ public class GameController : MonoBehaviour
         StartCoroutine(InitializeGame());
 
         Dialogue.instance.AddLine(Dialogue.Character.Pete, "What's up gamers, it's ya boi pete");
+        audioSources = this.GetComponents<AudioSource>();
     }
 
     // Update is called once per frame
@@ -54,7 +57,17 @@ public class GameController : MonoBehaviour
                 grid.position = topPos;
 
             }
-
+            //sounds for book
+            if(!menuActive)
+            {
+                //open
+                audioSources[0].Play();
+            }
+            else
+            {
+                //close
+                audioSources[1].Play();
+            }
             menuActive = paused;
         }
 
@@ -124,5 +137,5 @@ public class GameController : MonoBehaviour
         MainMenu._instance.UpdateTVRanges();
         TriggerMainMenu();
     }
-  
+
 }

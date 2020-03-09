@@ -63,6 +63,7 @@ public class RainController : MonoBehaviour
     void Thunder()
     {
         int rand = Random.Range(2, 7);
+        audioSource.volume = .25f;
         audioSources[rand].Play();
     }
 }
