@@ -55,6 +55,15 @@ public class Player : MonoBehaviour
     public Text itemSpecificInstructions;
     public bool hasPossessedForTheFirstTime;
 
+    //UI Images and Texts
+    public Sprite photographerImage;
+    public Sprite ratImage;
+    public Image characterImage;
+    public Text characterName;
+    public Sprite cameraImage;
+    public Image itemImage;
+    public Text itemName;
+
     private void Awake()
     {
         //ppvToggle.Toggle(true);
@@ -91,7 +100,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
             StartCoroutine(ExitPossession());
 
-        if (gameObject.GetComponent<Photographer>())
+        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>())
         {
             ppvToggle.Toggle(false);
         }
@@ -109,7 +118,37 @@ public class Player : MonoBehaviour
             possessionInstructions.gameObject.SetActive(false);
         }
 
-    }
+        if (hasCamera && gameObject.GetComponent<Photographer>())
+        {
+            itemImage.sprite = cameraImage;
+            itemName.text = "Camera";
+        }
+        else
+        {
+            itemImage.sprite = null;
+            itemName.text = null;
+        }
+
+        if (gameObject.GetComponent<Photographer>())
+        {
+            characterImage.sprite = photographerImage;
+            characterName.text = "\"The Photographer\"";
+        }
+        else if (gameObject.GetComponent<Rat>())
+        {
+            itemImage.transform.parent.gameObject.SetActive(false);
+            characterImage.sprite = ratImage;
+            characterName.text = "\"The Rat\"";
+        }
+        else
+        {
+            itemImage.gameObject.SetActive(true);
+            characterImage.sprite = null;
+            characterName.text = null;
+        }
+    
+
+}
 
     //PICKING UP OBJECTS
     private void OnTriggerStay(Collider other)
