@@ -17,6 +17,7 @@ public class Rat : Possessable
 
     //Kevon's Additions
     public Transform pickupDestination;
+    public bool hasKey = false;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -31,6 +32,10 @@ public class Rat : Possessable
     protected override void Update()
     {
         base.Update();
+        if(hasKey)
+        {
+            
+        }
     }
 
     public override void Ability()
@@ -40,12 +45,14 @@ public class Rat : Possessable
 
     private void OnTriggerStay(Collider other)
     {
-        if(Input.GetButtonDown("PickUp"))
+        if(Input.GetButtonDown("PickUp")) //which is "F"
         {
             if (other.gameObject.tag == "Selectable" && other.gameObject.GetComponent<Item>().itemName == "Key")
             {
+                hasKey = true;
                 Debug.Log("Rat should be picking up key");
                 other.transform.SetParent(pickupDestination);
+                other.transform.position = pickupDestination.position;
             }
         }
         if (Input.GetButtonUp("PickUp"))
