@@ -14,6 +14,9 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    private AudioSource[] audioSources;
+    private AudioSource audioSource;
+
     [HideInInspector]
     public GameObject mainPlayer = null;
 
@@ -72,6 +75,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audioSources = this.GetComponents<AudioSource>();
+
         hasKey = false;
         canPickup = false;
         Cursor.visible = false;
@@ -175,7 +180,7 @@ public class Player : MonoBehaviour
                     pickUpInstructions.gameObject.SetActive(false);
                     itemSpecificInstructions.gameObject.SetActive(false);
                 }
-                else if (gameObject.tag == "Manager" && other.gameObject.GetComponent<Item>().itemName == "Key")
+                else if (other.gameObject.GetComponent<Item>().itemName == "Key")
                 {
                     hasKey = true;
                     Destroy(other.gameObject);
@@ -185,8 +190,9 @@ public class Player : MonoBehaviour
 
         if (other.gameObject.tag == "LockedDoor")
         {
-            if (Input.GetKeyDown(KeyCode.F) && hasKey && gameObject.tag == "Manager")
+            if (Input.GetKeyDown(KeyCode.F) && hasKey)
             {
+                audioSources[0].Play();
                 Debug.Log("You unlocked the door!");
                 Destroy(other.gameObject);
                 hasKey = false;

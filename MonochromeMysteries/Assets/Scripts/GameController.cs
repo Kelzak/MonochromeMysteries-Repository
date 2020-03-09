@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour
 
     public bool paused = false;
 
+    private AudioSource[] audioSources;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +34,7 @@ public class GameController : MonoBehaviour
 
         //Initialize Game
         StartCoroutine(InitializeGame());
+        audioSources = this.GetComponents<AudioSource>();
     }
 
     // Update is called once per frame
@@ -53,7 +56,17 @@ public class GameController : MonoBehaviour
                 grid.position = topPos;
 
             }
-
+            //sounds for book
+            if(!menuActive)
+            {
+                //open
+                audioSources[0].Play();
+            }
+            else
+            {
+                //close
+                audioSources[1].Play();
+            }
             menuActive = paused;
         }
 

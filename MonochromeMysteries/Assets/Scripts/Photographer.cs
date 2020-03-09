@@ -17,6 +17,7 @@ public class Photographer : Person
     Camera cam;
     GameObject hud;
     Rect newRect;
+    private AudioSource[] audioSources;
 
     private bool cameraLensActive = false; //NEVER EDIT THIS
     public bool CameraLensActive //Controls the camera HUD popping up: Edit this
@@ -52,6 +53,8 @@ public class Photographer : Person
         Debug.Log(newRect.xMin + " " + newRect.xMax + " | " + newRect.yMin + " " + newRect.yMax);
 
         OnPossession += ToggleHUD;
+
+        audioSources = this.GetComponents<AudioSource>();
     }
 
     // Update is called once per frame
@@ -68,6 +71,7 @@ public class Photographer : Person
         {
             Player.EnableControls(false);
             StartCoroutine(CameraFlash());
+            audioSources[1].Play();
             TakePhoto(Screen.width, Screen.height);
             Player.EnableControls(true);
         }
