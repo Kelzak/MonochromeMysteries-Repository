@@ -19,7 +19,6 @@ public class GameController : MonoBehaviour
     //Says whether ANY menu is active
     public static bool menuActive = false;
 
-
     public bool paused = false;
 
     // Start is called before the first frame update
@@ -32,6 +31,8 @@ public class GameController : MonoBehaviour
 
         //Initialize Game
         StartCoroutine(InitializeGame());
+
+        Dialogue.instance.AddLine(Dialogue.Character.Pete, "What's up gamers, it's ya boi pete");
     }
 
     // Update is called once per frame

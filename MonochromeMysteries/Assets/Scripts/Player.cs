@@ -91,14 +91,14 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
             StartCoroutine(ExitPossession());
 
-        if (gameObject.GetComponent<Photographer>())
-        {
-            ppvToggle.Toggle(false);
-        }
-        else
-        {
-            ppvToggle.Toggle(true);
-        }
+        //if (gameObject.GetComponent<Photographer>())
+        //{
+        //    ppvToggle.Toggle(false);
+        //}
+        //else
+        //{
+        //    ppvToggle.Toggle(true);
+        //}
 
         if (!hasPossessedForTheFirstTime)
         {
@@ -354,6 +354,10 @@ public class Player : MonoBehaviour
         //Start Effect of What is Being Possessed
         target.GetComponent<Possessable>().TriggerOnPossession(true);
 
+        //GrayScale
+        if (target.GetComponent<Possessable>())
+            ppvToggle.Toggle(false);
+
         Quaternion startRot = cam.transform.localRotation;
         //Zoom out
         while (camComp.fieldOfView < maxFOV)
@@ -457,17 +461,20 @@ public class Player : MonoBehaviour
         float transitionTime = 0.5f;
         float currentTime = 0;
 
-        //Reactivate the Player, 
+        //Reactivate the Player, have them face what was being possessed
         mainPlayer.SetActive(true);
         mainPlayer.GetComponent<Player>().possessionInProgress = true;
         mainPlayer.transform.position = exitPoint;
         Vector3 direction = (transform.position - exitPoint).normalized;
         direction.y = 0;
-        
         mainPlayer.transform.rotation = Quaternion.LookRotation(direction);
 
+        //Take off Effects
         if (gameObject != mainPlayer)
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
+
+        //GrayScale
+        ppvToggle.Toggle(true);
 
         //Zoom out
         while (camComp.fieldOfView < maxFOV)
@@ -480,7 +487,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-
+        //Make sure camera is swapped back over to main player
         cam.transform.position = mainPlayer.transform.position;
         cam.transform.SetParent(mainPlayer.transform);
         cam.transform.localRotation = Quaternion.identity;

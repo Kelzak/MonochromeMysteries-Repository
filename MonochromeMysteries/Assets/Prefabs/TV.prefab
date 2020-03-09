@@ -1298,6 +1298,7 @@ MonoBehaviour:
   screen: {fileID: 2965033133803697760}
   mainMenu: {fileID: 2965033132197243661}
   tvStatic: {fileID: 2965033133233656144}
+  options: {fileID: 0}
   staticAnim: {fileID: 0}
 --- !u!65 &2965033133202097707
 BoxCollider:
@@ -1395,9 +1396,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ca55d95c342d6f24c89f4f8571d6b291, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 182e04eabefced54abeda881ad6358a3, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
