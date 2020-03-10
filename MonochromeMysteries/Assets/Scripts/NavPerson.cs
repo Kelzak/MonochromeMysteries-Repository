@@ -44,7 +44,9 @@ public class NavPerson : MonoBehaviour
     public AudioClip[] maleSteps;
     public AudioClip[] femaleSteps;
     public AudioClip[] indoorSteps;
+    public float stepVolume = .5f;
 
+    private bool isPossessed = false;
 
     void Start()
     {
@@ -58,13 +60,21 @@ public class NavPerson : MonoBehaviour
         randWaitTimeMax = waitTime * 2;
 
         audioSource = this.GetComponent<AudioSource>();
-        audioSource.volume = .75f;
+        audioSource.volume = stepVolume;
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
     }
 
     [System.Obsolete]
     private void Update()
     {
+        if(this.gameObject.GetComponent<Player>())
+        {
+            isPossessed = true;
+        }
+        else
+        {
+            isPossessed = false;
+        }
         //if stopped, invoke movement over wait time
         //Debug.Log(agent.isStopped);
         if (agent.isStopped && move == true)
@@ -120,7 +130,7 @@ public class NavPerson : MonoBehaviour
 
     void WalkAudio()
     {
-        if(!agent.isStopped)
+        if(!agent.isStopped && !isPossessed)
         {
             audioSource.volume = .5f;
             int rand;
@@ -198,7 +208,6 @@ public class NavPerson : MonoBehaviour
     private void OnDisable()
     {
         GetComponent<NavMeshAgent>().isStopped = true;
-
     }
 
     private void OnEnable()
