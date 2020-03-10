@@ -27,10 +27,10 @@ public class Log : MonoBehaviour
         }
     }
 
-    public void AddEntry(string text)
+    public static void AddEntry(string text)
     {
-        StartCoroutine(AddEntryCoroutine(text));
-        StartCoroutine(LogEntryDecay());
+        instance.StartCoroutine(instance.AddEntryCoroutine(text));
+        instance.StartCoroutine(instance.LogEntryDecay());
     }
 
     public IEnumerator AddEntryCoroutine(string text)

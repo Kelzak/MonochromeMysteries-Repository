@@ -34,14 +34,7 @@ public class GameController : MonoBehaviour
         //Initialize Game
         StartCoroutine(InitializeGame());
 
-        StartCoroutine(LogTest());
         audioSources = this.GetComponents<AudioSource>();
-    }
-
-    private IEnumerator LogTest()
-    {
-        yield return new WaitForSeconds(1);
-        Dialogue.AddLine(Dialogue.Character.Pete, "You! You're finally awake! It's me, your close friend, Johnathan Lennon.", "Yeet yeet skeet lmao");
     }
 
     // Update is called once per frame
