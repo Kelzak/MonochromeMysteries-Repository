@@ -34,8 +34,16 @@ public class GameController : MonoBehaviour
         //Initialize Game
         StartCoroutine(InitializeGame());
 
+        StartCoroutine(DialogueScript());
         
         audioSources = this.GetComponents<AudioSource>();
+    }
+
+    private IEnumerator DialogueScript()
+    {
+        yield return new WaitForSeconds(10f);
+        Dialogue.AddLine(Dialogue.Character.Pete, "What's up, it's ya boi Johnathan Lennon", "Hehehehehe.");
+
     }
 
     // Update is called once per frame
