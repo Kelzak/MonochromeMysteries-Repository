@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //observer to state checker to display outline on item
+[RequireComponent(typeof(Outline))]
 public class Item : MonoBehaviour, IObserver
 {
     public StateChecker stateChecker;
@@ -15,35 +16,32 @@ public class Item : MonoBehaviour, IObserver
     private float dist;
     public float playerDistGlow;
     private GameObject player;
-    public Image reticle;
+    //public Image reticle;
 
     private bool isGhost;
     private bool isClose;
 
     public string itemName;
+    private GameObject checker;
 
-    //gets data sent fron statechecker
-    public void UpdateData(bool check)
-    {
-        isGhost = check;
-    }
-
+    
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
 
-        playerDistGlow = 20f;
-
         item = this.gameObject;
-
+        checker = GameObject.FindGameObjectWithTag("StateChecker");
+        stateChecker = checker.GetComponent<StateChecker>();
         // adds this object to observer list in statechecker
+        Debug.Log("Test");
         stateChecker.RegisterObserver(this);
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("dist: " + dist);
         //changes materials 
         if(isGhost == true && isClose == true)
         {
@@ -70,6 +68,12 @@ public class Item : MonoBehaviour, IObserver
             isClose = false;
         }
     }
+    //gets data sent fron statechecker
+    public void UpdateData(bool check)
+    {
+        isGhost = check;
+    }
+
 }
 
 
