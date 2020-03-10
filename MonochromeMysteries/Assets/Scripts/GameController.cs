@@ -34,6 +34,7 @@ public class GameController : MonoBehaviour
         //Initialize Game
         StartCoroutine(InitializeGame());
 
+        
         audioSources = this.GetComponents<AudioSource>();
     }
 

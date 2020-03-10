@@ -176,8 +176,6 @@ public class MainMenu : MonoBehaviour
         if ((photographer = cam.GetComponentInParent<Photographer>()) && photographer.CameraLensActive == false)
             photographer.CameraLensActive = true;
 
-        if (active == false)
-            
         tvTransitionInProgress = false;
     }
 
