@@ -9,6 +9,7 @@ TagManager:
   - Selectable
   - Photographer
   - balcony
+  - StateChecker
   layers:
   - Default
   - TransparentFX
