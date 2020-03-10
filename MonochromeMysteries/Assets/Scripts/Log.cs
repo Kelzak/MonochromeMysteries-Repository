@@ -64,7 +64,7 @@ public class Log : MonoBehaviour
     {
         isShifting = true;
         float currentTime = 0;
-        float moveDist = 30f;
+        float moveDist = logEntryPrefab.GetComponent<RectTransform>().sizeDelta.y + 5;
         //Get All the start positions so they can be used for lerp
         List<Vector3> startPositions = new List<Vector3>();
         foreach (LogEntry x in entries)
@@ -77,7 +77,7 @@ public class Log : MonoBehaviour
         {
             for (int i = 0; i < entries.Count; i++)
             {
-                entries.ToArray()[i].@object.transform.position = Vector3.Lerp(startPositions[i], startPositions[i] + direction * moveDist, 
+                entries.ToArray()[i].@object.transform.position = Vector3.Lerp(startPositions[i], startPositions[i] + direction * moveDist * GetComponentInParent<CanvasScaler>().scaleFactor, 
                                                                                Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             }
 

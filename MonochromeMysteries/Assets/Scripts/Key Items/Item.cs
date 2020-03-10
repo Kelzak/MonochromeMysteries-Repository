@@ -34,14 +34,12 @@ public class Item : MonoBehaviour, IObserver
         checker = GameObject.FindGameObjectWithTag("StateChecker");
         stateChecker = checker.GetComponent<StateChecker>();
         // adds this object to observer list in statechecker
-        Debug.Log("Test");
         stateChecker.RegisterObserver(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("dist: " + dist);
         //changes materials 
         if(isGhost == true && isClose == true)
         {
@@ -56,7 +54,7 @@ public class Item : MonoBehaviour, IObserver
             
 
 
-        //dist = Vector3.Distance(this.transform.position, player.transform.position);
+        dist = Vector3.Distance(this.transform.position, player.transform.position);
         //Debug.Log("Dist: " + dist);
         if (dist < playerDistGlow)
         {

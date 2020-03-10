@@ -41,8 +41,11 @@ public class GameController : MonoBehaviour
 
     private IEnumerator DialogueScript()
     {
-        yield return new WaitForSeconds(10f);
-        Dialogue.AddLine(Dialogue.Character.Pete, "What's up, it's ya boi Johnathan Lennon", "Hehehehehe.");
+        yield return new WaitForSeconds(5f);
+        Dialogue.AddLine(Dialogue.Character.Pete, "What's up, it's ya boi Johnathan Lennon", "lmao");
+        Log.AddEntry("Talked to John Lennon");
+        yield return new WaitForSeconds(3f);
+        Log.AddEntry("Yeehaw");
 
     }
 

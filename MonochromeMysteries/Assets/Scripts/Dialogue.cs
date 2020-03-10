@@ -40,6 +40,7 @@ public class Dialogue : MonoBehaviour
 
     public static void AddLine(Character character, params string[] message)
     {
+        Debug.Log((instance == null) + " " + (instance.dialogueQueue.Count > 0));
         foreach(string line in message)
         {
             instance.dialogueQueue.Enqueue(new DialogueLine(character, line));
