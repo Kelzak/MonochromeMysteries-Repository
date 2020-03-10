@@ -12,6 +12,7 @@ public class RainController : MonoBehaviour
     public float rainVolume;
     public float fadeTime;
     public float thunderInterval;
+    public float thunderVolume;
 
     // Start is called before the first frame update
     void Start()
@@ -63,7 +64,7 @@ public class RainController : MonoBehaviour
     void Thunder()
     {
         int rand = Random.Range(2, 7);
-        audioSource.volume = .25f;
+        audioSources[rand].volume = thunderVolume;
         audioSources[rand].Play();
     }
 }
