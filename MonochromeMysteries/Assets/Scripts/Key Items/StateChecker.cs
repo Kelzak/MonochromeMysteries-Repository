@@ -18,7 +18,8 @@ public class StateChecker : MonoBehaviour, ISubject
 
     public GameObject player;
 
-    private bool isGhost;
+    public static bool isGhost;
+
     public void NotifyObservers()
     {
         foreach (IObserver observer in observers)
@@ -45,7 +46,7 @@ public class StateChecker : MonoBehaviour, ISubject
     //sets the bool and then sends it to observers (items)
     public void SetSight(bool sight)
     {
-        this.isGhost = sight;
+        isGhost = sight;
         NotifyObservers();
 
         /*foreach (int x in temp)

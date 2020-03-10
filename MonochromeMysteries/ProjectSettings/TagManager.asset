@@ -10,6 +10,8 @@ TagManager:
   - Photographer
   - balcony
   - StateChecker
+  - Rat
+  - Person
   layers:
   - Default
   - TransparentFX

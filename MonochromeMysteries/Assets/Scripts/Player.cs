@@ -68,6 +68,20 @@ public class Player : MonoBehaviour
     public Text itemName;
     public GameObject keyImage;
     public Image reticle;
+    public float reticleDist;
+
+
+    //sound stuff
+    public StateChecker stateChecker;
+    private AudioClip step;
+    public bool isFemale;
+    public AudioClip[] maleSteps;
+    public AudioClip[] femaleSteps;
+    public AudioClip[] indoorSteps;
+    public AudioClip[] ratSteps;
+    public float stepVolume;
+    public float walkSoundInterval = .5f;
+    private bool isRat;
 
     private void Awake()
     {
@@ -77,8 +91,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSources = this.GetComponents<AudioSource>();
-
+        audioSource = GetComponent<AudioSource>();
         canPickup = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -88,6 +101,8 @@ public class Player : MonoBehaviour
 
         cam = transform.GetChild(0).gameObject;
         character = GetComponent<CharacterController>();
+
+        InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
     }
 
 
@@ -95,6 +110,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (canLook)
             Look();
         if (canMove)
@@ -130,12 +146,14 @@ public class Player : MonoBehaviour
             itemName.text = "Camera";
             characterImage.sprite = photographerImage;
             characterName.text = "\"The Photographer\"";
+            isRat = false;
         }
         else if (gameObject.GetComponent<Rat>())
         {
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = ratImage;
             characterName.text = "\"The Rat\"";
+            isRat = true;
         }
         else
         {
@@ -143,23 +161,27 @@ public class Player : MonoBehaviour
             itemName.text = "";
             characterImage.sprite = null;
             characterName.text = "";
+            isRat = false;
         }
 
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            var selection = hit.transform;
-            if (selection.gameObject.GetComponent<Outline>())
+            if(hit.distance < reticleDist)
             {
-                Debug.Log("I'm looking at " + hit.transform.name);
-                Debug.Log("Outline spotted");
-                reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
-            }
-            else
-            {
-                reticle.color = new Color32(0, 255, 255, 100);
-            }
+                var selection = hit.transform;
+                if (selection.gameObject.GetComponent<Outline>())
+                {
+                    //Debug.Log("I'm looking at " + hit.transform.name);
+                    //Debug.Log("Outline spotted");
+                    reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
+                }
+                else
+                {
+                    reticle.color = new Color32(0, 255, 255, 100);
+                }
+            }     
         }
         else
         {
@@ -207,7 +229,6 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.F) && hasKey)
             {
-                //audioSources[0].Play();
                 Debug.Log("You unlocked the door!");
                 Destroy(other.gameObject);
                 hasKey = false;
@@ -352,6 +373,7 @@ public class Player : MonoBehaviour
     bool possessionInProgress = false;
     private RaycastHit hit;
 
+
     /// <summary>
     /// Handles the possession transition into another GameObject
     /// </summary>
@@ -359,10 +381,10 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     private IEnumerator Possess(GameObject target)
     {
+
         hasPossessedForTheFirstTime = true;
         //itemSpecificInstructions.gameObject.SetActive(true);
         possessionInProgress = true;
-
         //No Target 
         if (target == null)
             yield break;
@@ -450,6 +472,9 @@ public class Player : MonoBehaviour
         //If it's not the main player, remove player script
         else if (gameObject != mainPlayer)
         {
+            if(GetComponent<Rat>())
+
+
             if (GetComponent<NavPerson>())
                 GetComponent<NavPerson>().enabled = true;
             Destroy(GetComponent<Player>());
@@ -570,10 +595,49 @@ public class Player : MonoBehaviour
         if (gameObject != mainPlayer)
         {
             if (GetComponent<NavPerson>())
+            {
                 GetComponent<NavPerson>().enabled = true;
+            }
+                
             Destroy(GetComponent<Player>());
         }
 
         possessionInProgress = false;
+    }
+
+    public void WalkAudio()
+    {
+        if (!StateChecker.isGhost)
+        {
+            if(Input.GetAxis("Horizontal") > 0 || Input.GetAxis("Vertical") > 0)
+            {
+                audioSource.volume = stepVolume;
+                int rand;
+                if(isRat)
+                {
+                    rand = Random.Range(0, indoorSteps.Length);
+                    step = ratSteps[rand];
+                    audioSource.PlayOneShot(step);
+                }
+                if (IsInside() == true)
+                {
+                    rand = Random.Range(0, indoorSteps.Length);
+                    step = indoorSteps[rand];
+                    audioSource.PlayOneShot(step);
+                }
+                else if (isFemale)
+                {
+                    rand = Random.Range(0, femaleSteps.Length);
+                    step = femaleSteps[rand];
+                    audioSource.PlayOneShot(step);
+                }
+                else
+                {
+                    rand = Random.Range(0, maleSteps.Length);
+                    step = maleSteps[rand];
+                    audioSource.PlayOneShot(step);
+                }
+            }
+        }
     }
 }

@@ -47,6 +47,7 @@ public class NavPerson : MonoBehaviour
     public float stepVolume = .5f;
 
     private bool isPossessed = false;
+    private RaycastHit hit;
 
     void Start()
     {
@@ -116,9 +117,14 @@ public class NavPerson : MonoBehaviour
         indoorCheck = new Ray(transform.position, transform.up);
         //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
 
-        if (Physics.Raycast(indoorCheck, 100f))
+        if (Physics.Raycast(indoorCheck, out hit))
         {
-            isInside = true;
+            if (hit.collider.CompareTag("balcony"))
+            {
+                isInside = false;
+            }
+            else
+                isInside = true;
         }
         else
         {
@@ -169,8 +175,24 @@ public class NavPerson : MonoBehaviour
                 count = 0;
             }
             targetLocation = targetLocations[count];
-            agent.destination = targetLocation.position;
-            count += 1;
+            NavMeshPath path = new NavMeshPath();
+            agent.CalculatePath(targetLocation.position, path);
+            Debug.Log(agent.CalculatePath(targetLocation.position, path));
+            //if nav agent can not make it to the desired destination
+            if(path.status == NavMeshPathStatus.PathPartial)
+            {
+                Debug.Log("Invalid path");
+                count += 1;
+                Move();
+                return;
+            }
+            else
+            {
+                agent.destination = targetLocation.position;
+                count += 1;
+            }
+            
+            
         }
         else if(wander == true)
         {
@@ -207,11 +229,13 @@ public class NavPerson : MonoBehaviour
 
     private void OnDisable()
     {
+        isPossessed = true;
         GetComponent<NavMeshAgent>().isStopped = true;
     }
 
     private void OnEnable()
     {
+        isPossessed = false;
         GetComponent<NavMeshAgent>().isStopped = false;
     }
 }
