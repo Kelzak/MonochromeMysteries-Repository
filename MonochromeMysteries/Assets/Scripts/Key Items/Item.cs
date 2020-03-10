@@ -5,6 +5,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 //observer to state checker to display outline on item
 public class Item : MonoBehaviour, IObserver
@@ -14,7 +15,7 @@ public class Item : MonoBehaviour, IObserver
     private float dist;
     public float playerDistGlow;
     private GameObject player;
-
+    public Image reticle;
 
     private bool isGhost;
     private bool isClose;
@@ -47,9 +48,14 @@ public class Item : MonoBehaviour, IObserver
         if(isGhost == true && isClose == true)
         {
             item.GetComponent<Outline>().enabled = true;
+            //reticle.color = new Color(255.0f, 255.0f, 0.0f);
         }
         else
+        {
+            //reticle.color = new Color(0.0f, 255.0f, 255.0f);
             item.GetComponent<Outline>().enabled = false;
+        }
+            
 
 
         //dist = Vector3.Distance(this.transform.position, player.transform.position);

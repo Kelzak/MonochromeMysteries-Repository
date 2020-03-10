@@ -1,6 +1,6 @@
 ﻿/* Name: Player.cs
  * Author: Zackary Seiple
- * Description: This script handles the player's ghost behaviours and their ability to posses
+ * Description: This script handles the player's ghost behaviours and their ability to posses 
  * Last Updated: 2/18/2020 (Zackary Seiple)
  * Changes: Added header
  */
@@ -47,15 +47,15 @@ public class Player : MonoBehaviour
 
     //KEVON'S ADDITION TO CODE//
     bool canPickup;
-    bool hasKey;
+    public bool hasKey = false;
     public PPSettings ppvToggle;
     public static bool hasCamera;
     public Photographer photographer;
 
-    public Text pickUpInstructions;
-    public Text possessionInstructions;
-    public Text pictureTakingInstructions;
-    public Text itemSpecificInstructions;
+    //public Text pickUpInstructions;
+    //public Text possessionInstructions;
+    //public Text pictureTakingInstructions;
+    //public Text itemSpecificInstructions;
     public bool hasPossessedForTheFirstTime;
 
     //UI Images and Texts
@@ -66,6 +66,8 @@ public class Player : MonoBehaviour
     public Sprite cameraImage;
     public Image itemImage;
     public Text itemName;
+    public GameObject keyImage;
+    public Image reticle;
 
     private void Awake()
     {
@@ -77,7 +79,6 @@ public class Player : MonoBehaviour
     {
         audioSources = this.GetComponents<AudioSource>();
 
-        hasKey = false;
         canPickup = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -105,7 +106,6 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
             StartCoroutine(ExitPossession());
 
-
         if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>())
         {
             ppvToggle.Toggle(false);
@@ -114,7 +114,7 @@ public class Player : MonoBehaviour
         {
             ppvToggle.Toggle(true);
         }
-
+        /*
         if (!hasPossessedForTheFirstTime)
         {
             possessionInstructions.gameObject.SetActive(true);
@@ -122,21 +122,12 @@ public class Player : MonoBehaviour
         else
         {
             possessionInstructions.gameObject.SetActive(false);
-        }
-
-        if (hasCamera && gameObject.GetComponent<Photographer>())
-        {
-            itemImage.sprite = cameraImage;
-            itemName.text = "Camera";
-        }
-        else
-        {
-            itemImage.sprite = null;
-            itemName.text = null;
-        }
+        }*/
 
         if (gameObject.GetComponent<Photographer>())
         {
+            itemImage.sprite = cameraImage;
+            itemName.text = "Camera";
             characterImage.sprite = photographerImage;
             characterName.text = "\"The Photographer\"";
         }
@@ -148,13 +139,34 @@ public class Player : MonoBehaviour
         }
         else
         {
-            itemImage.gameObject.SetActive(true);
+            itemImage.sprite = null;
+            itemName.text = "";
             characterImage.sprite = null;
-            characterName.text = null;
+            characterName.text = "";
         }
 
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            var selection = hit.transform;
+            if (selection.gameObject.GetComponent<Outline>())
+            {
+                Debug.Log("I'm looking at " + hit.transform.name);
+                Debug.Log("Outline spotted");
+                reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
+            }
+            else
+            {
+                reticle.color = new Color32(0, 255, 255, 100);
+            }
+        }
+        else
+        {
+            reticle.color = new Color32(0, 255, 255, 100);
+        }
 
-}
+    }
 
     //PICKING UP OBJECTS
     private void OnTriggerStay(Collider other)
@@ -164,7 +176,7 @@ public class Player : MonoBehaviour
             if (other.gameObject.GetComponent<Item>().itemName == "Camera")
             {
                 Debug.Log("Text should appear");
-                pickUpInstructions.gameObject.SetActive(true);
+                //pickUpInstructions.gameObject.SetActive(true);
             }
             canPickup = true;
             Debug.Log("CanPickUp = " + canPickup);
@@ -177,13 +189,15 @@ public class Player : MonoBehaviour
                     hasCamera = true;
                     photographer.ToggleHUD(true);
                     Destroy(other.gameObject);
-                    pictureTakingInstructions.gameObject.SetActive(true);
-                    pickUpInstructions.gameObject.SetActive(false);
-                    itemSpecificInstructions.gameObject.SetActive(false);
+                    //pictureTakingInstructions.gameObject.SetActive(true);
+                    //pickUpInstructions.gameObject.SetActive(false);
+                    //itemSpecificInstructions.gameObject.SetActive(false);
                 }
-                else if (other.gameObject.GetComponent<Item>().itemName == "Key")
+                else if (other.gameObject.GetComponent<Item>().itemName == "Key" && !(gameObject.GetComponent<Rat>()))
                 {
                     hasKey = true;
+                    keyImage.SetActive(true);
+                    Debug.Log("You picked up a key!");
                     Destroy(other.gameObject);
                 }
             }
@@ -193,10 +207,11 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.F) && hasKey)
             {
-                audioSources[0].Play();
+                //audioSources[0].Play();
                 Debug.Log("You unlocked the door!");
                 Destroy(other.gameObject);
                 hasKey = false;
+                keyImage.SetActive(false);
                 Debug.Log("You dont have the key anymore");
             }
         }
@@ -230,7 +245,7 @@ public class Player : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         canPickup = false;
-        pickUpInstructions.gameObject.SetActive(false);
+        //pickUpInstructions.gameObject.SetActive(false);
     }
 
     //PUBLIC FUNCTIONS
@@ -345,10 +360,10 @@ public class Player : MonoBehaviour
     private IEnumerator Possess(GameObject target)
     {
         hasPossessedForTheFirstTime = true;
-        itemSpecificInstructions.gameObject.SetActive(true);
+        //itemSpecificInstructions.gameObject.SetActive(true);
         possessionInProgress = true;
 
-        //No Target
+        //No Target 
         if (target == null)
             yield break;
 
@@ -399,10 +414,6 @@ public class Player : MonoBehaviour
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
         //Start Effect of What is Being Possessed
         target.GetComponent<Possessable>().TriggerOnPossession(true);
-
-        //GrayScale
-        if (target.GetComponent<Possessable>())
-            ppvToggle.Toggle(false);
 
         Quaternion startRot = cam.transform.localRotation;
         //Zoom out
@@ -507,20 +518,17 @@ public class Player : MonoBehaviour
         float transitionTime = 0.5f;
         float currentTime = 0;
 
-        //Reactivate the Player, have them face what was being possessed
+        //Reactivate the Player, 
         mainPlayer.SetActive(true);
         mainPlayer.GetComponent<Player>().possessionInProgress = true;
         mainPlayer.transform.position = exitPoint;
         Vector3 direction = (transform.position - exitPoint).normalized;
         direction.y = 0;
+
         mainPlayer.transform.rotation = Quaternion.LookRotation(direction);
 
-        //Take off Effects
         if (gameObject != mainPlayer)
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
-
-        //GrayScale
-        ppvToggle.Toggle(true);
 
         //Zoom out
         while (camComp.fieldOfView < maxFOV)
@@ -533,7 +541,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        //Make sure camera is swapped back over to main player
+
         cam.transform.position = mainPlayer.transform.position;
         cam.transform.SetParent(mainPlayer.transform);
         cam.transform.localRotation = Quaternion.identity;

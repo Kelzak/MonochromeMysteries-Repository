@@ -53,11 +53,16 @@ public class Rat : Possessable
                 Debug.Log("Rat should be picking up key");
                 other.transform.SetParent(pickupDestination);
                 other.transform.position = pickupDestination.position;
+                other.transform.rotation = pickupDestination.rotation;
+                other.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                other.gameObject.GetComponent<Rigidbody>().isKinematic = true;
             }
         }
         if (Input.GetButtonUp("PickUp"))
         {
             other.transform.SetParent(null);
+            other.gameObject.GetComponent<Rigidbody>().useGravity = true;
+            other.gameObject.GetComponent<Rigidbody>().isKinematic = false;
         }
     }
 
