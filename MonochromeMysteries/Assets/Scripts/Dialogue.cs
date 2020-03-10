@@ -38,11 +38,11 @@ public class Dialogue : MonoBehaviour
         public Sprite picture;
     }
 
-    public void AddLine(Character character, params string[] message)
+    public static void AddLine(Character character, params string[] message)
     {
         foreach(string line in message)
         {
-            dialogueQueue.Enqueue(new DialogueLine(character, line));
+            instance.dialogueQueue.Enqueue(new DialogueLine(character, line));
         }
     }
 
@@ -52,7 +52,17 @@ public class Dialogue : MonoBehaviour
         dialogueRunning = true;
         char[] currentMessage;
 
-        while (dialogueQueue.Peek() != null)
+        //Initialize for transition
+        dialogueText.text = "";
+        this.speakerImage.sprite = dialogueQueue.Peek().speakerPicture;
+        this.speakerName.text = dialogueQueue.Peek().speakerName;
+        StartCoroutine(SetDialogueWindowActive(true));
+        //panel.SetActive(true);
+
+        while (transitionInProgress)
+            yield return null;
+
+        while (dialogueQueue.Count > 0)
         {
             currentMessage = dialogueQueue.Peek().message.ToCharArray();
             dialogueText.text = "";
@@ -62,19 +72,66 @@ public class Dialogue : MonoBehaviour
             for (int i = 0; i < currentMessage.Length; i++)
             {
                 dialogueText.text += currentMessage[i];
-                yield return new WaitForSecondsRealtime(0.1f);
+                yield return new WaitForSecondsRealtime(0.025f);
             }
 
             yield return new WaitForSecondsRealtime(3f);
-
+            dialogueQueue.Dequeue();
         }
 
+
+        StartCoroutine(SetDialogueWindowActive(false));
+
+
+        while (transitionInProgress)
+            yield return null;
+        //panel.SetActive(false);
         dialogueRunning = false;
     }
 
-    private void SetDialogueWindowActive(bool active)
+    bool transitionInProgress = false;
+    private IEnumerator SetDialogueWindowActive(bool active)
     {
-        panel.SetActive(active);
+        transitionInProgress = true;
+        float endAlpha;
+
+        Debug.Log("Running " + active);
+        //If set Dialogue window to active
+        if(active)
+        {
+            panel.GetComponent<Image>().CrossFadeAlpha(0, 0f, true);
+            dialogueText.CrossFadeAlpha(0, 0f, true);
+            foreach (Image x in panel.GetComponentsInChildren<Image>())
+            {
+                x.CrossFadeAlpha(0, 0f, true);
+            }
+
+
+            panel.SetActive(true);
+            endAlpha = 1;
+        }
+        //If set Dialogue window to inactive
+        else
+        {
+            endAlpha = 0;
+        }
+
+        panel.GetComponent<Image>().CrossFadeAlpha(endAlpha, 0.5f, true);
+        foreach (Image x in panel.GetComponentsInChildren<Image>())
+        {
+            x.CrossFadeAlpha(endAlpha, 0.5f, true);
+        }
+        foreach (Text x in panel.GetComponentsInChildren<Text>())
+        {
+            x.CrossFadeAlpha(endAlpha, 0.5f, true);
+        }
+        yield return new WaitForSecondsRealtime(0.5f);
+
+
+        if (!active)
+            panel.SetActive(false);
+
+        transitionInProgress = false;
     }
 
     void Awake()
@@ -87,9 +144,10 @@ public class Dialogue : MonoBehaviour
     {
         panel = GameObject.Find("HUD").transform.Find("Dialogue").gameObject;
         speakerImage = panel.transform.Find("PhotoSlot").Find("Image").GetComponent<Image>();
-        speakerName = panel.transform.Find("PhotoSlot").Find("Name").GetComponent<Text>();
+        speakerName = panel.transform.Find("PhotoSlot").Find("Label").GetComponent<Text>();
         dialogueText = panel.transform.Find("Text").GetComponent<Text>();
 
+        panel.SetActive(false);
         dialogueQueue = new Queue<DialogueLine>();
     }
 
