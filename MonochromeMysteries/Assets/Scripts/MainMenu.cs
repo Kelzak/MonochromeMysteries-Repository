@@ -100,7 +100,6 @@ public class MainMenu : MonoBehaviour
     public IEnumerator TriggerTV()
     {
         tvTransitionInProgress = true;
-        Debug.Log("Starting TV Transition");
         //Changes 'paused' to true if this pauses the game, false if the game was already paused and is now unpausing
         GameController.TogglePause();
         //If true, this function handles the transition INTO the main menu, if false, this function handles the exit
@@ -179,8 +178,6 @@ public class MainMenu : MonoBehaviour
 
         if (active == false)
             
-
-        Debug.Log("Ending TV Transition");
         tvTransitionInProgress = false;
     }
 

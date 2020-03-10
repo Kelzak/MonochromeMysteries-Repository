@@ -94,8 +94,6 @@ public class Dialogue : MonoBehaviour
     {
         transitionInProgress = true;
         float endAlpha;
-
-        Debug.Log("Running " + active);
         //If set Dialogue window to active
         if(active)
         {
