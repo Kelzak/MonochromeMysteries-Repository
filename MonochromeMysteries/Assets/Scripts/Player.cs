@@ -620,11 +620,11 @@ public class Player : MonoBehaviour
                 int rand;
                 if(isRat)
                 {
-                    rand = Random.Range(0, indoorSteps.Length);
+                    rand = Random.Range(0, ratSteps.Length);
                     step = ratSteps[rand];
                     audioSource.PlayOneShot(step);
                 }
-                if (IsInside() == true)
+                else if (IsInside() == true)
                 {
                     rand = Random.Range(0, indoorSteps.Length);
                     step = indoorSteps[rand];

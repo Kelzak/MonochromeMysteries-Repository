@@ -19,9 +19,17 @@ public class Rat : Possessable
     public Transform pickupDestination;
     public bool hasKey = false;
 
+    public int squeakInterval;
+    public float squeakVolume;
+    private AudioSource audioSource;
+    public AudioClip[] squeaks;
+
     // Start is called before the first frame update
     protected override void Start()
     {
+        int rand = Random.Range(squeakInterval / 2, squeakInterval * 2);
+        audioSource = this.GetComponent<AudioSource>();
+        InvokeRepeating("Squeak", 5f, squeakInterval);
         base.Start();
 
         canMove = true;
@@ -69,6 +77,19 @@ public class Rat : Possessable
     private void OnDisable()
     {
 
+    }
+    void Squeak()
+    {
+        int rand = Random.Range(0, squeaks.Length);
+        audioSource.volume = squeakVolume;
+        audioSource.PlayOneShot(squeaks[rand]);
+        SqueakRand();
+    }
+
+    void SqueakRand()
+    {
+        int rand = Random.Range(squeakInterval / 2, squeakInterval * 2);
+        Invoke("Squeak", rand);
     }
 
 }
