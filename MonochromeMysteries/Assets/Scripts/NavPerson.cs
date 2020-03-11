@@ -11,7 +11,7 @@ public class NavPerson : MonoBehaviour
 {
     
     public Transform[] targetLocations;
-    private GameObject player;
+    private Player player;
     //used to help determine movement
     private bool move = true;
     private NavMeshAgent agent;
@@ -37,6 +37,9 @@ public class NavPerson : MonoBehaviour
     //distance until person stops when player gets close
     public float playerDistStop = 5f;
 
+    public bool personStops = true;
+    public bool canSeeGhost;
+
     public AudioSource stepSources;
     private AudioClip step;
     public bool isFemale;
@@ -51,7 +54,7 @@ public class NavPerson : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
         agent.isStopped = true;
 
@@ -66,7 +69,8 @@ public class NavPerson : MonoBehaviour
     [System.Obsolete]
     private void Update()
     {
-        if(this.gameObject.GetComponent<Player>())
+        player = GameObject.FindObjectOfType<Player>();
+        if (this.gameObject.GetComponent<Player>())
         {
             isPossessed = true;
         }
@@ -92,7 +96,10 @@ public class NavPerson : MonoBehaviour
         //Debug.Log("Dist: " + dist);
         if (dist < playerDistStop)
         {
-            agent.Stop();
+            if (StateChecker.isGhost && personStops)
+                agent.Stop();
+            else if (!StateChecker.isGhost)
+                agent.Stop();
         }
         else
         {
@@ -102,11 +109,20 @@ public class NavPerson : MonoBehaviour
         {
             agent.isStopped = true;
         }
-        //makes character looks towards player
-        lookTowards();
 
         //fixes rain sounds when possessing
         RainFix();
+
+        if(StateChecker.isGhost && canSeeGhost)
+        {
+            Debug.Log("is looking ghost");
+            lookTowards();
+        }
+        else if (!StateChecker.isGhost)
+        {
+            Debug.Log("is looking");
+            lookTowards();
+        }
 
     }
 
