@@ -17,12 +17,15 @@ public class DoorScript : MonoBehaviour
 
     public AudioClip openDoor;
     public AudioClip closeDoor;
+    private AudioSource audioSource;
+
+    private bool isOpen;
 
     // Use this for initialization
     void Start()
     {
         _animator = transform.Find("Door").GetComponent<Animator>();
-
+        audioSource = GetComponent<AudioSource>();
     }
 
     void OnTriggerEnter(Collider other)
@@ -45,11 +48,13 @@ public class DoorScript : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Person")
+        if (other.tag == "Person" && isOpen)
         {
             _isInsideTrigger = false;
             _animator.SetBool("open", false);
+            Invoke("DoorShut", 1.5f);
             //OpenPanel.SetActive(false);
+            isOpen = false;
         }
     }
 
@@ -65,18 +70,32 @@ public class DoorScript : MonoBehaviour
     void Update()
     {
 
-        if (isPlayer && _isInsideTrigger && !isLocked)
+        if (isPlayer && _isInsideTrigger && !isLocked && !isOpen)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
                 //OpenPanel.SetActive(false);
                 _animator.SetBool("open", true);
+                audioSource.PlayOneShot(openDoor);
+                isOpen = true;
             }
         }
 
-        if (_isInsideTrigger && !isPlayer && !isLocked)
+        if (_isInsideTrigger && !isPlayer && !isLocked && !isOpen)
         {
             _animator.SetBool("open", true);
+            audioSource.PlayOneShot(openDoor);
+            isOpen = true;
+
         }
+    }
+    void DoorShut()
+    {
+        audioSource.PlayOneShot(closeDoor);
+    }
+
+    public void Unlock()
+    {
+        isLocked = false;
     }
 }

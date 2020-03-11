@@ -13,6 +13,7 @@ public class RainController : MonoBehaviour
     public float fadeTime;
     public float thunderInterval;
     public float thunderVolume;
+    public static bool navInside;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +27,7 @@ public class RainController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.IsInside() == true)
+        if (player.IsInside() == true || navInside == true)
         {
             PlaySound(0);
         }

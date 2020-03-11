@@ -37,7 +37,7 @@ public class NavPerson : MonoBehaviour
     //distance until person stops when player gets close
     public float playerDistStop = 5f;
 
-    public AudioSource audioSource;
+    public AudioSource stepSources;
     private AudioClip step;
     public bool isFemale;
     public float walkSoundInterval = .5f;
@@ -51,7 +51,6 @@ public class NavPerson : MonoBehaviour
 
     void Start()
     {
-
         player = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
         agent.isStopped = true;
@@ -60,8 +59,7 @@ public class NavPerson : MonoBehaviour
         randWaitTimeMin = waitTime / 2;
         randWaitTimeMax = waitTime * 2;
 
-        audioSource = this.GetComponent<AudioSource>();
-        audioSource.volume = stepVolume;
+        stepSources = this.GetComponent<AudioSource>();
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
     }
 
@@ -107,6 +105,9 @@ public class NavPerson : MonoBehaviour
         //makes character looks towards player
         lookTowards();
 
+        //fixes rain sounds when possessing
+        RainFix();
+
     }
 
     public bool IsInside()
@@ -138,28 +139,28 @@ public class NavPerson : MonoBehaviour
     {
         if(!agent.isStopped && !isPossessed)
         {
-            audioSource.volume = .5f;
+            stepSources.volume = stepVolume;
             int rand;
             if (IsInside() == true)
             {
                 rand = Random.Range(0, indoorSteps.Length);
                 step = indoorSteps[rand];
-                audioSource.volume = .5f;
-                audioSource.PlayOneShot(step);
+                stepSources.volume = .5f;
+                stepSources.PlayOneShot(step);
             }
             else if (isFemale)
             {
                 rand = Random.Range(0, femaleSteps.Length);
                 step = femaleSteps[rand];
-                audioSource.volume = .4f;
-                audioSource.PlayOneShot(step);
+                stepSources.volume = .4f;
+                stepSources.PlayOneShot(step);
             }
             else
             {
                 rand = Random.Range(0, maleSteps.Length);
                 step = maleSteps[rand];
-                audioSource.volume = .4f;
-                audioSource.PlayOneShot(step);
+                stepSources.volume = .4f;
+                stepSources.PlayOneShot(step);
             }
             
         }
@@ -237,5 +238,16 @@ public class NavPerson : MonoBehaviour
     {
         isPossessed = false;
         GetComponent<NavMeshAgent>().isStopped = false;
+    }
+
+    void RainFix()
+    {
+        if(IsInside() && isPossessed)
+        {
+            RainController.navInside = true;
+        }
+        else
+            RainController.navInside = false;
+
     }
 }

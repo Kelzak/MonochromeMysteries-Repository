@@ -21,14 +21,14 @@ public class Rat : Possessable
 
     public int squeakInterval;
     public float squeakVolume;
-    private AudioSource audioSource;
+    public AudioSource stepsSource;
+    public AudioSource squeakSource;
     public AudioClip[] squeaks;
 
     // Start is called before the first frame update
     protected override void Start()
     {
         int rand = Random.Range(squeakInterval / 2, squeakInterval * 2);
-        audioSource = this.GetComponent<AudioSource>();
         InvokeRepeating("Squeak", 5f, squeakInterval);
         base.Start();
 
@@ -81,8 +81,8 @@ public class Rat : Possessable
     void Squeak()
     {
         int rand = Random.Range(0, squeaks.Length);
-        audioSource.volume = squeakVolume;
-        audioSource.PlayOneShot(squeaks[rand]);
+        squeakSource.volume = squeakVolume;
+        squeakSource.PlayOneShot(squeaks[rand]);
         SqueakRand();
     }
 
