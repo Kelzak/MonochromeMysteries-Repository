@@ -645,14 +645,5 @@ public class Player : MonoBehaviour
             }
         }
     }
-    void RainFix()
-    {
-        if (IsInside() && isPossessed)
-        {
-            RainController.navInside = true;
-        }
-        else
-            RainController.navInside = false;
-
-    }
+    
 }
