@@ -63,6 +63,7 @@ public class DoorScript : MonoBehaviour
             //OpenPanel.SetActive(false);
             isOpen = false;
         }
+        _isInsideTrigger = false;
     }
 
     private bool IsOpenPanelActive
