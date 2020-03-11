@@ -12,6 +12,7 @@ TagManager:
   - StateChecker
   - Rat
   - Person
+  - Key
   layers:
   - Default
   - TransparentFX

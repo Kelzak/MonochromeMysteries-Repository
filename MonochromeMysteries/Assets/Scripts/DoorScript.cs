@@ -13,18 +13,24 @@ public class DoorScript : MonoBehaviour
 
     private bool isPlayer = false;
     public bool isLocked = false;
+
     public GameObject key;
 
-    public AudioClip openDoor;
-    public AudioClip closeDoor;
+    public AudioClip[] openDoor;
+    public AudioClip[] closeDoor;
+    public AudioClip[] unlockDoor;
+    public AudioClip[] lockedDoor;
     private AudioSource audioSource;
+
+    private int rand;
+    private AudioClip sound;
 
     private bool isOpen;
 
     // Use this for initialization
     void Start()
     {
-        _animator = transform.Find("Door").GetComponent<Animator>();
+        _animator = transform.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -69,33 +75,63 @@ public class DoorScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (isPlayer && _isInsideTrigger && !isLocked && !isOpen)
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
                 //OpenPanel.SetActive(false);
                 _animator.SetBool("open", true);
-                audioSource.PlayOneShot(openDoor);
+
+                int rand = Random.Range(0, openDoor.Length);
+                AudioClip sound = openDoor[rand];
+                audioSource.PlayOneShot(sound);
+
                 isOpen = true;
+            }
+        }
+        if (isPlayer && _isInsideTrigger && isLocked)
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                if(Player.keys.Contains(key))
+                {
+                    rand = Random.Range(0, unlockDoor.Length);
+                    sound = unlockDoor[rand];
+                    audioSource.PlayOneShot(sound);
+                    Unlock();
+                }
+                else
+                    rand = Random.Range(0, lockedDoor.Length);
+                    sound = lockedDoor[rand];
+                    audioSource.PlayOneShot(sound);
             }
         }
 
         if (_isInsideTrigger && !isPlayer && !isLocked && !isOpen)
         {
             _animator.SetBool("open", true);
-            audioSource.PlayOneShot(openDoor);
+            rand = Random.Range(0, openDoor.Length);
+            sound = openDoor[rand];
+            audioSource.PlayOneShot(sound);
             isOpen = true;
 
         }
     }
     void DoorShut()
     {
-        audioSource.PlayOneShot(closeDoor);
+        rand = Random.Range(0, closeDoor.Length);
+        sound = closeDoor[rand];
+        audioSource.PlayOneShot(sound);
     }
 
     public void Unlock()
     {
         isLocked = false;
+        //OpenPanel.SetActive(false);
+        _animator.SetBool("open", true);
+        rand = Random.Range(0, openDoor.Length);
+        sound = openDoor[rand];
+        audioSource.PlayOneShot(sound);
+        isOpen = true;
     }
 }

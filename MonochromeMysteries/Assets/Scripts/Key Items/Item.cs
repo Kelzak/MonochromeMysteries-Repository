@@ -24,6 +24,8 @@ public class Item : MonoBehaviour, IObserver
     public string itemName;
     private GameObject checker;
 
+    public bool isPickup;
+
     
     // Start is called before the first frame update
     void Start()

@@ -70,6 +70,9 @@ public class Player : MonoBehaviour
     public GameObject keyImage;
     public Image reticle;
     public float reticleDist;
+    public AudioClip obtainClip;
+    public AudioClip possessClip;
+    public AudioClip depossessClip;
 
 
     //sound stuff
@@ -83,6 +86,9 @@ public class Player : MonoBehaviour
     public float stepVolume;
     public float walkSoundInterval = .5f;
     private bool isRat;
+
+    //pick up stuff
+    public static List<GameObject> keys = new List<GameObject>();
 
     private void Awake()
     {
@@ -124,8 +130,11 @@ public class Player : MonoBehaviour
             PossessionCheck();
 
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
+        {
+            audioSource.PlayOneShot(depossessClip);
             StartCoroutine(ExitPossession());
-
+        }
+           
         if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>())
         {
             ppvToggle.Toggle(false);
@@ -168,78 +177,58 @@ public class Player : MonoBehaviour
             isRat = false;
         }
 
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            if(hit.distance < reticleDist)
-            {
-                var selection = hit.transform;
-                if (selection.gameObject.GetComponent<Outline>())
-                {
-                    //Debug.Log("I'm looking at " + hit.transform.name);
-                    //Debug.Log("Outline spotted");
-                    reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
-                }
-                else
-                {
-                    reticle.color = new Color32(0, 255, 255, 100);
-                }
-            }     
-        }
-        else
-        {
-            reticle.color = new Color32(0, 255, 255, 100);
-        }
+        PickUp();
 
     }
 
     //PICKING UP OBJECTS
     private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.tag == "Selectable")
-        {
-            if (other.gameObject.GetComponent<Item>().itemName == "Camera")
-            {
-                Debug.Log("Text should appear");
-                //pickUpInstructions.gameObject.SetActive(true);
-            }
-            canPickup = true;
-            Debug.Log("CanPickUp = " + canPickup);
+    { 
 
-            if (Input.GetKeyDown(KeyCode.F) && canPickup)
-            {
-                if (gameObject.tag == "Photographer" && other.gameObject.GetComponent<Item>().itemName == "Camera")
-                {
-                    Debug.Log("Picking up Camera...");
-                    hasCamera = true;
-                    photographer.ToggleHUD(true);
-                    Destroy(other.gameObject);
-                    //pictureTakingInstructions.gameObject.SetActive(true);
-                    //pickUpInstructions.gameObject.SetActive(false);
-                    //itemSpecificInstructions.gameObject.SetActive(false);
-                }
-                else if (other.gameObject.GetComponent<Item>().itemName == "Key" && !(gameObject.GetComponent<Rat>()))
-                {
-                    hasKey = true;
-                    keyImage.SetActive(true);
-                    Debug.Log("You picked up a key!");
-                    Destroy(other.gameObject);
-                }
-            }
-        }
+        ////kevs stuff below
+        //if (other.gameObject.tag == "Selectable")
+        //{
+        //    if (other.gameObject.GetComponent<Item>().itemName == "Camera")
+        //    {
+        //        Debug.Log("Text should appear");
+        //        //pickUpInstructions.gameObject.SetActive(true);
+        //    }
+        //    canPickup = true;
+        //    Debug.Log("CanPickUp = " + canPickup);
 
-        if (other.gameObject.tag == "LockedDoor")
-        {
-            if (Input.GetKeyDown(KeyCode.F) && hasKey)
-            {
-                Debug.Log("You unlocked the door!");
-                Destroy(other.gameObject);
-                hasKey = false;
-                keyImage.SetActive(false);
-                Debug.Log("You dont have the key anymore");
-            }
-        }
+        //    if (Input.GetKeyDown(KeyCode.F) && canPickup)
+        //    {
+        //        if (gameObject.tag == "Photographer" && other.gameObject.GetComponent<Item>().itemName == "Camera")
+        //        {
+        //            Debug.Log("Picking up Camera...");
+        //            hasCamera = true;
+        //            photographer.ToggleHUD(true);
+        //            Destroy(other.gameObject);
+        //            //pictureTakingInstructions.gameObject.SetActive(true);
+        //            //pickUpInstructions.gameObject.SetActive(false);
+        //            //itemSpecificInstructions.gameObject.SetActive(false);
+        //        }
+        //        else if (other.gameObject.GetComponent<Item>().itemName == "Key" && !(gameObject.GetComponent<Rat>()))
+        //        {
+        //            hasKey = true;
+        //            keyImage.SetActive(true);
+        //            Debug.Log("You picked up a key!");
+        //            Destroy(other.gameObject);
+        //        }
+        //    }
+        //}
+
+        //if (other.gameObject.tag == "LockedDoor")
+        //{
+        //    if (Input.GetKeyDown(KeyCode.F) && hasKey)
+        //    {
+        //        Debug.Log("You unlocked the door!");
+        //        Destroy(other.gameObject);
+        //        hasKey = false;
+        //        keyImage.SetActive(false);
+        //        Debug.Log("You dont have the key anymore");
+        //    }
+        //}
     }
 
     public bool IsInside()
@@ -265,6 +254,45 @@ public class Player : MonoBehaviour
         }
         //Debug.Log("Is inside: " + isInside);
         return isInside;
+    }
+
+    void PickUp()
+    {
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.distance < reticleDist)
+            {
+                //hoverUI
+                var selection = hit.transform;
+                if (selection.gameObject.GetComponent<Outline>())
+                {
+                    //Debug.Log("I'm looking at " + hit.transform.name);
+                    //Debug.Log("Outline spotted");
+                    reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
+
+                    //pickup
+                    if (Input.GetKeyDown(KeyCode.F) && selection.gameObject.CompareTag("Key"))
+                    {
+                        //Debug.Log("Added Key");
+                        audioSource.PlayOneShot(obtainClip);
+                        keys.Add(selection.gameObject);
+                        Destroy(selection.gameObject);
+                    }
+                }
+                else if (selection.gameObject.CompareTag("Person"))
+                {
+                    //Debug.Log("I'm looking at " + hit.transform.name);
+                    //Debug.Log("Outline spotted");
+                    reticle.color = new Color32(254, 224, 0, 100);
+                }
+                else
+                {
+                    reticle.color = new Color32(0, 255, 255, 100);
+                }
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -371,7 +399,12 @@ public class Player : MonoBehaviour
 
         //If target is still in range and button is pressed, start the possession
         if (Input.GetKeyDown(KeyCode.E) && !possessionInProgress && target != null)
+        {
+            audioSource.PlayOneShot(possessClip);
+
             StartCoroutine(Possess(target));
+        }
+           
     }
 
     bool possessionInProgress = false;
@@ -385,7 +418,6 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     private IEnumerator Possess(GameObject target)
     {
-
         hasPossessedForTheFirstTime = true;
         //itemSpecificInstructions.gameObject.SetActive(true);
         possessionInProgress = true;
@@ -486,6 +518,8 @@ public class Player : MonoBehaviour
         }
 
         possessionInProgress = false;
+        
+
     }
 
     /// <summary>
