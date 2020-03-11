@@ -120,7 +120,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        audioSource = GetComponent<AudioSource>();
         if (canLook)
             Look();
         if (canMove)
@@ -295,6 +295,12 @@ public class Player : MonoBehaviour
                 else
                 {
                     reticle.color = new Color32(0, 255, 255, 100);
+                }
+
+                if (selection.gameObject.GetComponent<HoverText>())
+                {
+                    Debug.Log("hover text");
+                    selection.gameObject.GetComponent<HoverText>().display = true;
                 }
             }
         }
