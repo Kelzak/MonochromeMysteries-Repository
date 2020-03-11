@@ -131,6 +131,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
         {
+            canPickup = false;
             audioSource.PlayOneShot(depossessClip);
             StartCoroutine(ExitPossession());
         }
@@ -186,6 +187,7 @@ public class Player : MonoBehaviour
     { 
 
         ////kevs stuff below
+        ///
         //if (other.gameObject.tag == "Selectable")
         //{
         //    if (other.gameObject.GetComponent<Item>().itemName == "Camera")
@@ -258,6 +260,11 @@ public class Player : MonoBehaviour
 
     void PickUp()
     {
+        if (this.gameObject.CompareTag("Rat") || this.gameObject.CompareTag("Player"))
+            canPickup = false;
+        else
+            canPickup = true;
+
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -273,7 +280,7 @@ public class Player : MonoBehaviour
                     reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
 
                     //pickup
-                    if (Input.GetKeyDown(KeyCode.F) && selection.gameObject.CompareTag("Key"))
+                    if (Input.GetKeyDown(KeyCode.F) && selection.gameObject.CompareTag("Key") && canPickup)
                     {
                         //Debug.Log("Added Key");
                         audioSource.PlayOneShot(obtainClip);
@@ -281,12 +288,10 @@ public class Player : MonoBehaviour
                         Destroy(selection.gameObject);
                     }
                 }
-                else if (selection.gameObject.CompareTag("Person"))
-                {
-                    //Debug.Log("I'm looking at " + hit.transform.name);
-                    //Debug.Log("Outline spotted");
-                    reticle.color = new Color32(254, 224, 0, 100);
-                }
+                //else if (selection.gameObject.CompareTag("Person"))
+                //{
+                //    reticle.color = new Color32(254, 224, 0, 100);
+                //}
                 else
                 {
                     reticle.color = new Color32(0, 255, 255, 100);
@@ -297,7 +302,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        canPickup = false;
+        //canPickup = false;
         //pickUpInstructions.gameObject.SetActive(false);
     }
 
@@ -418,6 +423,7 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     private IEnumerator Possess(GameObject target)
     {
+        canPickup = true;
         hasPossessedForTheFirstTime = true;
         //itemSpecificInstructions.gameObject.SetActive(true);
         possessionInProgress = true;
@@ -429,6 +435,7 @@ public class Player : MonoBehaviour
         {
             target.GetComponent<NavPerson>().enabled = false;
         }
+
 
 
         //Cam Shift & Alpha fade
@@ -528,6 +535,7 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     private IEnumerator ExitPossession()
     {
+        canPickup = false;
         possessionInProgress = true;
 
         GetComponent<Possessable>().TriggerHighlight();

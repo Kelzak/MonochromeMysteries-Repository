@@ -55,7 +55,7 @@ public class Rat : Possessable
     {
         if(Input.GetButtonDown("PickUp")) //which is "F"
         {
-            if (other.gameObject.tag == "Selectable" && other.gameObject.GetComponent<Item>().itemName == "Key")
+            if (other.gameObject.tag == "Key" && !hasKey)
             {
                 hasKey = true;
                 Debug.Log("Rat should be picking up key");
@@ -65,13 +65,16 @@ public class Rat : Possessable
                 other.gameObject.GetComponent<Rigidbody>().useGravity = false;
                 other.gameObject.GetComponent<Rigidbody>().isKinematic = true;
             }
+            else if (other.gameObject.tag == "Key" && hasKey)
+            {
+                hasKey = false;
+                Debug.Log("Let go");
+                other.transform.SetParent(null);
+                other.gameObject.GetComponent<Rigidbody>().useGravity = true;
+                other.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            }
         }
-        if (Input.GetButtonUp("PickUp"))
-        {
-            other.transform.SetParent(null);
-            other.gameObject.GetComponent<Rigidbody>().useGravity = true;
-            other.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-        }
+        
     }
 
     private void OnDisable()
