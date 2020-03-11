@@ -102,7 +102,8 @@ public class Player : MonoBehaviour
         if (mainPlayer == null)
             mainPlayer = gameObject;
 
-        cam = transform.GetChild(0).gameObject;
+        if(cam == null)
+        cam = transform.Find("Main Camera").gameObject;
         character = GetComponent<CharacterController>();
 
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
@@ -512,15 +513,16 @@ public class Player : MonoBehaviour
         {
             for (int j = multiplierOptions.Length - 1; j > 0 && safeExitPoint == false; j--) //Cardinal Directions
             {
-                temp = transform.position + (transform.forward * checkRadius * multiplierOptions[j]) + (transform.right * checkRadius * multiplierOptions[i]);
+                temp = GetComponent<MeshRenderer>().bounds.center + (transform.forward * checkRadius * multiplierOptions[j]) + (transform.right * checkRadius * multiplierOptions[i]);
+                temp.y -= GetComponent<MeshRenderer>().bounds.extents.y;
                 Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents);
                 safeExitPoint = true;
                 for (int k = 0; k < hit.Length; k++)
                 {
-                    if (hit[k].gameObject.tag != "Floor")
+                    if (hit[k].gameObject.tag != "Floor" && hit[k].gameObject != gameObject)
                         safeExitPoint = false;
                     else
-                        closestPointOnFloor = hit[k].ClosestPointOnBounds(transform.position);
+                        closestPointOnFloor = hit[k].ClosestPoint(temp);
                 }
             }
         }
