@@ -72,7 +72,7 @@ public class DoorScript : MonoBehaviour
 
         if (isPlayer && _isInsideTrigger && !isLocked && !isOpen)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 //OpenPanel.SetActive(false);
                 _animator.SetBool("open", true);

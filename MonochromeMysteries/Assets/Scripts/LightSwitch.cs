@@ -21,7 +21,7 @@ public class LightSwitch : MonoBehaviour
     {
         if (_isInsideTrigger)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 for (int i = 0; i < lights.Length; i++)
                 {
