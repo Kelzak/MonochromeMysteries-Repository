@@ -30,6 +30,8 @@ public class NavPerson : MonoBehaviour
     //if checked character will go to random path
     public bool wander;
     public float wanderRadius = 10f;
+    public float lookInterval = 3f;
+    private Quaternion _lookRotation;
     //int used for pathing
     private int count = 0;
     //speed person turns to look at player when stopped
@@ -64,6 +66,9 @@ public class NavPerson : MonoBehaviour
 
         stepSources = this.GetComponent<AudioSource>();
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
+
+        if (!canSeeGhost)
+            InvokeRepeating("LookAround", 0f, lookInterval);
     }
 
     [System.Obsolete]
@@ -241,7 +246,15 @@ public class NavPerson : MonoBehaviour
 
             transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * turnSpeed);
         }
-       
+    }
+    void LookAround()
+    {
+        if (agent.isStopped == true && StateChecker.isGhost)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
+            _lookRotation = Quaternion.LookRotation((randomDirection - transform.position).normalized);
+            transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * turnSpeed);
+        }
     }
 
     private void OnDisable()
