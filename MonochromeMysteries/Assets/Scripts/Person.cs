@@ -20,6 +20,8 @@ public abstract class Person : Possessable
 
         canMove = true;
 
+        camOffset = new Vector3(0, 0.25f, 0);
+
         cc = GetComponent<CharacterController>();
     }
 

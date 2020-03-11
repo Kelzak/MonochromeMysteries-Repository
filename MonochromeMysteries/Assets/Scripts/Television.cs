@@ -36,6 +36,7 @@ public class Television : MonoBehaviour
         buttons[0].onClick.AddListener(() => x.TriggerMainMenu());
         buttons[0].onClick.AddListener(() => MainMenu._instance.ChangeFromInitialOptions());
         buttons[1].onClick.AddListener(() => x.TriggerMainMenu());
+        buttons[1].onClick.AddListener(() => MainMenu._instance.ChangeFromInitialOptions());
         buttons[2].onClick.AddListener(() => x.TriggerMainMenu());
         buttons[3].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("Options"));
         buttons[4].onClick.AddListener(() => x.QuitGame());

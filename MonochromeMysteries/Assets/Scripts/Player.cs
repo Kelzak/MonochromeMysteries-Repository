@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
 
     [Header("Possession")]
     public float possess_Distance = 3;
+    public Vector3 camOffset;
 
     //KEVON'S ADDITION TO CODE//
     bool canPickup;
@@ -95,6 +96,8 @@ public class Player : MonoBehaviour
         canPickup = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        camOffset = new Vector3(0, 0.25f, 0);
 
         if (mainPlayer == null)
             mainPlayer = gameObject;
@@ -400,7 +403,7 @@ public class Player : MonoBehaviour
 
         //Look at what is about to be possessed
         cam.transform.parent = null;
-        Vector3 direction = (target.transform.position - transform.position);
+        Vector3 direction = (target.transform.position + target.GetComponent<Possessable>().GetCameraOffset() - transform.position);
         cam.transform.rotation = Quaternion.LookRotation(direction);
         direction.y = 0;
         transform.rotation = Quaternion.LookRotation(direction);
@@ -422,7 +425,8 @@ public class Player : MonoBehaviour
             Color goalColor = mat.color;
             goalColor.a = Mathf.Lerp(maxAlpha, minAlpha, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             mat.color = goalColor;
-            cam.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
+            cam.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position + target.GetComponent<Possessable>().GetCameraOffset()
+                                                    , Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             currentTime += Time.deltaTime;
             yield return null;
         }
@@ -430,7 +434,7 @@ public class Player : MonoBehaviour
         currentTime = 0;
         target.transform.rotation = gameObject.transform.rotation;
         cam.transform.SetParent(target.transform);
-        cam.transform.localPosition = Vector3.zero;
+        cam.transform.localPosition = Vector3.zero + target.GetComponent<Possessable>().GetCameraOffset();
         //Get Rid of Effects of currently Possessed Objects
         if (gameObject != mainPlayer)
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
@@ -559,7 +563,7 @@ public class Player : MonoBehaviour
         while (camComp.fieldOfView < maxFOV)
         {
             camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, currentTime / transitionTime);
-            cam.transform.position = Vector3.Lerp(transform.position, mainPlayer.transform.position, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
+            cam.transform.position = Vector3.Lerp(transform.position, mainPlayer.transform.position + camOffset, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             cam.transform.rotation = Quaternion.Lerp(transform.rotation, mainPlayer.transform.rotation, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
 
             currentTime += Time.deltaTime;
@@ -567,8 +571,9 @@ public class Player : MonoBehaviour
         }
 
 
-        cam.transform.position = mainPlayer.transform.position;
+        //cam.transform.position = mainPlayer.transform.position + camOffset;
         cam.transform.SetParent(mainPlayer.transform);
+        cam.transform.localPosition = Vector3.zero + camOffset;
         cam.transform.localRotation = Quaternion.identity;
 
         currentTime = 0;

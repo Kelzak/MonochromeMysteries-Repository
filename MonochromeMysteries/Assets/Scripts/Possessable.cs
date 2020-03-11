@@ -16,6 +16,7 @@ public abstract class Possessable : MonoBehaviour
     protected bool canMove;
     private bool isHighlighted = false;
     private static Possessable highlightedObject;
+    protected Vector3 camOffset = Vector3.zero;
 
     [SerializeField]
     protected static GameObject possessionVignette;
@@ -40,6 +41,10 @@ public abstract class Possessable : MonoBehaviour
     protected delegate void PossessionEvent(bool active);
     protected event PossessionEvent OnPossession;
 
+    public Vector3 GetCameraOffset()
+    {
+        return camOffset;
+    }
 
     /// <summary>
     /// This is meant to be overrided by descendents of this class, these are the abilities whose input will be checked for

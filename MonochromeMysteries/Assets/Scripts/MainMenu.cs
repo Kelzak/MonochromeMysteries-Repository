@@ -148,11 +148,13 @@ public class MainMenu : MonoBehaviour
 
         //Progress toward target transform's position and rotation
         Vector3 startPos = cam.transform.localPosition;
+        Vector3 targetPos = targetTransform.GetComponent<Player>() ? Vector3.zero + targetTransform.GetComponent<Player>().camOffset : Vector3.zero;
         Quaternion startRot = cam.transform.localRotation;
         float currentTime = 0;
-        while (cam.transform.localPosition != Vector3.zero || cam.transform.localRotation != targetRotation && currentTime < tvTransitionTime)
+
+        while (cam.transform.localPosition != targetPos || cam.transform.localRotation != targetRotation && currentTime < tvTransitionTime)
         {
-            cam.transform.localPosition = Vector3.Lerp(startPos, Vector3.zero, Mathf.SmoothStep(0f, 1f, currentTime / tvTransitionTime));
+            cam.transform.localPosition = Vector3.Lerp(startPos, targetPos, Mathf.SmoothStep(0f, 1f, currentTime / tvTransitionTime));
             cam.transform.localRotation = Quaternion.Lerp(startRot, targetRotation, Mathf.SmoothStep(0f, 1f, currentTime / tvTransitionTime));
             currentTime += Time.unscaledDeltaTime;
             yield return null;
