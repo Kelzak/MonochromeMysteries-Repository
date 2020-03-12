@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour
     public static GameObject soul;
     //Says whether ANY menu is active
     public static bool menuActive = false;
+    public GameObject playerSpawn;
 
     public bool paused = false;
 
@@ -30,7 +31,7 @@ public class GameController : MonoBehaviour
         mainHUD = GameObject.Find("HUD").GetComponent<Canvas>();
         cam = Camera.main;
         soul = GameObject.Find("Player");
-
+        soul.transform.position = playerSpawn.transform.position;
         //Initialize Game
         StartCoroutine(InitializeGame());
         
@@ -134,9 +135,9 @@ public class GameController : MonoBehaviour
         Television startTV = MainMenu._instance.TVs[0];
         MainMenu._instance.SetCurrentTV(startTV);
 
-        Vector3 target = transform.forward;
-        target.z += soul.GetComponent<MeshRenderer>().bounds.size.z * 400;
-        soul.transform.position = startTV.transform.TransformPoint(target);
+        //Vector3 target = transform.forward;
+        //target.z += soul.GetComponent<MeshRenderer>().bounds.size.z * 400;
+        soul.transform.position = playerSpawn.transform.position;
         soul.transform.rotation = startTV.transform.Find("CamPoint").rotation;
 
         yield return new WaitForFixedUpdate();
