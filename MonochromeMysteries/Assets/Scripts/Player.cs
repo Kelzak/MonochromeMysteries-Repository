@@ -453,12 +453,15 @@ public class Player : MonoBehaviour
             target.GetComponent<NavPerson>().enabled = false;
         }
 
+        Transform targetTransform;
+        targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
+
         //Cam Shift & Alpha fade
         EnableControls(false);
 
         //Look at what is about to be possessed
         cam.transform.parent = null;
-        Vector3 direction = (target.transform.position + target.GetComponent<Possessable>().GetCameraOffset() - transform.position);
+        Vector3 direction = (targetTransform.position + target.GetComponent<Possessable>().GetCameraOffset() - transform.position);
         cam.transform.rotation = Quaternion.LookRotation(direction);
         direction.y = 0;
         transform.rotation = Quaternion.LookRotation(direction);
@@ -480,7 +483,7 @@ public class Player : MonoBehaviour
             Color goalColor = mat.color;
             goalColor.a = Mathf.Lerp(maxAlpha, minAlpha, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             mat.color = goalColor;
-            cam.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position + target.GetComponent<Possessable>().GetCameraOffset()
+            cam.transform.position = Vector3.Lerp(gameObject.transform.position, targetTransform.position + target.GetComponent<Possessable>().GetCameraOffset()
                                                     , Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             currentTime += Time.deltaTime;
             yield return null;
@@ -488,7 +491,7 @@ public class Player : MonoBehaviour
 
         currentTime = 0;
         target.transform.rotation = gameObject.transform.rotation;
-        cam.transform.SetParent(target.transform);
+        cam.transform.SetParent(targetTransform);
         cam.transform.localPosition = Vector3.zero + target.GetComponent<Possessable>().GetCameraOffset();
         //Get Rid of Effects of currently Possessed Objects
         if (gameObject != mainPlayer)
