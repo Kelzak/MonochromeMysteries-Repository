@@ -357,7 +357,7 @@ public class Player : MonoBehaviour
         yMovement = Input.GetAxis("Vertical");
 
         //Tutorial Bit
-        if (xMovement != 0 || yMovement != 0 && Dialogue.holding)
+        if ((xMovement != 0 || yMovement != 0) && Dialogue.holding)
         {
             Tutorial.instance.OnFirstMovement();
         }

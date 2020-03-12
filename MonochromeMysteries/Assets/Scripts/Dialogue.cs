@@ -83,8 +83,10 @@ public class Dialogue : MonoBehaviour
         while (transitionInProgress)
             yield return null;
 
+        float secondsToWait = 3f;
         while (dialogueQueue.Count > 0)
         {
+            secondsToWait = 3f;
             currentMessage = dialogueQueue.Peek().message.ToCharArray();
             dialogueText.text = "";
             this.speakerImage.sprite = dialogueQueue.Peek().speakerPicture;
@@ -96,14 +98,17 @@ public class Dialogue : MonoBehaviour
                 yield return new WaitForSecondsRealtime(0.025f);
             }
 
-            yield return new WaitForSecondsRealtime(3f);
-
             while (dialogueQueue.Peek().holdLine == true)
             {
                 holding = true;
+                secondsToWait = 0;
                 yield return null;
             }
             holding = false;
+
+            yield return new WaitForSecondsRealtime(secondsToWait);
+
+            
 
             dialogueQueue.Dequeue();
         }
