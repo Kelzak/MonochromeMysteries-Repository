@@ -246,7 +246,7 @@ public class Player : MonoBehaviour
         
         if (Physics.Raycast(indoorCheck, out hit))
         {
-            Debug.Log(hit.collider.gameObject.tag);
+            //Debug.Log(hit.collider.gameObject.tag);
             if (hit.collider.CompareTag("balcony"))
             {
                 isInside = false;
@@ -682,7 +682,7 @@ public class Player : MonoBehaviour
     {
         if (!StateChecker.isGhost)
         {
-            if(Input.GetAxis("Horizontal") > 0 || Input.GetAxis("Vertical") > 0)
+            if(Input.GetAxis("Horizontal") > 0 || Input.GetAxis("Vertical") > 0 || Input.GetAxis("Horizontal") < 0 || Input.GetAxis("Vertical") < 0)
             {
                 audioSource.volume = stepVolume;
                 int rand;
