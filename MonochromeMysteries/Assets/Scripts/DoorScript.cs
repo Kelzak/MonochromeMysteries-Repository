@@ -108,7 +108,7 @@ public class DoorScript : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                if(Player.keys.Contains(key))
+                if (Player.keys.Contains(key))
                 {
                     rand = Random.Range(0, unlockDoor.Length);
                     sound = unlockDoor[rand];
@@ -116,9 +116,12 @@ public class DoorScript : MonoBehaviour
                     Unlock();
                 }
                 else
+                {
                     rand = Random.Range(0, lockedDoor.Length);
                     sound = lockedDoor[rand];
                     audioSource.PlayOneShot(sound);
+                    Log.AddEntry("The Door is Locked");
+                }
             }
         }
 
