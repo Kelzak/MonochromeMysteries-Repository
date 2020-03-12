@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 538512580229677427}
   - component: {fileID: 538512580229677426}
   - component: {fileID: 538512580229677425}
-  - component: {fileID: 538512580229677424}
   m_Layer: 5
   m_Name: PhotoCollection
   m_TagString: Untagged
@@ -63,13 +62,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 6e9d7d47b50850f48b768086e5fa0ce9, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -108,19 +107,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &538512580229677424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 538512580229677438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 1
 --- !u!1 &538512580357566966
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,7 +143,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 175}
+  m_AnchoredPosition: {x: 0, y: 188.00003}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &538512580357566987
@@ -224,14 +210,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 0
-    m_Right: 3
-    m_Top: 75
+    m_Right: 32
+    m_Top: 150
     m_Bottom: 75
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 110}
-  m_Spacing: {x: 100, y: 60}
+  m_Spacing: {x: 110, y: 60}
   m_Constraint: 1
   m_ConstraintCount: 3
 --- !u!1 &538512580455452522
@@ -245,6 +231,7 @@ GameObject:
   - component: {fileID: 538512580455452523}
   - component: {fileID: 538512580455452525}
   - component: {fileID: 538512580455452524}
+  - component: {fileID: 7444984385475349255}
   m_Layer: 5
   m_Name: NoPhotosText
   m_TagString: Untagged
@@ -313,6 +300,21 @@ MonoBehaviour:
   m_Text: 'No Photos Taken
 
 '
+--- !u!114 &7444984385475349255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538512580455452522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1203675895266959071
 GameObject:
   m_ObjectHideFlags: 0
@@ -348,7 +350,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 643.30005, y: -192}
+  m_AnchoredPosition: {x: 635.80005, y: -188}
   m_SizeDelta: {x: 230.5, y: 240.6}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &3331768010671948516
@@ -472,7 +474,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.72156864}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -687,12 +689,12 @@ PrefabInstance:
     - target: {fileID: 7852545704477779326, guid: 3473ffe383174cc40993eb257496baaf,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 213.25
+      value: 205.75002
       objectReference: {fileID: 0}
     - target: {fileID: 7852545704477779326, guid: 3473ffe383174cc40993eb257496baaf,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -192
+      value: -188
       objectReference: {fileID: 0}
     - target: {fileID: 7852545704477779326, guid: 3473ffe383174cc40993eb257496baaf,
         type: 3}

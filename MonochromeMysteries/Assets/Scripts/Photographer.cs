@@ -67,13 +67,23 @@ public class Photographer : Person
     bool canTakePhoto = true;
     public override void Ability()
     {
-        if (!GameController._instance.paused && canTakePhoto)
+        if (!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() < PhotoLibrary.MAX_PHOTOS)
         {
             Player.EnableControls(false);
             StartCoroutine(CameraFlash());
             audioSources[1].Play();
             TakePhoto(Screen.width, Screen.height);
             Player.EnableControls(true);
+
+            //First Photo
+            if(Dialogue.holding)
+            {
+                Tutorial.instance.OnFirstPhoto();
+            }
+        }
+        else if(!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() >= PhotoLibrary.MAX_PHOTOS)
+        {
+            Log.AddEntry("You have no more room for photos");
         }
     }
 

@@ -15,6 +15,7 @@ using UnityEngine.EventSystems;
 public class PhotoLibrary : MonoBehaviour
 {
     public static PhotoLibrary _instance;
+    public const int MAX_PHOTOS = 3;
 
     private List<Photo> scrapbook;
     private uint pictureCount = 0;

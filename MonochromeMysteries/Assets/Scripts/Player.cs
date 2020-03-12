@@ -356,6 +356,13 @@ public class Player : MonoBehaviour
         xMovement = Input.GetAxis("Horizontal");
         yMovement = Input.GetAxis("Vertical");
 
+        //Tutorial Bit
+        if (xMovement != 0 || yMovement != 0 && Dialogue.holding)
+        {
+            Tutorial.instance.OnFirstMovement();
+        }
+
+        //Movement
         Vector3 velocity = (transform.right * xMovement * moveSpeed) + (transform.forward * yMovement * moveSpeed);
 
         {
@@ -515,6 +522,12 @@ public class Player : MonoBehaviour
         }
 
         EnableControls(true);
+
+        //First Rat possession
+        if(target.GetComponent<Rat>() && Dialogue.holding)
+        {
+            Tutorial.instance.OnFirstRatPossession();
+        }
 
         //If it's the main player (Ghost) then make it "disappear"
         if (gameObject == mainPlayer)

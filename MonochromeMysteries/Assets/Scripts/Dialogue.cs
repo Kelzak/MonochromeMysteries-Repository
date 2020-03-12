@@ -9,6 +9,7 @@ public class Dialogue : MonoBehaviour
 
     const int MAX_CHARACTERS = 87;
 
+    public static bool holding = false;
     public GameObject panel;
     private Image speakerImage;
     private Text speakerName;
@@ -20,12 +21,18 @@ public class Dialogue : MonoBehaviour
         public string speakerName;
         public string message;
         public Sprite speakerPicture;
+        public bool holdLine = false;
 
         public DialogueLine(Character character, string message)
         {
             speakerName = instance.characters[(int) character].name;
             speakerPicture = instance.characters[(int) character].picture;
             this.message = message;
+        }
+
+        public void TriggerHold(bool hold)
+        {
+            holdLine = hold;
         }
     }
 
@@ -38,13 +45,26 @@ public class Dialogue : MonoBehaviour
         public Sprite picture;
     }
 
-    public static void AddLine(Character character, params string[] message)
+    public static void AddLine(Character character, bool hold, params string[] message)
     {
         Debug.Log((instance == null) + " " + (instance.dialogueQueue.Count > 0));
-        foreach(string line in message)
+        foreach (string line in message)
         {
-            instance.dialogueQueue.Enqueue(new DialogueLine(character, line));
+            DialogueLine lineToAdd = new DialogueLine(character, line);
+            lineToAdd.TriggerHold(hold);
+            instance.dialogueQueue.Enqueue(lineToAdd);
         }
+    }
+
+    public static void AddLine(Character character, params string[] message)
+    {
+        AddLine(character, false, message);
+    }
+
+    public static void ContinueDialogue()
+    {
+        if(instance.dialogueQueue.Count > 0)
+        instance.dialogueQueue.Peek().TriggerHold(false);
     }
 
     bool dialogueRunning = false;
@@ -77,6 +97,14 @@ public class Dialogue : MonoBehaviour
             }
 
             yield return new WaitForSecondsRealtime(3f);
+
+            while (dialogueQueue.Peek().holdLine == true)
+            {
+                holding = true;
+                yield return null;
+            }
+            holding = false;
+
             dialogueQueue.Dequeue();
         }
 

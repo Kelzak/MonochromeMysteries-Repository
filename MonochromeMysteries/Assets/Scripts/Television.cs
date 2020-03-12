@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Television : MonoBehaviour
 {
     public GameObject screen;
-    public GameObject mainMenu, tvStatic, options;
+    public GameObject mainMenu, tvStatic, howToPlay;
     public Animation staticAnim;
 
     public enum ButtonName { NewGame, Continue, Resume, Options, Quit };
@@ -21,14 +21,14 @@ public class Television : MonoBehaviour
     {
         screen = transform.Find("Screen").gameObject;
         mainMenu = screen.transform.Find("MainMenu").gameObject;
-        options = screen.transform.Find("Options").gameObject;
+        howToPlay = screen.transform.Find("How To Play").gameObject;
         tvStatic = screen.transform.Find("Static").gameObject;
 
         Transform menuOptions = transform.Find("Screen").Find("MainMenu").Find("MenuOptions");
         buttons = new Button[] { menuOptions.Find("New Game").GetComponent<Button>(),
                                      menuOptions.Find("Continue").GetComponent<Button>(),
                                      menuOptions.Find("Resume").GetComponent<Button>(),
-                                     menuOptions.Find("Options").GetComponent<Button>(),
+                                     menuOptions.Find("How To Play").GetComponent<Button>(),
                                      menuOptions.Find("Quit").GetComponent<Button>() };
 
         //Add Listeners
@@ -38,15 +38,15 @@ public class Television : MonoBehaviour
         buttons[1].onClick.AddListener(() => x.TriggerMainMenu());
         buttons[1].onClick.AddListener(() => MainMenu._instance.ChangeFromInitialOptions());
         buttons[2].onClick.AddListener(() => x.TriggerMainMenu());
-        buttons[3].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("Options"));
+        buttons[3].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("How To Play"));
         buttons[4].onClick.AddListener(() => x.QuitGame());
 
         //Set the right buttons at start
-        SwapButtons(true, ButtonName.NewGame, ButtonName.Options, ButtonName.Quit, ButtonName.Continue);
-        SwapButtons(false, ButtonName.Resume);
+        SwapButtons(true, ButtonName.NewGame, ButtonName.Options, ButtonName.Quit);
+        SwapButtons(false, ButtonName.Resume, ButtonName.Continue);
 
         mainMenu.SetActive(false);
-        options.SetActive(false);
+        howToPlay.SetActive(false);
         
 
 

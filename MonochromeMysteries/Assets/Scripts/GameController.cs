@@ -33,21 +33,11 @@ public class GameController : MonoBehaviour
 
         //Initialize Game
         StartCoroutine(InitializeGame());
-
-        StartCoroutine(DialogueScript());
         
         audioSources = this.GetComponents<AudioSource>();
     }
 
-    private IEnumerator DialogueScript()
-    {
-        yield return new WaitForSeconds(5f);
-        Dialogue.AddLine(Dialogue.Character.Pete, "What's up, it's ya boi Johnathan Lennon", "lmao");
-        Log.AddEntry("Talked to John Lennon");
-        yield return new WaitForSeconds(3f);
-        Log.AddEntry("Yeehaw");
 
-    }
 
     // Update is called once per frame
     /// <summary>
@@ -78,6 +68,12 @@ public class GameController : MonoBehaviour
             {
                 //close
                 audioSources[1].Play();
+
+                //Tutorial first close scrapbook
+                if(Dialogue.holding)
+                {
+                    Tutorial.instance.OnFirstCloseScrapbook();
+                }
             }
             menuActive = paused;
         }
@@ -139,7 +135,7 @@ public class GameController : MonoBehaviour
         MainMenu._instance.SetCurrentTV(startTV);
 
         Vector3 target = transform.forward;
-        target.z += soul.GetComponent<MeshRenderer>().bounds.size.z;
+        target.z += soul.GetComponent<MeshRenderer>().bounds.size.z * 400;
         soul.transform.position = startTV.transform.TransformPoint(target);
         soul.transform.rotation = startTV.transform.Find("CamPoint").rotation;
 
