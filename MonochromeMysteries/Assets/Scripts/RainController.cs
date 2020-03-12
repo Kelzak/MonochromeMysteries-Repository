@@ -18,7 +18,6 @@ public class RainController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         audioSources = this.GetComponents<AudioSource>();
         audioSources[0].Play();
         audioSources[1].Play();
@@ -29,6 +28,7 @@ public class RainController : MonoBehaviour
     void Update()
     {
         player = GameObject.FindObjectOfType<Player>();
+
         if (player.IsInside() == true || navInside == true)
         {
             PlaySound(0);

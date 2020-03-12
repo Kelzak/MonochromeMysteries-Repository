@@ -120,12 +120,12 @@ public class NavPerson : MonoBehaviour
 
         if(StateChecker.isGhost && canSeeGhost)
         {
-            Debug.Log("is looking ghost");
+            //Debug.Log("is looking ghost");
             lookTowards();
         }
         else if (!StateChecker.isGhost)
         {
-            Debug.Log("is looking");
+            //Debug.Log("is looking");
             lookTowards();
         }
 

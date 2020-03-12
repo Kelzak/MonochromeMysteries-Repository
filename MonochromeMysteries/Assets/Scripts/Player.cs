@@ -60,6 +60,8 @@ public class Player : MonoBehaviour
     public bool hasPossessedForTheFirstTime;
 
     //UI Images and Texts
+    public Sprite ghostImage;
+    public Text ghostName;
     public Sprite photographerImage;
     public Sprite ratImage;
     public Image characterImage;
@@ -171,10 +173,10 @@ public class Player : MonoBehaviour
         }
         else
         {
-            itemImage.sprite = null;
+            itemImage.transform.parent.gameObject.SetActive(false);
             itemName.text = "";
-            characterImage.sprite = null;
-            characterName.text = "";
+            characterImage.sprite = ghostImage;
+            characterName.text = "\"The Spirit\"";
             isRat = false;
         }
 
