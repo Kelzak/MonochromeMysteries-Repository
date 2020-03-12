@@ -453,8 +453,6 @@ public class Player : MonoBehaviour
             target.GetComponent<NavPerson>().enabled = false;
         }
 
-
-
         //Cam Shift & Alpha fade
         EnableControls(false);
 
@@ -539,7 +537,7 @@ public class Player : MonoBehaviour
         //If it's not the main player, remove player script
         else if (gameObject != mainPlayer)
         {
-            if(GetComponent<Rat>())
+            //if(GetComponent<Rat>())
 
 
             if (GetComponent<NavPerson>())
