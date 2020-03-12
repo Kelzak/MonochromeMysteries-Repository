@@ -47,7 +47,7 @@ public class Dialogue : MonoBehaviour
 
     public static void AddLine(Character character, bool hold, params string[] message)
     {
-        Debug.Log((instance == null) + " " + (instance.dialogueQueue.Count > 0));
+        //Debug.Log((instance == null) + " " + (instance.dialogueQueue.Count > 0));
         foreach (string line in message)
         {
             DialogueLine lineToAdd = new DialogueLine(character, line);

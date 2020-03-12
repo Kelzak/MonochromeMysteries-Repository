@@ -273,10 +273,10 @@ public class NavPerson : MonoBehaviour
     {
         if(IsInside() && isPossessed)
         {
-            RainController.navInside = true;
+            RainController.navInside = false;
         }
         else
-            RainController.navInside = false;
+            RainController.navInside = true;
 
     }
 }

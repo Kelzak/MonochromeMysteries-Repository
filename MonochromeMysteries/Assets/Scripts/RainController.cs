@@ -28,6 +28,7 @@ public class RainController : MonoBehaviour
     void Update()
     {
         player = GameObject.FindObjectOfType<Player>();
+        //Debug.Log(player.gameObject.name);
 
         if (player.IsInside() == true || navInside == true)
         {

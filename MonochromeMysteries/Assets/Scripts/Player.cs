@@ -240,11 +240,13 @@ public class Player : MonoBehaviour
         bool isInside;
 
         Ray indoorCheck;
-        indoorCheck = new Ray(transform.position, transform.up);
+        indoorCheck = new Ray(GameObject.FindObjectOfType<Player>().transform.position, transform.up);
         //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
 
+        
         if (Physics.Raycast(indoorCheck, out hit))
         {
+            Debug.Log(hit.collider.gameObject.tag);
             if (hit.collider.CompareTag("balcony"))
             {
                 isInside = false;
