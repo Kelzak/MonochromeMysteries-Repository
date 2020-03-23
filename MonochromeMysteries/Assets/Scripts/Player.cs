@@ -385,7 +385,8 @@ public class Player : MonoBehaviour
         GameObject target = null;
         float targetDist = 0;
         //Scan area directly in front for targets
-        RaycastHit[] hit = Physics.RaycastAll(cam.transform.position, cam.transform.forward, possess_Distance);
+        RaycastHit[] //hit = Physics.RaycastAll(cam.transform.position, cam.transform.forward, possess_Distance);
+        hit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.25f, 0.25f, 0.25f), cam.transform.forward, Quaternion.identity, possess_Distance);
         foreach (RaycastHit x in hit)
         {
             //If a possessable target is found and its not the gameObject that this is on
@@ -397,8 +398,10 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (target != null) //Check to make sure nothing else got hit before target
+        //Check to make sure that the target is within line of sight (No targeting through walls)
+        if (target != null)
         {
+            hit = Physics.RaycastAll(cam.transform.position, (target.transform.position - cam.transform.position).normalized + target.GetComponent<Possessable>().GetCameraOffset(), possess_Distance);
             foreach (RaycastHit x in hit)
             {
                 if (x.distance < targetDist && x.collider.gameObject != target) //Hit something else first
@@ -572,17 +575,27 @@ public class Player : MonoBehaviour
         float checkRadius = thisMaxExtents + mainPlayerMaxExtents * 2;
         Vector3 closestPointOnFloor = Vector3.zero;
         bool safeExitPoint = false;
-
+        
+        //Test points around player like a coordinate plane (ex (0,0), (0, 1), (0,2), ..., etc)
         int[] multiplierOptions = { 0, 1, -1 };
         Vector3 temp = exitPoint;
         for (int i = 0; i < multiplierOptions.Length && safeExitPoint == false; i++) //Diagonals
         {
             for (int j = multiplierOptions.Length - 1; j > 0 && safeExitPoint == false; j--) //Cardinal Directions
             {
+                //Set temp to point being tested, account for size of mesh to make sure it doesn't clip through wall
                 temp = GetComponent<MeshRenderer>().bounds.center + (transform.forward * checkRadius * multiplierOptions[j]) + (transform.right * checkRadius * multiplierOptions[i]);
                 temp.y -= GetComponent<MeshRenderer>().bounds.extents.y;
-                Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents);
+                //point is deemed safe until proven not
                 safeExitPoint = true;
+
+                //Make sure point is visible
+                RaycastHit visibleHit;
+                if(Physics.Linecast(cam.transform.position, temp, out visibleHit) && visibleHit.collider.gameObject != gameObject)
+                    safeExitPoint = false;
+
+                //Make sure there's enough space around the point
+                Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents);
                 for (int k = 0; k < hit.Length; k++)
                 {
                     if (hit[k].gameObject.tag != "Floor" && hit[k].gameObject != gameObject)
@@ -600,7 +613,7 @@ public class Player : MonoBehaviour
         }
         else //No possible exit points found, can't unpossess here
         {
-            Debug.Log("Player.cs: Cannot Unpossess Here");
+            Log.AddEntry("No Room to De-Possess Here");
             possessionInProgress = false;
             yield break;
         }

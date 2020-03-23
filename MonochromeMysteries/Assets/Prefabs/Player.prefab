@@ -116,12 +116,14 @@ MonoBehaviour:
   verticalClamp: 60
   cam: {fileID: 0}
   moveSpeed: 5
-  possess_Distance: 3
+  possess_Distance: 5
   camOffset: {x: 0, y: 0, z: 0}
   hasKey: 0
   ppvToggle: {fileID: 0}
   photographer: {fileID: 0}
   hasPossessedForTheFirstTime: 0
+  ghostImage: {fileID: 0}
+  ghostName: {fileID: 0}
   photographerImage: {fileID: 0}
   ratImage: {fileID: 0}
   characterImage: {fileID: 0}
@@ -132,6 +134,9 @@ MonoBehaviour:
   keyImage: {fileID: 0}
   reticle: {fileID: 0}
   reticleDist: 0
+  obtainClip: {fileID: 0}
+  possessClip: {fileID: 0}
+  depossessClip: {fileID: 0}
   stateChecker: {fileID: 0}
   isFemale: 0
   maleSteps: []
