@@ -9,7 +9,7 @@ using UnityEngine.AI;
 
 public class NavPerson : MonoBehaviour
 {
-    
+    [Header("Nav locations")]
     public Transform[] targetLocations;
     private Player player;
     //used to help determine movement
@@ -27,6 +27,7 @@ public class NavPerson : MonoBehaviour
     private float dist;
     //if checked the person will follow the array consecutively instead of randomly 
     public bool isPath;
+    [Header("AI")]
     //if checked character will go to random path
     public bool wander;
     public float wanderRadius = 10f;
@@ -41,7 +42,7 @@ public class NavPerson : MonoBehaviour
 
     public bool personStops = true;
     public bool canSeeGhost;
-
+    [Header("Sound")]
     public AudioSource stepSources;
     private AudioClip step;
     public bool isFemale;
@@ -53,6 +54,9 @@ public class NavPerson : MonoBehaviour
 
     private bool isPossessed = false;
     private RaycastHit hit;
+
+    private bool waitAfterPossess;
+    public float waitAfterPossessTime = 5f;
 
     void Start()
     {
@@ -85,7 +89,7 @@ public class NavPerson : MonoBehaviour
         }
         //if stopped, invoke movement over wait time
         //Debug.Log(agent.isStopped);
-        if (agent.isStopped && move == true)
+        if (agent.isStopped && move == true && !waitAfterPossess)
         {
             if(randWaitTime == true)
             {
@@ -99,16 +103,17 @@ public class NavPerson : MonoBehaviour
         //if player comes close to character, character stops
         dist = Vector3.Distance(this.transform.position, player.transform.position);
         //Debug.Log("Dist: " + dist);
-        if (dist < playerDistStop)
+        if (dist < playerDistStop || waitAfterPossess)
         {
-            if (StateChecker.isGhost && personStops)
+            if (StateChecker.isGhost && personStops || waitAfterPossess)
                 agent.Stop();
-            else if (!StateChecker.isGhost)
+            else if (!StateChecker.isGhost || waitAfterPossess)
                 agent.Stop();
         }
         else
         {
-            agent.Resume();
+            if(!waitAfterPossess)
+                agent.Resume();
         }
         if(agent.remainingDistance == 0f)
         {
@@ -265,8 +270,11 @@ public class NavPerson : MonoBehaviour
 
     private void OnEnable()
     {
+        waitAfterPossess = true;
         isPossessed = false;
         GetComponent<NavMeshAgent>().isStopped = false;
+        Debug.Log("invoke");
+        Invoke("PossessWait", waitAfterPossessTime);
     }
 
     void RainFix()
@@ -278,5 +286,10 @@ public class NavPerson : MonoBehaviour
         else
             RainController.navInside = true;
 
+    }
+    void PossessWait()
+    {
+        waitAfterPossess = false;
+        Debug.Log("pass");
     }
 }

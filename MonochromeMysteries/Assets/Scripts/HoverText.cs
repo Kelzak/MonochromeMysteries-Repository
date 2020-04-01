@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using TMPro;
 public class HoverText : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class HoverText : MonoBehaviour
     public Player player;
     private float dist;
     public float displayDist = 5f;
+    public TMP_FontAsset font;
 
     // Start is called before the first frame update
     void Start()
