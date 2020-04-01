@@ -37,6 +37,8 @@ public class Item : MonoBehaviour, IObserver
         stateChecker = checker.GetComponent<StateChecker>();
         // adds this object to observer list in statechecker
         stateChecker.RegisterObserver(this);
+
+        playerDistGlow = 7f;
     }
 
     // Update is called once per frame
