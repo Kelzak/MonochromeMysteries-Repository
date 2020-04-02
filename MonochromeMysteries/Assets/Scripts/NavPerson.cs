@@ -56,7 +56,7 @@ public class NavPerson : MonoBehaviour
     private RaycastHit hit;
 
     private bool waitAfterPossess;
-    public float waitAfterPossessTime = 5f;
+    public float waitAfterPossessTime = 20f;
 
     void Start()
     {
@@ -73,6 +73,8 @@ public class NavPerson : MonoBehaviour
 
         if (!canSeeGhost)
             InvokeRepeating("LookAround", 0f, lookInterval);
+
+        
     }
 
     [System.Obsolete]
@@ -273,7 +275,7 @@ public class NavPerson : MonoBehaviour
         waitAfterPossess = true;
         isPossessed = false;
         GetComponent<NavMeshAgent>().isStopped = false;
-        Debug.Log("invoke");
+        //Debug.Log("invoke");
         Invoke("PossessWait", waitAfterPossessTime);
     }
 
@@ -290,6 +292,6 @@ public class NavPerson : MonoBehaviour
     void PossessWait()
     {
         waitAfterPossess = false;
-        Debug.Log("pass");
+        //Debug.Log("pass");
     }
 }

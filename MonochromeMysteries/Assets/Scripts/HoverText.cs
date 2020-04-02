@@ -17,6 +17,9 @@ public class HoverText : MonoBehaviour
     public float displayDist = 5f;
     public TMP_FontAsset font;
 
+    //used for displaying the UI when rat carries key or not
+    public bool UIstop;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +51,11 @@ public class HoverText : MonoBehaviour
 
     void Display()
     {
+        if (UIstop)
+        {
+            text.color = Color.Lerp(text.color, Color.clear, fadeTime * Time.deltaTime);
+            return;
+        }
         if(displayWhenGhost)
         {
             if (display)
@@ -94,7 +102,7 @@ public class HoverText : MonoBehaviour
     {
         if(!isStatic)
         {
-            Transform look = FindObjectOfType<Player>().GetComponent<Transform>();
+            Transform look = FindObjectOfType<Camera>().GetComponent<Transform>();
             transform.LookAt(look);
         }
     }
