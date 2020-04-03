@@ -56,7 +56,7 @@ public class NavPerson : MonoBehaviour
     private RaycastHit hit;
 
     private bool waitAfterPossess;
-    public float waitAfterPossessTime = 5f;
+    public float waitAfterPossessTime = 20f;
 
     void Start()
     {
@@ -73,6 +73,8 @@ public class NavPerson : MonoBehaviour
 
         if (!canSeeGhost)
             InvokeRepeating("LookAround", 0f, lookInterval);
+
+        
     }
 
     [System.Obsolete]
@@ -121,7 +123,7 @@ public class NavPerson : MonoBehaviour
         }
 
         //fixes rain sounds when possessing
-        RainFix();
+        //RainFix();
 
         if(StateChecker.isGhost && canSeeGhost)
         {
@@ -139,13 +141,14 @@ public class NavPerson : MonoBehaviour
     public bool IsInside()
     {
         bool isInside;
+        Vector3 fwd = new Vector3(0, 2, 0);
+        Ray indoorCheck = new Ray(GameObject.FindObjectOfType<Player>().transform.position + fwd, transform.up);
+        //Debug.DrawLine(indoorCheck.origin, hit.transform.position);
 
-        Ray indoorCheck;
-        indoorCheck = new Ray(transform.position, transform.up);
-        //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
-
+        
         if (Physics.Raycast(indoorCheck, out hit))
         {
+            //Debug.Log(hit.collider.gameObject.tag);
             if (hit.collider.CompareTag("balcony"))
             {
                 isInside = false;
@@ -158,6 +161,7 @@ public class NavPerson : MonoBehaviour
             isInside = false;
         }
         //Debug.Log("Is inside: " + isInside);
+        //Debug.Log(hit.collider.gameObject.name);
         return isInside;
     }
 
@@ -204,9 +208,10 @@ public class NavPerson : MonoBehaviour
             targetLocation = targetLocations[count];
             NavMeshPath path = new NavMeshPath();
             agent.CalculatePath(targetLocation.position, path);
-            Debug.Log(agent.CalculatePath(targetLocation.position, path));
+            //Debug.Log(agent.CalculatePath(targetLocation.position, path));
+            //Debug.Log("chek path");
             //if nav agent can not make it to the desired destination
-            if(path.status == NavMeshPathStatus.PathPartial)
+            if (path.status != NavMeshPathStatus.PathComplete)
             {
                 Debug.Log("Invalid path");
                 count += 1;
@@ -233,8 +238,22 @@ public class NavPerson : MonoBehaviour
         }
         else
         {
+
             int temp = Random.Range(0, targetLocations.Length);
             targetLocation = targetLocations[temp];
+
+            NavMeshPath path = new NavMeshPath();
+            agent.CalculatePath(targetLocation.position, path);
+            //Debug.Log(agent.CalculatePath(targetLocation.position, path));
+            //Debug.Log("chek path");
+
+            //if nav agent can not make it to the desired destination
+            if (path.status != NavMeshPathStatus.PathComplete)
+            {
+                //Debug.Log("Invalid path");
+                Move();
+                return;
+            }
             agent.destination = targetLocation.position;
         }
         agent.isStopped = false;
@@ -273,23 +292,23 @@ public class NavPerson : MonoBehaviour
         waitAfterPossess = true;
         isPossessed = false;
         GetComponent<NavMeshAgent>().isStopped = false;
-        Debug.Log("invoke");
+        //Debug.Log("invoke");
         Invoke("PossessWait", waitAfterPossessTime);
     }
 
-    void RainFix()
-    {
-        if(IsInside() && isPossessed)
-        {
-            RainController.navInside = false;
-        }
-        else
-            RainController.navInside = true;
+    //void RainFix()
+    //{
+    //    if(IsInside() && isPossessed)
+    //    {
+    //        RainController.navInside = false;
+    //    }
+    //    else
+    //        RainController.navInside = true;
 
-    }
+    //}
     void PossessWait()
     {
         waitAfterPossess = false;
-        Debug.Log("pass");
+        //Debug.Log("pass");
     }
 }

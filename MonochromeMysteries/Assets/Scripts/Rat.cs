@@ -53,28 +53,49 @@ public class Rat : Possessable
 
     private void OnTriggerStay(Collider other)
     {
-        if(Input.GetButtonDown("PickUp")) //which is "F"
+        if(Input.GetButton("PickUp") && other.gameObject.tag == "Key" && !hasKey)
         {
-            if (other.gameObject.tag == "Key" && !hasKey)
-            {
-                hasKey = true;
-                Debug.Log("Rat should be picking up key");
-                other.transform.SetParent(pickupDestination);
-                other.transform.position = pickupDestination.position;
-                other.transform.rotation = pickupDestination.rotation;
-                other.gameObject.GetComponent<Rigidbody>().useGravity = false;
-                other.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-            }
-            else if (other.gameObject.tag == "Key" && hasKey)
-            {
-                hasKey = false;
-                Debug.Log("Let go");
-                other.transform.SetParent(null);
-                other.gameObject.GetComponent<Rigidbody>().useGravity = true;
-                other.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            }
+            other.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
+            Debug.Log("Rat should be picking up key");
+            other.transform.SetParent(pickupDestination);
+            other.transform.position = pickupDestination.position;
+            other.transform.rotation = pickupDestination.rotation;
+            other.gameObject.GetComponent<Rigidbody>().useGravity = false;
+            other.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            hasKey = true;
         }
-        
+        if((Input.GetButtonUp("PickUp") && other.gameObject.tag == "Key" && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
+        {
+            other.gameObject.GetComponentInChildren<HoverText>().UIstop = false;
+            Debug.Log("Let go");
+            other.transform.SetParent(null);
+            other.gameObject.GetComponent<Rigidbody>().useGravity = true;
+            other.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            hasKey = false;
+        }
+
+        //if (Input.GetButtonDown("PickUp")) //which is "F"
+        //{
+        //    if (other.gameObject.tag == "Key" && !hasKey)
+        //    {
+        //        Debug.Log("Rat should be picking up key");
+        //        other.transform.SetParent(pickupDestination);
+        //        other.transform.position = pickupDestination.position;
+        //        other.transform.rotation = pickupDestination.rotation;
+        //        other.gameObject.GetComponent<Rigidbody>().useGravity = false;
+        //        other.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        //        hasKey = true;
+        //    }
+        //    else if (other.gameObject.tag == "Key" && hasKey)
+        //    {
+        //        Debug.Log("Let go");
+        //        other.transform.SetParent(null);
+        //        other.gameObject.GetComponent<Rigidbody>().useGravity = true;
+        //        other.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+        //        hasKey = false;
+        //    }
+        //}
+
     }
 
     private void OnDisable()

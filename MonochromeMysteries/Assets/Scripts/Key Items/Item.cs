@@ -26,7 +26,7 @@ public class Item : MonoBehaviour, IObserver
 
     public bool isPickup;
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +45,7 @@ public class Item : MonoBehaviour, IObserver
     void Update()
     {
         //changes materials 
-        if(isGhost == true && isClose == true)
+        if (isGhost == true && isClose == true)
         {
             item.GetComponent<Outline>().enabled = true;
             //reticle.color = new Color(255.0f, 255.0f, 0.0f);
@@ -55,7 +55,7 @@ public class Item : MonoBehaviour, IObserver
             //reticle.color = new Color(0.0f, 255.0f, 255.0f);
             item.GetComponent<Outline>().enabled = false;
         }
-            
+
 
 
         dist = Vector3.Distance(this.transform.position, player.transform.position);
@@ -76,6 +76,17 @@ public class Item : MonoBehaviour, IObserver
         isGhost = check;
     }
 
-}
+    private void OnTriggerStay(Collider other)
+    {
+        if (Input.GetButton("PickUp") && other.gameObject.tag == "Rat")
+        {
+            item.GetComponent<Outline>().enabled = false;
+        }
+        if (Input.GetButtonUp("PickUp") && other.gameObject.tag == "Rat")
+        {
+            item.GetComponent<Outline>().enabled = true;
+        }
 
+    }
+}
 
