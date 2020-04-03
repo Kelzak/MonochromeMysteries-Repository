@@ -238,10 +238,14 @@ public class Player : MonoBehaviour
     public bool IsInside()
     {
         bool isInside;
+        Vector3 fwd = new Vector3(0, 4, 0);
+        if (StateChecker.isGhost)
+        {
+            fwd = new Vector3(0, 1, 0);
+        }
 
-        Ray indoorCheck;
-        indoorCheck = new Ray(GameObject.FindObjectOfType<Player>().transform.position, transform.up);
-        //Debug.DrawLine(indoorCheck.origin, transform.up, Color.green);
+        Ray indoorCheck = new Ray(GameObject.FindObjectOfType<Player>().transform.position + fwd, transform.up);
+        //Debug.DrawLine(indoorCheck.origin, hit.transform.position);
 
         
         if (Physics.Raycast(indoorCheck, out hit))
@@ -259,6 +263,7 @@ public class Player : MonoBehaviour
             isInside = false;
         }
         //Debug.Log("Is inside: " + isInside);
+        //Debug.Log(hit.collider.gameObject.name);
         return isInside;
     }
 
@@ -552,6 +557,8 @@ public class Player : MonoBehaviour
         }
 
         possessionInProgress = false;
+
+        
         
 
     }

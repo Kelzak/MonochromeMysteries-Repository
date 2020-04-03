@@ -23,9 +23,10 @@ public class HoverText : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        text = GameObject.Find("Text").GetComponent<TextMeshProUGUI>();
+        //text = GameObject.Find("Text").GetComponent<TextMeshProUGUI>();
         text = GetComponentInChildren<TextMeshProUGUI>();
         text.SetText(myString);
+        text.font = font;
         //text.color = Color.white;
     }
 
