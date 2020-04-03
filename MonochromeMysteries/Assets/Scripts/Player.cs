@@ -138,7 +138,7 @@ public class Player : MonoBehaviour
             StartCoroutine(ExitPossession());
         }
            
-        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>())
+        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>() || gameObject.GetComponent<Character>())
         {
             ppvToggle.Toggle(false);
         }
@@ -463,6 +463,7 @@ public class Player : MonoBehaviour
 
         Transform targetTransform;
         targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
+        targetTransform = target.GetComponent<Character>() ? target.transform.Find("CamPoint") : target.transform;
 
         //Cam Shift & Alpha fade
         EnableControls(false);
