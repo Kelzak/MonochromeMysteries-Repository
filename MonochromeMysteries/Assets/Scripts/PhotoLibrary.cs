@@ -15,10 +15,13 @@ using UnityEngine.EventSystems;
 public class PhotoLibrary : MonoBehaviour
 {
     public static PhotoLibrary _instance;
-    public const int MAX_PHOTOS = 3;
+    public const int MAX_PHOTOS = 99;
 
-    private List<Photo> scrapbook;
-    private uint pictureCount = 0;
+    private List<PhotoInfo> photoInfo;
+    private PhotoSlot[] photoSlots;
+    private uint photoCount = 0;
+    private int photosPerPage = 3;
+    private int pageNum = 0;
 
     private GameObject selectedSlot;
     [HideInInspector]
@@ -40,6 +43,7 @@ public class PhotoLibrary : MonoBehaviour
     private GameObject examinePhotoMenu;
     private GameObject photoGrid;
     private GameObject noPhotosText;
+    private Button prevPageButton, nextPageButton;
     private int currentPage = 0;
 
     private delegate void ScrapbookEvent();
@@ -49,46 +53,18 @@ public class PhotoLibrary : MonoBehaviour
     /// <summary>
     /// The photo structure that contains the image associated with a photo as well as the clues featured in the photo
     /// </summary>
-    public class Photo
+    public struct PhotoInfo
     {
 
         [Header("Photo Elements")]
-        public GameObject photoSlot;
         public Sprite image;
         public int[] cluesFeatured;
         public string labelText, detailsText;
 
-        [Header("Submenu")]
-        public RectTransform subMenu;
-        private bool subMenu_Active = false;
-        private float subMenu_TransitionTime = 0.25f;
-
-        public Photo(GameObject photoSlot, Sprite image, params int[] cluesFeatured)
+        public PhotoInfo(Sprite image, params int[] cluesFeatured)
         {
             this.image = image;
             this.cluesFeatured = cluesFeatured;
-            this.photoSlot = photoSlot;
-
-            if(photoSlot.transform.Find("Submenu").GetComponent<RectTransform>())
-            this.subMenu = photoSlot.transform.Find("Submenu").GetComponent<RectTransform>();
-
-            //Prepare Examine and Delete Buttons
-            photoSlot.transform.Find("Submenu").Find("ExamineButton").GetComponent<Button>().onClick.AddListener(
-                () => { _instance.ExaminePhoto(_instance.FindPhotoFromObject(photoSlot)); });
-            photoSlot.transform.Find("Submenu").Find("DeleteButton").GetComponent<Button>().onClick.AddListener(
-                () => { _instance.RemovePhoto(_instance.FindPhotoFromObject(photoSlot)); });
-
-            //OnPointerEnter
-            EventTrigger.Entry onPointerEnterEntry = new EventTrigger.Entry();
-            onPointerEnterEntry.eventID = EventTriggerType.PointerEnter;
-            onPointerEnterEntry.callback.AddListener((eventData) => { _instance.selectedSlot = eventData.selectedObject; _instance.StartCoroutine(ToggleSubMenu(true)); });
-            photoSlot.GetComponent<EventTrigger>().triggers.Add(onPointerEnterEntry);
-            //OnPointerExit
-            EventTrigger.Entry onPointerExitEntry = new EventTrigger.Entry();
-            onPointerExitEntry.eventID = EventTriggerType.PointerExit;
-            onPointerExitEntry.callback.AddListener((eventData) => { _instance.selectedSlot = null; _instance.StartCoroutine(ToggleSubMenu(false)); });
-            photoSlot.GetComponent<EventTrigger>().triggers.Add(onPointerExitEntry);
-
 
             labelText = detailsText = "";
             foreach(int x in cluesFeatured)
@@ -103,21 +79,68 @@ public class PhotoLibrary : MonoBehaviour
 
         public void Deconstruct()
         {
-            Destroy(photoSlot);
             Destroy(image);
         }
 
         public void SetClues(params int[] clues)
         {
             cluesFeatured = clues;
-        }
+        }     
 
-        public void SetObject(GameObject photoSlot)
+    }
+
+    /// <summary>
+    /// The Photo Slot Prefab and the various parts associated with it
+    /// </summary>
+    public class PhotoSlot
+    {
+        public GameObject photoSlot;
+        public Image displayImage;
+        public Text label;
+
+        [Header("SubMenu")]
+        public RectTransform subMenu;
+        private float subMenu_TransitionTime = 0.25f;
+        public bool subMenu_Active = false;
+
+        public Button examineButton;
+        public Button deleteButton;
+
+        public PhotoSlot(GameObject photoSlot)
         {
             this.photoSlot = photoSlot;
+
+            //Assign Submenu
+            if (photoSlot.transform.Find("Submenu").GetComponent<RectTransform>())
+                this.subMenu = photoSlot.transform.Find("Submenu").GetComponent<RectTransform>();
+
+            //Assign Image
+            if (photoSlot.transform.Find("Image").GetComponent<Image>())
+                this.displayImage = photoSlot.transform.Find("Image").GetComponent<Image>();
+
+            //Assign Label
+            if (photoSlot.transform.Find("Label").GetComponent<Text>())
+                this.label = photoSlot.transform.Find("Label").GetComponent<Text>();
+
+            //Assign ExamineButton
+            examineButton = subMenu.transform.Find("ExamineButton").GetComponent<Button>();
+
+            //Assign DeleteButton
+            deleteButton = subMenu.transform.Find("DeleteButton").GetComponent<Button>();
+
+            //OnPointerEnter - Bring out Submenu
+            EventTrigger.Entry onPointerEnterEntry = new EventTrigger.Entry();
+            onPointerEnterEntry.eventID = EventTriggerType.PointerEnter;
+            onPointerEnterEntry.callback.AddListener((eventData) => { _instance.selectedSlot = eventData.selectedObject; _instance.StartCoroutine(TogglePhotoSlotSubMenu(true)); });
+            photoSlot.GetComponent<EventTrigger>().triggers.Add(onPointerEnterEntry);
+            //OnPointerExit - Hide Submenu
+            EventTrigger.Entry onPointerExitEntry = new EventTrigger.Entry();
+            onPointerExitEntry.eventID = EventTriggerType.PointerExit;
+            onPointerExitEntry.callback.AddListener((eventData) => { _instance.selectedSlot = null; _instance.StartCoroutine(TogglePhotoSlotSubMenu(false)); });
+            photoSlot.GetComponent<EventTrigger>().triggers.Add(onPointerExitEntry);
         }
 
-        public IEnumerator ToggleSubMenu(bool active)
+        public IEnumerator TogglePhotoSlotSubMenu(bool active)
         {
             if (subMenu_Active == active)
                 yield break;
@@ -135,10 +158,10 @@ public class PhotoLibrary : MonoBehaviour
 
             subMenu_Active = !subMenu_Active;
             bool startBool = subMenu_Active;
-            
+
 
             float currentTime = 0;
-            while(startPos != endPos && subMenu_Active == startBool)
+            while (startPos != endPos && subMenu_Active == startBool)
             {
                 subMenu.anchoredPosition = Vector3.Lerp(startPos, endPos, currentTime / subMenu_TransitionTime);
                 currentTime += Time.unscaledDeltaTime;
@@ -146,9 +169,6 @@ public class PhotoLibrary : MonoBehaviour
             }
             subMenu.anchoredPosition = endPos;
         }
-
-        
-
     }
 
     // Start is called before the first frame update
@@ -156,7 +176,7 @@ public class PhotoLibrary : MonoBehaviour
     {
         _instance = this;
 
-        scrapbook = new List<Photo>();
+        photoInfo = new List<PhotoInfo>();
 
         OnScrapbookChange += UpdateUI;
     }
@@ -166,6 +186,24 @@ public class PhotoLibrary : MonoBehaviour
         noPhotosText = photoCollectionMenu.transform.Find("NoPhotosText").gameObject;
         examinePhotoMenu = photoCollectionMenu.transform.Find("ExamineMenu").gameObject;
         photoGrid = photoCollectionMenu.transform.Find("Grid").gameObject;
+        prevPageButton = photoCollectionMenu.transform.Find("PreviousButton").GetComponent<Button>();
+        nextPageButton = photoCollectionMenu.transform.Find("NextButton").GetComponent<Button>();
+
+        prevPageButton.onClick.AddListener(() => { pageNum--; OnScrapbookChange?.Invoke(); });
+        nextPageButton.onClick.AddListener(() => { pageNum++; OnScrapbookChange?.Invoke(); });
+
+        prevPageButton.gameObject.SetActive(false);
+        nextPageButton.gameObject.SetActive(false);
+
+        //Create PhotoSlots
+        photoSlots = new PhotoSlot[photosPerPage];
+        for(int i = 0; i < photosPerPage; i++)
+        {
+            GameObject newSlot = Instantiate<GameObject>(photoSlotPrefab, photoGrid.transform);
+            photoSlots[i] = new PhotoSlot(newSlot);
+        }
+
+        OnScrapbookChange?.Invoke();
     }
 
     bool examining = false;
@@ -173,7 +211,7 @@ public class PhotoLibrary : MonoBehaviour
     /// Toggle the examining of a specific photo
     /// </summary>
     /// <param name="photo">The Photo in scrapbook to be examined</param>
-    private void ExaminePhoto(Photo photo)
+    private void ExaminePhoto(PhotoInfo photo)
     {
         Debug.Log(examining);
         //If not examining, start examining
@@ -225,7 +263,7 @@ public class PhotoLibrary : MonoBehaviour
     /// <returns>An integer representing the number of photos currently in the scrapbook</returns>
     public int GetPhotoCount()
     {
-        return scrapbook.Count;
+        return photoInfo.Count;
     }
 
     /// <summary>
@@ -237,17 +275,16 @@ public class PhotoLibrary : MonoBehaviour
     {
         photo = _instance.CropPhoto(photo, 160 * 2, 150 * 2);
 
-        _instance.pictureCount++;
+
 
         //Create Image
         Sprite newSprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), Vector2.zero, 100f);
-        newSprite.name = string.Format("Photo-{0}", _instance.pictureCount);
+        newSprite.name = string.Format("Photo-{0}", _instance.photoCount);
         newSprite.texture.Apply();
 
-        //Create PhotoSlot
-        GameObject newSlot = Instantiate(_instance.photoSlotPrefab, _instance.photoCollectionMenu.transform.GetChild(0));
+        _instance.photoInfo.Add(new PhotoInfo(newSprite, clues));        
 
-        _instance.scrapbook.Add(new Photo(newSlot, newSprite, clues));
+        _instance.photoCount++;
 
         _instance.OnScrapbookChange?.Invoke();
     }
@@ -261,29 +298,20 @@ public class PhotoLibrary : MonoBehaviour
     /// Remove a photo from the scrapbook
     /// </summary>
     /// <param name="photo">Photo struct to be removed</param>
-    public void RemovePhoto(Photo photo)
+    public void RemovePhoto(PhotoInfo photo)
     {
-       int indexToRemove = _instance.scrapbook.FindIndex((Photo photoI) => { return photoI.image == photo.image && 
+       int indexToRemove = _instance.photoInfo.FindIndex((PhotoInfo photoI) => { return photoI.image == photo.image && 
                                                                  photoI.labelText == photo.labelText &&
                                                                  photoI.detailsText == photo.detailsText; });
         if (indexToRemove != -1)
         {
             //Destroy Photo Slot GameObject
-            _instance.scrapbook[indexToRemove].Deconstruct();
+            _instance.photoInfo[indexToRemove].Deconstruct();
             //Remove from Scrapbook
-            _instance.scrapbook.RemoveAt(indexToRemove);
+            _instance.photoInfo.RemoveAt(indexToRemove);
         }
 
         _instance.OnScrapbookChange?.Invoke();
-    }
-
-    /// <summary>
-    /// Remove a photo from the scrapbook
-    /// </summary>
-    /// <param name="photoSlot">The photo slot GameObject to be removed</param>
-    public void RemovePhoto(GameObject photoSlot)
-    {
-        RemovePhoto(_instance.FindPhotoFromObject(photoSlot));
     }
 
     /// <summary>
@@ -340,36 +368,63 @@ public class PhotoLibrary : MonoBehaviour
     /// </summary>
     private void UpdateUI()
     {
+        //Adjust Page num if on Empty Page
+        if (pageNum > 0 && photoInfo.Count <= pageNum * photosPerPage)
+        {
+            pageNum--;
+        }
+
         //Decide Whether to display "No Photos" Text
-        if(scrapbook.Count > 0 && noPhotosText.activeSelf == true)
+        if(photoInfo.Count > 0 && noPhotosText.activeSelf == true)
         {
             noPhotosText.SetActive(false);
         }
-        else if (scrapbook.Count <= 0 && noPhotosText.activeSelf == false)
+        else if (photoInfo.Count <= 0 && noPhotosText.activeSelf == false)
         {
             noPhotosText.SetActive(true);
         }
 
-        //Update Picture Menu
-        for(int i = 0; i < scrapbook.Count; i++)
+        //Adjust next & previous button visibility
+        prevPageButton.gameObject.SetActive(pageNum > 0);
+        nextPageButton.gameObject.SetActive(photoInfo.Count > pageNum * photosPerPage + photosPerPage);
+
+        //Update Photos based on Page
+        for(int i = 1; i <= photosPerPage; i++)
         {
-            GameObject photoSlot = scrapbook[i].photoSlot;
-            photoSlot.transform.Find("Image").GetComponent<Image>().sprite = scrapbook[i].image;
-            photoSlot.transform.Find("Label").GetComponent<Text>().text = scrapbook[i].labelText;
-            
+            int photoSlotIndex = (i - 1);
+            int photoInfoIndex = i + (pageNum * photosPerPage) - 1;
+
+            if (photoInfoIndex < photoInfo.Count)
+            {
+                photoSlots[photoSlotIndex].photoSlot.SetActive(true);
+                photoSlots[photoSlotIndex].displayImage.sprite = photoInfo[photoInfoIndex].image;
+                photoSlots[photoSlotIndex].label.text = photoInfo[photoInfoIndex].labelText;
+
+                //Fix Listeners
+                photoSlots[photoSlotIndex].examineButton.onClick.RemoveAllListeners();
+                photoSlots[photoSlotIndex].deleteButton.onClick.RemoveAllListeners();
+
+                //Add correct ones
+                photoSlots[photoSlotIndex].examineButton.onClick.AddListener(() => { _instance.ExaminePhoto(photoInfo[photoInfoIndex]); });
+                photoSlots[photoSlotIndex].deleteButton.onClick.AddListener(() => { _instance.RemovePhoto(photoInfo[photoInfoIndex]); });
+            }
+            else
+            {
+                photoSlots[photoSlotIndex].photoSlot.SetActive(false);
+            }
         }
     }
 
-    private Photo FindPhotoFromObject(GameObject obj)
-    {
-        for (int i = 0; i < scrapbook.Count; i++)
-        {
-            if (scrapbook[i].photoSlot == obj)
-                return scrapbook[i];
-        }
+    //private PhotoInfo FindPhotoFromObject(GameObject obj)
+    //{
+    //    for (int i = 0; i < photoInfo.Count; i++)
+    //    {
+    //        if (photoInfo[i].photoSlot == obj)
+    //            return photoInfo[i];
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 
     private void OnDisable()
     {

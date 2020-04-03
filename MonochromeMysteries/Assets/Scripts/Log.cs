@@ -97,14 +97,22 @@ public class Log : MonoBehaviour
         float currentTime = 0, transitionTime = 0.25f;
         while(currentTime < transitionTime)
         {
+            if(toRemove == null || textComp == null)
+            {
+                yield break;
+            }
+
             textComp.color = Color.Lerp(startColor, targetColor, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
 
             currentTime += Time.deltaTime;
             yield return null;
         }
 
-        entries.Dequeue();
-        Destroy(toRemove.@object);
+        if (entries.Count > 0)
+        {
+            entries.Dequeue();
+            Destroy(toRemove.@object);
+        }
     }
     private void Awake()
     {
