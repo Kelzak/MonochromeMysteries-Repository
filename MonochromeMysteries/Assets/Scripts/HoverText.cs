@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using TMPro;
 public class HoverText : MonoBehaviour
 {
@@ -14,13 +15,18 @@ public class HoverText : MonoBehaviour
     public Player player;
     private float dist;
     public float displayDist = 5f;
+    public TMP_FontAsset font;
+
+    //used for displaying the UI when rat carries key or not
+    public bool UIstop;
 
     // Start is called before the first frame update
     void Start()
     {
-        text = GameObject.Find("Text").GetComponent<TextMeshProUGUI>();
+        //text = GameObject.Find("Text").GetComponent<TextMeshProUGUI>();
         text = GetComponentInChildren<TextMeshProUGUI>();
         text.SetText(myString);
+        text.font = font;
         //text.color = Color.white;
     }
 
@@ -46,6 +52,11 @@ public class HoverText : MonoBehaviour
 
     void Display()
     {
+        if (UIstop)
+        {
+            text.color = Color.Lerp(text.color, Color.clear, fadeTime * Time.deltaTime);
+            return;
+        }
         if(displayWhenGhost)
         {
             if (display)
@@ -92,7 +103,7 @@ public class HoverText : MonoBehaviour
     {
         if(!isStatic)
         {
-            Transform look = FindObjectOfType<Player>().GetComponent<Transform>();
+            Transform look = FindObjectOfType<Camera>().GetComponent<Transform>();
             transform.LookAt(look);
         }
     }
