@@ -52,6 +52,9 @@ public class Player : MonoBehaviour
     public PPSettings ppvToggle;
     public static bool hasCamera;
     public Photographer photographer;
+    public static bool isAtTheFirstSafe;
+    public static bool isAtTheSecondSafe;
+    public static bool isAtTheThirdSafe;
 
     //public Text pickUpInstructions;
     //public Text possessionInstructions;
@@ -182,11 +185,77 @@ public class Player : MonoBehaviour
 
         PickUp();
 
+        Debug.Log(isAtTheFirstSafe);
+        Debug.Log(isAtTheSecondSafe);
+        Debug.Log(isAtTheThirdSafe);
     }
+
+    public bool isLookingAtSafe1;
+    public bool isLookingAtSafe2;
+    public bool isLookingAtSafe3;
+
+    public GameObject keypadPanel;
 
     //PICKING UP OBJECTS
     private void OnTriggerStay(Collider other)
-    { 
+    {
+        Ray safeCheck = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+
+        if (Physics.Raycast(safeCheck, out hit))
+        {
+            Debug.Log(hit.collider.name);
+            if(hit.collider.name == "LockedSafe1")
+            {
+                isLookingAtSafe1 = true;
+            }
+            else if (hit.collider.name == "LockedSafe2")
+            {
+                isLookingAtSafe2 = true;
+            }
+            else if (hit.collider.name == "LockedSafe3")
+            {
+                isLookingAtSafe3 = true;
+            }
+            else
+            {
+                isLookingAtSafe1 = false;
+                isLookingAtSafe2 = false;
+                isLookingAtSafe3 = false;
+            }
+
+        }
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            if (other.gameObject.name == "LockedSafe1" && isLookingAtSafe1)
+            {
+                keypadPanel.SetActive(true);
+                isAtTheFirstSafe = true;
+                isAtTheSecondSafe = false;
+                isAtTheThirdSafe = false;
+            }
+            else if (other.gameObject.name == "LockedSafe2" && isLookingAtSafe2)
+            {
+                keypadPanel.SetActive(true);
+                isAtTheFirstSafe = false;
+                isAtTheSecondSafe = true;
+                isAtTheThirdSafe = false;
+            }
+            else if (other.gameObject.name == "LockedSafe3" && isLookingAtSafe3)
+            {
+                keypadPanel.SetActive(true);
+                isAtTheFirstSafe = false;
+                isAtTheSecondSafe = false;
+                isAtTheThirdSafe = true;
+            }
+            else
+            {
+                isAtTheFirstSafe = false;
+                isAtTheSecondSafe = false;
+                isAtTheThirdSafe = false;
+            }
+        }
+        
 
         ////kevs stuff below
         ///
