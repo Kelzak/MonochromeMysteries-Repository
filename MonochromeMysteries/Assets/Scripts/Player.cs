@@ -497,8 +497,15 @@ public class Player : MonoBehaviour
         }
 
         Transform targetTransform;
-        targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
-        targetTransform = target.GetComponent<Character>() ? target.transform.Find("CamPoint") : target.transform;
+        if(target.GetComponent<Photographer>())
+        {
+            targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
+        }
+        else
+        {
+            targetTransform = target.GetComponent<Character>() ? target.transform.Find("CamPoint") : target.transform;
+        }
+        
 
         //Cam Shift & Alpha fade
         EnableControls(false);

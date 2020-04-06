@@ -506,7 +506,7 @@ MonoBehaviour:
   display: 0
   isStatic: 1
   player: {fileID: 0}
-  displayDist: 5
+  displayDist: 7
   font: {fileID: 11400000, guid: 45f76132063405047b3d9b87e1467083, type: 2}
   UIstop: 0
 --- !u!1 &1848303131707400926
@@ -738,7 +738,7 @@ MonoBehaviour:
   display: 0
   isStatic: 1
   player: {fileID: 0}
-  displayDist: 5
+  displayDist: 7
   font: {fileID: 11400000, guid: 45f76132063405047b3d9b87e1467083, type: 2}
   UIstop: 0
 --- !u!1 &1848303132012259468
