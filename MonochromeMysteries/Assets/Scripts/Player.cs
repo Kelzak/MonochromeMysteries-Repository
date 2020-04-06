@@ -195,27 +195,25 @@ public class Player : MonoBehaviour
 
         PickUp();
 
-        //RaycastHit safeHit;
+        InteractWithSafe();
 
+
+    }
+
+    public void InteractWithSafe()
+    {
         Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        Debug.DrawLine(new Vector3(0.5f, 0.5f, 0), new Vector3(0.5f, 0.5f, 0) * 1000, Color.green);
-        if(Physics.Raycast(safeRay, out hit))
+        if (Physics.Raycast(safeRay, out hit))
         {
-            if (hit.distance < reticleDist)
+            if (hit.collider.tag == "safe" && hit.distance < reticleDist)
             {
-                if(Input.GetKeyDown(KeyCode.F))
+                if (Input.GetKeyDown(KeyCode.F))
                 {
                     safeName = hit.collider.name;
                     safeManager.ShowKeypad();
                 }
             }
         }
-
-    }
-
-    public void InteractWithSafe()
-    {
-
     }
 
 
@@ -224,63 +222,7 @@ public class Player : MonoBehaviour
 
     //PICKING UP OBJECTS
     private void OnTriggerStay(Collider other)
-    {
-        
-        
-        
-        if (Physics.Raycast(safeCheck, out hit))
-        {
-            
-            if (hit.collider.name == "LockedSafe1")
-            {
-                isLookingAtSafe1 = true;
-            }
-            else if (hit.collider.name == "LockedSafe2")
-            {
-                isLookingAtSafe2 = true;
-            }
-            else if (hit.collider.name == "LockedSafe3")
-            {
-                isLookingAtSafe3 = true;
-            }
-            else
-            {
-                isLookingAtSafe1 = false;
-                isLookingAtSafe2 = false;
-                isLookingAtSafe3 = false;
-            }
-
-        }
-
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            if (other.gameObject.name == "LockedSafe1" && isLookingAtSafe1)
-            {
-                isAtTheFirstSafe = true;
-                isAtTheSecondSafe = false;
-                isAtTheThirdSafe = false;
-            }
-            else if (other.gameObject.name == "LockedSafe2" && isLookingAtSafe2)
-            {
-                isAtTheFirstSafe = false;
-                isAtTheSecondSafe = true;
-                isAtTheThirdSafe = false;
-            }
-            else if (other.gameObject.name == "LockedSafe3" && isLookingAtSafe3)
-            {
-                isAtTheFirstSafe = false;
-                isAtTheSecondSafe = false;
-                isAtTheThirdSafe = true;
-            }
-            else
-            {
-                isAtTheFirstSafe = false;
-                isAtTheSecondSafe = false;
-                isAtTheThirdSafe = false;
-            }
-        }
-        
-
+    { 
         ////kevs stuff below
         ///
         //if (other.gameObject.tag == "Selectable")

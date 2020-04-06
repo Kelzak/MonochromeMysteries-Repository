@@ -13,8 +13,6 @@ public class PadlockPuzzle : MonoBehaviour
     public static string enteredCode2;
     public static string enteredCode3;
 
-
-
     public Text inputCodeText;
 
     public GameObject safe1;
@@ -35,7 +33,6 @@ public class PadlockPuzzle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckifCodeisCorrect();
         //for testing
         if(Input.GetKeyDown(KeyCode.H))
         {
@@ -55,23 +52,26 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void DetermineNumberPressed(string numberPressed)
     {
-        if(Player.safeName == safe1.name)
+        if(totalInputs != 5)
         {
-            inputCodeText.text += numberPressed;
-            enteredCode1 += numberPressed;
-            totalInputs += 1;
-        }
-        else if (Player.safeName == safe2.name)
-        {
-            inputCodeText.text += numberPressed;
-            enteredCode2 += numberPressed;
-            totalInputs += 1;
-        }
-        else if (Player.safeName == safe3.name)
-        {
-            inputCodeText.text += numberPressed;
-            enteredCode3 += numberPressed;
-            totalInputs += 1;
+            if (Player.safeName == safe1.name)
+            {
+                inputCodeText.text += numberPressed;
+                enteredCode1 += numberPressed;
+                totalInputs += 1;
+            }
+            else if (Player.safeName == safe2.name)
+            {
+                inputCodeText.text += numberPressed;
+                enteredCode2 += numberPressed;
+                totalInputs += 1;
+            }
+            else if (Player.safeName == safe3.name)
+            {
+                inputCodeText.text += numberPressed;
+                enteredCode3 += numberPressed;
+                totalInputs += 1;
+            }
         }
     }
 
@@ -97,7 +97,7 @@ public class PadlockPuzzle : MonoBehaviour
         totalInputs = 0;
     }
 
-    private void CheckifCodeisCorrect()
+    public void CheckifCodeisCorrect()
     {
         if (totalInputs == 5)
         {
