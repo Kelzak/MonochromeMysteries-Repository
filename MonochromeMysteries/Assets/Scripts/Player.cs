@@ -107,6 +107,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        drawList = new List<Vector3>();
         //ppvToggle.Toggle(true);
     }
 
@@ -636,20 +637,27 @@ public class Player : MonoBehaviour
                 //Set temp to point being tested, account for size of mesh to make sure it doesn't clip through wall
                 temp = GetComponent<MeshRenderer>().bounds.center + (transform.forward * checkRadius * multiplierOptions[j]) + (transform.right * checkRadius * multiplierOptions[i]);
                 temp.y -= GetComponent<MeshRenderer>().bounds.extents.y;
+                drawList.Add(temp);
                 //point is deemed safe until proven not
                 safeExitPoint = true;
 
                 //Make sure point is visible
                 RaycastHit visibleHit;
-                if(Physics.Linecast(cam.transform.position, temp, out visibleHit) && visibleHit.collider.gameObject != gameObject)
+                if (Physics.Linecast(cam.transform.position, temp, out visibleHit) && (visibleHit.collider.gameObject != gameObject) && visibleHit.collider.gameObject.tag != "Floor")
+                {
                     safeExitPoint = false;
+                    continue;
+                }
 
                 //Make sure there's enough space around the point
-                Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents);
+                Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents / 2);
                 for (int k = 0; k < hit.Length; k++)
                 {
                     if (hit[k].gameObject.tag != "Floor" && hit[k].gameObject != gameObject)
+                    {
                         safeExitPoint = false;
+                        break;
+                    }
                     else
                         closestPointOnFloor = hit[k].ClosestPoint(temp);
                 }
@@ -690,11 +698,15 @@ public class Player : MonoBehaviour
         if (gameObject != mainPlayer)
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
 
+        Vector3 startPoint = transform.position;
+        if (GetComponent<Photographer>())
+            startPoint = transform.Find("CamPoint").position + camOffset;
+
         //Zoom out
         while (camComp.fieldOfView < maxFOV)
         {
             camComp.fieldOfView = Mathf.Lerp(minFOV, maxFOV, currentTime / transitionTime);
-            cam.transform.position = Vector3.Lerp(transform.position, mainPlayer.transform.position + camOffset, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
+            cam.transform.position = Vector3.Lerp(startPoint, mainPlayer.transform.position + camOffset, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             cam.transform.rotation = Quaternion.Lerp(transform.rotation, mainPlayer.transform.rotation, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
 
             currentTime += Time.deltaTime;
@@ -775,6 +787,16 @@ public class Player : MonoBehaviour
                 }
             }
         }
+
     }
-    
+
+    List<Vector3> drawList;
+    void OnDrawGizmos()
+    {
+        foreach(Vector3 x in drawList)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(x, 0.5f);
+        }
+    }
 }
