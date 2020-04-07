@@ -56,6 +56,7 @@ public class NavPerson : MonoBehaviour
     private RaycastHit hit;
 
     private bool waitAfterPossess;
+    private bool isWaiting;
     public float waitAfterPossessTime = 20f;
 
     void Start()
@@ -293,7 +294,11 @@ public class NavPerson : MonoBehaviour
         isPossessed = false;
         GetComponent<NavMeshAgent>().isStopped = false;
         //Debug.Log("invoke");
-        Invoke("PossessWait", waitAfterPossessTime);
+        if(!isWaiting)
+        {
+            isWaiting = true;
+            Invoke("PossessWait", waitAfterPossessTime);       
+        }
     }
 
     //void RainFix()
@@ -308,6 +313,7 @@ public class NavPerson : MonoBehaviour
     //}
     void PossessWait()
     {
+        isWaiting = false;
         waitAfterPossess = false;
         //Debug.Log("pass");
     }
