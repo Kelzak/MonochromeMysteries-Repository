@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:MonochromeMysteries/Assets/Scenes/Scripts.meta
 guid: b6c815a9d8c76bd49be47a679ece09f3
+=======
+guid: 92d075b05623f3542b054fcc6918fc4a
+>>>>>>> 0748c329456a37cb1392ccc0895a3309dd83ee26:MonochromeMysteries/Assets/Prefabs/Characters.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

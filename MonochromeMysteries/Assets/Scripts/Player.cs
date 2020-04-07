@@ -52,6 +52,9 @@ public class Player : MonoBehaviour
     public PPSettings ppvToggle;
     public static bool hasCamera;
     public Photographer photographer;
+    public static bool isAtTheFirstSafe;
+    public static bool isAtTheSecondSafe;
+    public static bool isAtTheThirdSafe;
 
     //public Text pickUpInstructions;
     //public Text possessionInstructions;
@@ -91,6 +94,16 @@ public class Player : MonoBehaviour
 
     //pick up stuff
     public static List<GameObject> keys = new List<GameObject>();
+
+    //Puzzle Stuff
+    public PadlockPuzzle safeManager;
+    Ray safeCheck;
+    public bool isLookingAtSafe1;
+    public bool isLookingAtSafe2;
+    public bool isLookingAtSafe3;
+
+    //public GameObject keypadPanel;
+    public static string safeName;
 
     private void Awake()
     {
@@ -182,12 +195,34 @@ public class Player : MonoBehaviour
 
         PickUp();
 
+        InteractWithSafe();
+
+
     }
+
+    public void InteractWithSafe()
+    {
+        Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        if (Physics.Raycast(safeRay, out hit))
+        {
+            if (hit.collider.tag == "safe" && hit.distance < reticleDist)
+            {
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    safeName = hit.collider.name;
+                    safeManager.ShowKeypad();
+                }
+            }
+        }
+    }
+
+
+
+    //Ray safeCheck = Camera.main.ViewportPointToRay(new Vector3(0, 1, 0));
 
     //PICKING UP OBJECTS
     private void OnTriggerStay(Collider other)
     { 
-
         ////kevs stuff below
         ///
         //if (other.gameObject.tag == "Selectable")
@@ -462,8 +497,15 @@ public class Player : MonoBehaviour
         }
 
         Transform targetTransform;
-        targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
-        targetTransform = target.GetComponent<Character>() ? target.transform.Find("CamPoint") : target.transform;
+        if(target.GetComponent<Photographer>())
+        {
+            targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
+        }
+        else
+        {
+            targetTransform = target.GetComponent<Character>() ? target.transform.Find("CamPoint") : target.transform;
+        }
+        
 
         //Cam Shift & Alpha fade
         EnableControls(false);
