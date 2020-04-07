@@ -18,8 +18,9 @@ public class PadlockPuzzle : MonoBehaviour
     public GameObject safe1;
     public GameObject safe2;
     public GameObject safe3;
-
+   
     public GameObject keypadPanel;
+    public InputField inputField;
 
     public int totalInputs = 0;
 
@@ -52,27 +53,36 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void DetermineNumberPressed(string numberPressed)
     {
-        if(totalInputs != 5)
+        if(numberPressed != "backspace")
         {
-            if (Player.safeName == safe1.name)
+            if (totalInputs != 5)
             {
-                inputCodeText.text += numberPressed;
-                enteredCode1 += numberPressed;
-                totalInputs += 1;
-            }
-            else if (Player.safeName == safe2.name)
-            {
-                inputCodeText.text += numberPressed;
-                enteredCode2 += numberPressed;
-                totalInputs += 1;
-            }
-            else if (Player.safeName == safe3.name)
-            {
-                inputCodeText.text += numberPressed;
-                enteredCode3 += numberPressed;
-                totalInputs += 1;
+                if (Player.safeName == safe1.name)
+                {
+                    inputField.text += numberPressed;
+                    enteredCode1 += numberPressed;
+                    totalInputs += 1;
+                }
+                else if (Player.safeName == safe2.name)
+                {
+                    inputField.text += numberPressed;
+                    enteredCode2 += numberPressed;
+                    totalInputs += 1;
+                }
+                else if (Player.safeName == safe3.name)
+                {
+                    inputField.text += numberPressed;
+                    enteredCode3 += numberPressed;
+                    totalInputs += 1;
+                }
             }
         }
+        else
+        {
+            inputField.text = inputField.text.Remove(inputField.text.Length - 1, 1);
+            totalInputs -= 1;
+        }
+
     }
 
     public void ShowKeypad()
