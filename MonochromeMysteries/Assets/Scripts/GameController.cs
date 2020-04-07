@@ -22,13 +22,37 @@ public class GameController : MonoBehaviour
 
     public bool paused = false;
 
+    private GameObject pauseMenu;
+    private GameObject[] pauseMenu_tabs;
+    private GameObject[] pauseMenu_menus;
+    public enum Menu { Scrapbook, LoadGame, Options };
+    private Menu pauseMenu_activeMenu;
+
     private AudioSource[] audioSources;
 
     // Start is called before the first frame update
     void Start()
     {
         _instance = this;
+
+        //Assign Menus
         mainHUD = GameObject.Find("HUD").GetComponent<Canvas>();
+        pauseMenu = mainHUD.transform.Find("Menu").gameObject;
+        pauseMenu_tabs = new GameObject[] { pauseMenu.transform.Find("Tabs").Find("Scrapbook").gameObject,
+                                            pauseMenu.transform.Find("Tabs").Find("LoadGame").gameObject,
+                                            pauseMenu.transform.Find("Tabs").Find("Options").gameObject };
+        pauseMenu_menus = new GameObject[3];
+        pauseMenu_menus[(int) Menu.Scrapbook] = pauseMenu.transform.Find("PhotoCollection").gameObject;
+        pauseMenu_menus[(int) Menu.LoadGame] = pauseMenu.transform.Find("LoadGame").gameObject;
+        pauseMenu_menus[(int) Menu.Options] = pauseMenu.transform.Find("Options").gameObject;
+
+        //Add Listeners to tabs;
+        pauseMenu_tabs[(int)Menu.Scrapbook].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Scrapbook); });
+        pauseMenu_tabs[(int)Menu.LoadGame].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.LoadGame); });
+        pauseMenu_tabs[(int)Menu.Options].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Options); });
+
+        pauseMenu.SetActive(false);
+
         cam = Camera.main;
         soul = GameObject.Find("Player");
         soul.transform.position = playerSpawn.transform.position;
@@ -46,19 +70,11 @@ public class GameController : MonoBehaviour
     /// </summary>
     void Update()
     {
-        //Photo Library Menu
-        if(Input.GetKeyDown(KeyCode.Tab) && (!menuActive || PhotoLibrary._instance.photoCollectionMenu.gameObject.activeSelf == true))
+        //Open/Close Menu
+        if(Input.GetKeyDown(KeyCode.Tab) && (!menuActive || pauseMenu.activeSelf == true))
         {
             TogglePause();
-            PhotoLibrary._instance.photoCollectionMenu.gameObject.SetActive(paused);
-            if (PhotoLibrary._instance.GetPhotoCount() > 3)
-            {
-                Transform grid = PhotoLibrary._instance.photoCollectionMenu.transform.GetChild(0);
-                Vector3 topPos = grid.position;
-                topPos.y = 225;
-                grid.position = topPos;
-
-            }
+            pauseMenu.SetActive(paused);
             //sounds for book
             if(!menuActive)
             {
@@ -88,6 +104,17 @@ public class GameController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.X) && MainMenu.IsInRange())
         {
             //Save code
+        }
+    }
+
+    public void ChangeMenu(Menu newMenu)
+    {
+        for(int i = 0; i < pauseMenu_menus.Length; i++)
+        {
+            if (i == (int) newMenu)
+                pauseMenu_menus[i].SetActive(true);
+            else
+                pauseMenu_menus[i].SetActive(false);
         }
     }
 
