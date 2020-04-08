@@ -173,6 +173,7 @@ public class DoorScript : MonoBehaviour
                     rand = Random.Range(0, unlockDoor.Length);
                     sound = unlockDoor[rand];
                     audioSource.PlayOneShot(sound);
+                    Log.AddEntry("Unlocked Door");
                     Unlock();
                 }
                 else

@@ -9,11 +9,14 @@ public class Dialogue : MonoBehaviour
 
     const int MAX_CHARACTERS = 87;
 
+    public static bool leftClickPriority = false;
+
     public static bool holding = false;
     public GameObject panel;
     private Image speakerImage;
     private Text speakerName;
     private Text dialogueText;
+    private GameObject continuePrompt;
 
     public Queue<DialogueLine> dialogueQueue;
     public class DialogueLine
@@ -83,30 +86,52 @@ public class Dialogue : MonoBehaviour
         while (transitionInProgress)
             yield return null;
 
-        float secondsToWait = 3f;
+
         while (dialogueQueue.Count > 0)
         {
-            secondsToWait = 3f;
             currentMessage = dialogueQueue.Peek().message.ToCharArray();
             dialogueText.text = "";
             this.speakerImage.sprite = dialogueQueue.Peek().speakerPicture;
             this.speakerName.text = dialogueQueue.Peek().speakerName;
 
-            for (int i = 0; i < currentMessage.Length; i++)
+            leftClickPriority = true;
+            for (int i = 0; i < currentMessage.Length && !Input.GetMouseButtonDown(0); i++)
             {
                 dialogueText.text += currentMessage[i];
                 yield return new WaitForSecondsRealtime(0.025f);
             }
+            dialogueText.text = dialogueQueue.Peek().message;
+            //Clear Mouse Button Down Buffer
+            if (Input.GetMouseButtonDown(0))
+                yield return null;
+            leftClickPriority = false;
 
             while (dialogueQueue.Peek().holdLine == true)
             {
                 holding = true;
-                secondsToWait = 0;
                 yield return null;
             }
             holding = false;
 
-            yield return new WaitForSecondsRealtime(secondsToWait);
+            int frameCount = 0;
+            leftClickPriority = true;
+            while (!Input.GetMouseButtonDown(0))
+            {
+                if (frameCount % 30 == 0 && !continuePrompt.activeSelf)
+                    continuePrompt.SetActive(true);
+                else if (frameCount % 30 == 15 && continuePrompt.activeSelf)
+                    continuePrompt.SetActive(false);
+                else if (frameCount == 30)
+                    frameCount = 0;
+
+                frameCount++;
+                yield return null;
+            }
+            continuePrompt.SetActive(false);
+
+            if (Input.GetMouseButtonDown(0))
+                yield return null;
+            leftClickPriority = false;
 
             
 
@@ -178,7 +203,9 @@ public class Dialogue : MonoBehaviour
         speakerImage = panel.transform.Find("PhotoSlot").Find("Image").GetComponent<Image>();
         speakerName = panel.transform.Find("PhotoSlot").Find("Label").GetComponent<Text>();
         dialogueText = panel.transform.Find("Text").GetComponent<Text>();
+        continuePrompt = panel.transform.Find("Prompt").gameObject;
 
+        continuePrompt.SetActive(false);
         panel.SetActive(false);
         dialogueQueue = new Queue<DialogueLine>();
     }

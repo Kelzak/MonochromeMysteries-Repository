@@ -38,6 +38,7 @@ public class Log : MonoBehaviour
         //If there will be too many entries, delete the oldest one
         if (entries.Count + 1 > MAX_ENTRIES)
         {
+            StopCoroutine(LogEntryDecay());
             LogEntry remove = entries.Dequeue();
             Destroy(remove.@object);
         }

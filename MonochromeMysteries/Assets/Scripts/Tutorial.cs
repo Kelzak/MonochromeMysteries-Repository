@@ -13,6 +13,7 @@ public class Tutorial : MonoBehaviour
     public event TutorialEvent onPhotographerEnter;
     public event TutorialEvent onFirstPhoto;
     public event TutorialEvent onFirstCloseScrapbook;
+    public event TutorialEvent onTutorialEnd;
 
     bool photographerEntered = false;
 
@@ -32,6 +33,7 @@ public class Tutorial : MonoBehaviour
         Dialogue.AddLine(Dialogue.Character.Pete, true, "Good job on getting that there photographer in here. Now remember what I was sayin’ about those objects with a white aura ? Go and take some photographs of those right quick(by clicking the left mouse button).");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "Great you’ve collected some evidence. Take a look at those photographs in your scrapbook (by pressing tab). You’ll be able to examine them for more clues there.");
         Dialogue.AddLine(Dialogue.Character.Pete, "Well good luck out there youngin! I’ll be rootin’ for ya, but you’re on your own from here on out. I’m not as young a soul as I used to be, all this here excitement has gone and tuckered me out");
+        TriggerTutorialEnd();
     }
 
     Collider[] hit;
@@ -39,7 +41,7 @@ public class Tutorial : MonoBehaviour
     {
         while (!photographerEntered)
         {
-            hit = Physics.OverlapBox(new Vector3(92.82f, 7.397f, 157), new Vector3(3.15f / 2, 4.59f / 2, 1.35f / 2), Quaternion.identity);
+            hit = Physics.OverlapBox(new Vector3(77.57f, 13.64f, -72.79f), new Vector3(3.65f / 2, 5.92f / 2, 2.41f / 2), Quaternion.identity);
             foreach (Collider x in hit)
             {
                 if (x.GetComponent<Photographer>())
@@ -188,4 +190,21 @@ public class Tutorial : MonoBehaviour
         onFirstCloseScrapbook -= TriggerFirstCloseScrapbook;
     }
 
+    //ON TUTORIAL END
+    private void TriggerTutorialEnd()
+    {
+        StartCoroutine(TutorialEnd());
+    }
+
+    private IEnumerator TutorialEnd()
+    {
+        //Wait until other parts of the tutorial have been completed
+        while(onFirstRatPossession != null || onPhotographerEnter != null
+               || onFirstPhoto != null || onFirstCloseScrapbook != null)
+        {
+            yield return null;
+        }
+
+        //INSERT CODE TO OCCUR AFTER TUTORIAL END HERE
+    }
 }

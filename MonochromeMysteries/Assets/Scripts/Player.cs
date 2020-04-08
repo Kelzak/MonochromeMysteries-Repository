@@ -107,7 +107,6 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        drawList = new List<Vector3>();
         //ppvToggle.Toggle(true);
     }
 
@@ -327,7 +326,7 @@ public class Player : MonoBehaviour
                     //pickup
                     if (Input.GetKeyDown(KeyCode.F) && selection.gameObject.CompareTag("Key") && canPickup)
                     {
-                        //Debug.Log("Added Key");
+                        Log.AddEntry("Picked up Key");
                         audioSource.PlayOneShot(obtainClip);
                         keys.Add(selection.gameObject);
                         Destroy(selection.gameObject);
@@ -637,7 +636,6 @@ public class Player : MonoBehaviour
                 //Set temp to point being tested, account for size of mesh to make sure it doesn't clip through wall
                 temp = GetComponent<MeshRenderer>().bounds.center + (transform.forward * checkRadius * multiplierOptions[j]) + (transform.right * checkRadius * multiplierOptions[i]);
                 temp.y -= GetComponent<MeshRenderer>().bounds.extents.y;
-                drawList.Add(temp);
                 //point is deemed safe until proven not
                 safeExitPoint = true;
 
@@ -790,13 +788,4 @@ public class Player : MonoBehaviour
 
     }
 
-    List<Vector3> drawList;
-    void OnDrawGizmos()
-    {
-        foreach(Vector3 x in drawList)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(x, 0.5f);
-        }
-    }
 }

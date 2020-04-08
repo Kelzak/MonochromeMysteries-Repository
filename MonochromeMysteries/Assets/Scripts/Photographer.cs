@@ -67,6 +67,9 @@ public class Photographer : Person
     bool canTakePhoto = true;
     public override void Ability()
     {
+        if (Dialogue.leftClickPriority == true)
+            return;
+
         if (!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() < PhotoLibrary.MAX_PHOTOS)
         {
             Player.EnableControls(false);
