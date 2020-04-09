@@ -6,12 +6,16 @@ using UnityEngine.UI;
 public class PadlockPuzzle : MonoBehaviour
 {
     [SerializeField]
-    public static string correctCode1 = "12345";
-    public static string correctCode2 = "54321";
-    public static string correctCode3 = "67890";
-    public static string enteredCode1;
+    public static string correctCode1 = "030646"; //The mechanic's birthday
+    public static string correctCode2 = "654321";
+    public static string correctCode3 = "000000";
+    /*public static string enteredCode1;
     public static string enteredCode2;
-    public static string enteredCode3;
+    public static string enteredCode3;*/
+    public AudioClip safeOpeningSFX;
+    public AudioClip buttonPressedSFX;
+    public AudioClip incorrectSFX;
+    public AudioSource audioSource;
 
     public Text inputCodeText;
 
@@ -22,19 +26,20 @@ public class PadlockPuzzle : MonoBehaviour
     public GameObject keypadPanel;
     public InputField inputField;
 
-    public int totalInputs = 0;
+    //public int totalInputs = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         inputCodeText.text = "";
-        enteredCode1 = enteredCode2 = enteredCode3 = "";
+        //enteredCode1 = enteredCode2 = enteredCode3 = "";
+        inputField.characterLimit = 6;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //for testing
+        //FOR TESTING PURPOSES
         if(Input.GetKeyDown(KeyCode.H))
         {
             HideKeypadAndReset();
@@ -53,36 +58,39 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void DetermineNumberPressed(string numberPressed)
     {
+        audioSource.PlayOneShot(buttonPressedSFX);
         if(numberPressed != "backspace")
         {
-            if (totalInputs != 5)
+            if (inputField.text.Length != 6)
             {
                 if (Player.safeName == safe1.name)
                 {
                     inputField.text += numberPressed;
-                    enteredCode1 += numberPressed;
-                    totalInputs += 1;
+                    //enteredCode1 += numberPressed;
+                    //totalInputs += 1;
                 }
                 else if (Player.safeName == safe2.name)
                 {
                     inputField.text += numberPressed;
-                    enteredCode2 += numberPressed;
-                    totalInputs += 1;
+                    //enteredCode2 += numberPressed;
+                   //totalInputs += 1;
                 }
                 else if (Player.safeName == safe3.name)
                 {
                     inputField.text += numberPressed;
-                    enteredCode3 += numberPressed;
-                    totalInputs += 1;
+                    //enteredCode3 += numberPressed;
+                    //totalInputs += 1;
                 }
             }
         }
-        else
+        else //when backspace is pressed
         {
-            inputField.text = inputField.text.Remove(inputField.text.Length - 1, 1);
-            totalInputs -= 1;
+            if(inputField.text.Length > 0)
+            {
+                inputField.text = inputField.text.Remove(inputField.text.Length - 1, 1);
+               // totalInputs -= 1;
+            }
         }
-
     }
 
     public void ShowKeypad()
@@ -97,45 +105,49 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void HideKeypadAndReset()
     {
+        audioSource.PlayOneShot(buttonPressedSFX);
         keypadPanel.SetActive(false);
         Player.canMove = true;
         Player.canLook = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        inputCodeText.text = "";
-        enteredCode1 = enteredCode2 = enteredCode3 = "";
-        totalInputs = 0;
+        inputField.text = "";
+        inputField.placeholder.GetComponent<Text>().text = "Enter password...";
+        //enteredCode1 = enteredCode2 = enteredCode3 = "";
+        //totalInputs = 0;
     }
 
     public void CheckifCodeisCorrect()
     {
-        if (totalInputs == 5)
+        if (Player.safeName == safe1.name  && inputField.text == correctCode1)
         {
-            if (enteredCode1 == correctCode1)
-            {
-                Debug.Log("Correct!");
-                HideKeypadAndReset();
-                safe1.SetActive(false);
-            }
-            else if (enteredCode2 == correctCode2)
-            {
-                Debug.Log("Correct!");
-                HideKeypadAndReset();
-                safe2.SetActive(false);
-            }
-            else if (enteredCode3 == correctCode3)
-            {
-                Debug.Log("Correct!");
-                HideKeypadAndReset();
-                safe3.SetActive(false);
-            }
-            else
-            {
-                Debug.Log("Incorrect");
-                inputCodeText.text = "";
-                enteredCode1 = enteredCode2 = enteredCode3 = "";
-                totalInputs = 0;
-            }
+            audioSource.PlayOneShot(safeOpeningSFX);
+            Debug.Log("Correct!");
+            HideKeypadAndReset();
+            safe1.SetActive(false);
+        }
+        else if (Player.safeName == safe2.name && inputField.text == correctCode2)
+        {
+            audioSource.PlayOneShot(safeOpeningSFX);
+            Debug.Log("Correct!");
+            HideKeypadAndReset();
+            safe2.SetActive(false);
+        }
+        else if (Player.safeName == safe3.name && inputField.text == correctCode3)
+        {
+            audioSource.PlayOneShot(safeOpeningSFX);
+            Debug.Log("Correct!");
+            HideKeypadAndReset();
+            safe3.SetActive(false);
+        }
+        else
+        {
+            audioSource.PlayOneShot(incorrectSFX);
+            inputField.placeholder.GetComponent<Text>().text = "Incorrect";
+            inputCodeText.text = "";
+            inputField.text = "";
+            //enteredCode1 = enteredCode2 = enteredCode3 = "";
+            //totalInputs = 0;
         }
     }
 }
