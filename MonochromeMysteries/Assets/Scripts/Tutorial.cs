@@ -8,6 +8,8 @@ public class Tutorial : MonoBehaviour
 
     public delegate void TutorialEvent();
 
+    public GameObject[] invisibleWalls;
+
     public event TutorialEvent onFirstMovement;
     public event TutorialEvent onFirstRatPossession;
     public event TutorialEvent onPhotographerEnter;
@@ -180,7 +182,7 @@ public class Tutorial : MonoBehaviour
 
     private IEnumerator FirstCloseScrapbook()
     {
-        while (!Dialogue.holding || onFirstMovement != null || onFirstRatPossession != null || onPhotographerEnter != null 
+        while (!Dialogue.holding || onFirstMovement != null || onFirstRatPossession != null || onPhotographerEnter != null
                 || onFirstPhoto != null)
         {
             yield return null;
@@ -200,11 +202,16 @@ public class Tutorial : MonoBehaviour
     {
         //Wait until other parts of the tutorial have been completed
         while(onFirstRatPossession != null || onPhotographerEnter != null
-               || onFirstPhoto != null || onFirstCloseScrapbook != null)
+               || onFirstPhoto != null || onFirstCloseScrapbook != null || Dialogue.instance.dialogueQueue.Count > 0)
         {
             yield return null;
         }
 
         //INSERT CODE TO OCCUR AFTER TUTORIAL END HERE
+        foreach(GameObject wall in invisibleWalls)
+        {
+            Destroy(wall);
+        }
+        Debug.Log("TutorialEnd");
     }
 }
