@@ -101,6 +101,7 @@ public class Player : MonoBehaviour
     public bool isLookingAtSafe1;
     public bool isLookingAtSafe2;
     public bool isLookingAtSafe3;
+    public GameObject passwordLetter1;
 
     //public GameObject keypadPanel;
     public static string safeName;
@@ -197,7 +198,10 @@ public class Player : MonoBehaviour
 
         InteractWithSafe();
 
-
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            passwordLetter1.SetActive(false);
+        }
     }
 
     public void InteractWithSafe()
@@ -212,6 +216,14 @@ public class Player : MonoBehaviour
                     safeName = hit.collider.name;
                     safeManager.ShowKeypad();
                 }
+            }
+            if (hit.collider.tag == "letter" && hit.distance < reticleDist)
+            {
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    passwordLetter1.SetActive(true);
+                }
+
             }
         }
     }
