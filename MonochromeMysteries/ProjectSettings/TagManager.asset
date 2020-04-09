@@ -15,6 +15,7 @@ TagManager:
   - Key
   - Sky
   - safe
+  - letter
   layers:
   - Default
   - TransparentFX
