@@ -224,6 +224,7 @@ public class PhotoLibrary : MonoBehaviour
             examinePhotoSlot.Find("Image").GetComponent<Image>().sprite = photo.image;
             examinePhotoSlot.Find("Label").GetComponent<Text>().text = photo.labelText;
             examinePhotoMenu.transform.Find("Description").GetComponent<Text>().text = photo.detailsText;
+            GameController._instance.tabs.SetActive(false);
 
             //If no details, then there are no clues featured, no need to have description so just center the picture
             if(photo.detailsText == "")
@@ -235,7 +236,7 @@ public class PhotoLibrary : MonoBehaviour
             photoGrid.SetActive(false);
 
             //Let the photo be clicked to exit examining mode
-            examinePhotoMenu.transform.Find("PhotoSlot").GetComponent<Button>().onClick.AddListener(() => { ExaminePhoto(photo); });
+            examinePhotoMenu.GetComponent<Button>().onClick.AddListener(() => { ExaminePhoto(photo); });
 
         }
         //If examining, stop examining
@@ -244,7 +245,8 @@ public class PhotoLibrary : MonoBehaviour
             examining = false;
 
             //No need to have the menu be clickable
-            examinePhotoMenu.transform.Find("PhotoSlot").GetComponent<Button>().onClick.RemoveAllListeners();
+            examinePhotoMenu.GetComponent<Button>().onClick.RemoveAllListeners();
+            GameController._instance.tabs.SetActive(true);
 
             //if the description was removed, put it back
             if (photo.detailsText == "")

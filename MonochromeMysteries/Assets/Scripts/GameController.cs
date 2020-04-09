@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
 
     public bool paused = false;
 
+    public GameObject tabs;
     private GameObject pauseMenu;
     private GameObject[] pauseMenu_tabs;
     private GameObject[] pauseMenu_menus;
@@ -38,6 +39,7 @@ public class GameController : MonoBehaviour
         //Assign Menus
         mainHUD = GameObject.Find("HUD").GetComponent<Canvas>();
         pauseMenu = mainHUD.transform.Find("Menu").gameObject;
+        tabs = pauseMenu.transform.Find("Tabs").gameObject;
         pauseMenu_tabs = new GameObject[] { pauseMenu.transform.Find("Tabs").Find("Scrapbook").gameObject,
                                             pauseMenu.transform.Find("Tabs").Find("LoadGame").gameObject,
                                             pauseMenu.transform.Find("Tabs").Find("Options").gameObject };
