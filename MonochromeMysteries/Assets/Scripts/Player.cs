@@ -198,7 +198,7 @@ public class Player : MonoBehaviour
 
         InteractWithSafe();
 
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             passwordLetter1.SetActive(false);
         }
