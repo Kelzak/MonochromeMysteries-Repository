@@ -50,8 +50,6 @@ public class Photographer : Person
         cam = Camera.main;
         hud = GameObject.Find("HUD").transform.Find("Camera").gameObject;
 
-        Debug.Log(newRect.xMin + " " + newRect.xMax + " | " + newRect.yMin + " " + newRect.yMax);
-
         OnPossession += ToggleHUD;
 
         audioSources = this.GetComponents<AudioSource>();
@@ -158,7 +156,6 @@ public class Photographer : Person
             //Store Picture In Library
             float width = hud.transform.Find("Lens").GetComponent<RectTransform>().sizeDelta.x;
             float height = hud.transform.Find("Lens").GetComponent<RectTransform>().sizeDelta.y;
-            Debug.Log(width + " " + height);
             PhotoLibrary.StorePhoto(renderResult, 
                                     ClueCatalogue._instance.DetectCluesOnScreen(Screen.width / 2 -  width / 2, 
                                                                                 Screen.height / 2 - height / 2,
