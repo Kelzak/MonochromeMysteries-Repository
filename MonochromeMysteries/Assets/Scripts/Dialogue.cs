@@ -71,6 +71,7 @@ public class Dialogue : MonoBehaviour
     }
 
     bool dialogueRunning = false;
+    public bool textPrinting = false;
     private IEnumerator RunDialogue()
     {
         dialogueRunning = true;
@@ -95,6 +96,7 @@ public class Dialogue : MonoBehaviour
             this.speakerName.text = dialogueQueue.Peek().speakerName;
 
             leftClickPriority = true;
+            textPrinting = true;
             for (int i = 0; i < currentMessage.Length && !Input.GetMouseButtonDown(0); i++)
             {
                 dialogueText.text += currentMessage[i];
@@ -105,6 +107,7 @@ public class Dialogue : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
                 yield return null;
             leftClickPriority = false;
+            textPrinting = false;
 
             while (dialogueQueue.Peek().holdLine == true)
             {
@@ -136,6 +139,7 @@ public class Dialogue : MonoBehaviour
             
 
             dialogueQueue.Dequeue();
+            yield return null;
         }
 
 

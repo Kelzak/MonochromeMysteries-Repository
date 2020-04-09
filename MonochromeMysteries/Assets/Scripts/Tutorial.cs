@@ -160,7 +160,10 @@ public class Tutorial : MonoBehaviour
     //FIRST PHOTO
     private void TriggerFirstPhoto()
     {
-        StartCoroutine(FirstPhoto());
+        if (onPhotographerEnter == null)
+        {
+            StartCoroutine(FirstPhoto());
+        }
     }
 
     private IEnumerator FirstPhoto()
@@ -169,6 +172,7 @@ public class Tutorial : MonoBehaviour
         {
             yield return null;
         }
+        Debug.Log("Photo Conditions Met");
 
         Dialogue.ContinueDialogue();
         onFirstPhoto -= TriggerFirstPhoto;
@@ -177,7 +181,8 @@ public class Tutorial : MonoBehaviour
     //CLOSE SCRAPBOOK
     private void TriggerFirstCloseScrapbook()
     {
-        StartCoroutine(FirstCloseScrapbook());
+        if(onFirstPhoto == null)
+            StartCoroutine(FirstCloseScrapbook());
     }
 
     private IEnumerator FirstCloseScrapbook()
