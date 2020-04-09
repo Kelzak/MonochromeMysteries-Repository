@@ -17,7 +17,7 @@ public class PadlockPuzzle : MonoBehaviour
     public AudioClip incorrectSFX;
     public AudioSource audioSource;
 
-    public Text inputCodeText;
+    //public Text inputCodeText;
 
     public GameObject safe1;
     public GameObject safe2;
@@ -31,7 +31,7 @@ public class PadlockPuzzle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        inputCodeText.text = "";
+        //inputCodeText.text = "";
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         inputField.characterLimit = 6;
     }
@@ -144,7 +144,7 @@ public class PadlockPuzzle : MonoBehaviour
         {
             audioSource.PlayOneShot(incorrectSFX);
             inputField.placeholder.GetComponent<Text>().text = "Incorrect";
-            inputCodeText.text = "";
+            //inputCodeText.text = "";
             inputField.text = "";
             //enteredCode1 = enteredCode2 = enteredCode3 = "";
             //totalInputs = 0;
