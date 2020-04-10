@@ -198,21 +198,24 @@ public class Player : MonoBehaviour
 
         InteractWithSafe();
 
-        if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape))
+        //Exiting the letter screen (Coincides with InteractWithSafe())
+        if (isReadingLetter && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape)))
         {
+            GameController.TogglePause();
+            photographer.CameraLensActive = true;
+            isReadingLetter = false;
             passwordLetter1.SetActive(false);
-            canMove = true;
-            canLook = true;
             pressCToCloseText.SetActive(false);
             darkBackground.SetActive(false);
         }
 
-        Debug.Log(Time.timeScale);
+        //Debug.Log(Time.timeScale);
 
     }
-
+    public bool isReadingLetter;
     public void InteractWithSafe()
     {
+        
         if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
         {
             Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -231,10 +234,13 @@ public class Player : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.F))
                     {
+                        isReadingLetter = true;
+                        GameController.TogglePause();
+                        Cursor.lockState = CursorLockMode.Confined;
+                        Cursor.visible = false;
                         photographer.CameraLensActive = false;
                         passwordLetter1.SetActive(true);
-                        canMove = false;
-                        canLook = false;
+                        EnableControls(false);
                         pressCToCloseText.SetActive(true);
                         darkBackground.SetActive(true);
                     }
