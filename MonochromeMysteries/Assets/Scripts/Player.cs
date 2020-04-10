@@ -194,7 +194,7 @@ public class Player : MonoBehaviour
             isRat = false;
         }
 
-        PickUp();
+        //PickUp();
 
         InteractWithSafe();
 

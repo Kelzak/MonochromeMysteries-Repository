@@ -111,6 +111,7 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void HideKeypadAndReset()
     {
+        photographer.canTakePhoto = false;
         GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
@@ -121,8 +122,8 @@ public class PadlockPuzzle : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         inputField.text = "";
         inputField.placeholder.GetComponent<Text>().text = "Enter password...";
-        photographer.CameraLensActive = true;
         StartCoroutine(WaitToTurnOnCamera());
+        photographer.CameraLensActive = true;
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         //totalInputs = 0;
     }
