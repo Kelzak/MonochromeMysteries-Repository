@@ -68,7 +68,7 @@ public class ClueCatalogue : MonoBehaviour
         return -1;
     }
 
-    public int[] DetectCluesOnScreen(float posX = 0, float posY = 0, float width = 1920, float height = 1080, float detectionDistance = 8)
+    public int[] DetectCluesOnScreen(float posX = 0, float posY = 0, float width = 1920, float height = 1080, float detectionDistance = 15)
     {
 
         //Create List of indexes
@@ -77,21 +77,33 @@ public class ClueCatalogue : MonoBehaviour
         //Selecting only camera part of the screen
         Rect screenSpace = new Rect(posX, posY, width, height);
 
-        RaycastHit hit = new RaycastHit();
+        RaycastHit[] hit;
         GameObject currObj;
+        Vector3 targetPoint;
         Vector3 objScreenPoint = Vector3.zero;
 
         //Check if clue is in area of screen, if it's close enough, and if it's visible
         for (int i = 0; i < clues.Length; i++)
         {
             currObj = clues[i].@object;
-            if ( screenSpace.Contains(objScreenPoint = Camera.main.WorldToScreenPoint(currObj.transform.position)) &&
+            targetPoint = currObj.transform.Find("TargetPoint") != null ? currObj.transform.Find("TargetPoint").position : currObj.transform.position;
+            if ( screenSpace.Contains(objScreenPoint = Camera.main.WorldToScreenPoint(targetPoint)) &&
                 objScreenPoint.z < detectionDistance &&
                 objScreenPoint.z > 0)
             {
-                if (Physics.Raycast(transform.position, currObj.transform.position - transform.position, out hit, Mathf.Infinity, ~0, QueryTriggerInteraction.Ignore) &&
-                    hit.collider.gameObject == currObj)
+                hit = Physics.RaycastAll(Camera.main.transform.position, targetPoint - Camera.main.transform.position, Vector3.Distance(Camera.main.transform.position, targetPoint), ~0, QueryTriggerInteraction.Ignore);
+                bool safe = true;
+                foreach(RaycastHit x in hit)
+                {
+                    safe = x.collider.gameObject == currObj || x.collider.gameObject.GetComponent<Player>();
+                    if (safe == false)
+                        break;
+                }
+                if(safe)
+                { 
+                    Debug.Log("Detected: " + currObj.name);
                     cluesDetected.Add(i);
+                }
             }
         }
 
