@@ -25,6 +25,9 @@ public class Rat : Possessable
     public AudioSource squeakSource;
     public AudioClip[] squeaks;
 
+    private bool hold;
+    private GameObject target;
+
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -44,6 +47,26 @@ public class Rat : Possessable
         {
             
         }
+        if (hold)
+        {
+            target.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
+            Debug.Log("Rat should be picking up key");
+            target.transform.SetParent(pickupDestination);
+            target.transform.position = pickupDestination.position;
+            target.transform.rotation = pickupDestination.rotation;
+            target.gameObject.GetComponent<Rigidbody>().useGravity = false;
+            target.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            hasKey = true;
+        }
+        else
+        {
+            target.gameObject.GetComponentInChildren<HoverText>().UIstop = false;
+            Debug.Log("Let go");
+            target.transform.SetParent(null);
+            target.gameObject.GetComponent<Rigidbody>().useGravity = true;
+            target.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            hasKey = false;
+        }
     }
 
     public override void Ability()
@@ -53,25 +76,15 @@ public class Rat : Possessable
 
     private void OnTriggerStay(Collider other)
     {
-        if(Input.GetButton("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter") && !hasKey)
+        if(Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter") && !hasKey)
         {
-            other.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
-            Debug.Log("Rat should be picking up key");
-            other.transform.SetParent(pickupDestination);
-            other.transform.position = pickupDestination.position;
-            other.transform.rotation = pickupDestination.rotation;
-            other.gameObject.GetComponent<Rigidbody>().useGravity = false;
-            other.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-            hasKey = true;
+            target = other.gameObject;
+            hold = true;
         }
-        if((Input.GetButtonUp("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
+        if((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
         {
-            other.gameObject.GetComponentInChildren<HoverText>().UIstop = false;
-            Debug.Log("Let go");
-            other.transform.SetParent(null);
-            other.gameObject.GetComponent<Rigidbody>().useGravity = true;
-            other.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            hasKey = false;
+            target = other.gameObject;
+            hold = false;
         }
 
         //if (Input.GetButtonDown("PickUp")) //which is "F"
