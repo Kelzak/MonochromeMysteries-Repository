@@ -86,7 +86,11 @@ public class ClueCatalogue : MonoBehaviour
         for (int i = 0; i < clues.Length; i++)
         {
             currObj = clues[i].@object;
-            targetPoint = currObj.GetComponent<MeshRenderer>().bounds.center;
+            if (currObj.GetComponentInChildren<MeshRenderer>())
+                targetPoint = currObj.GetComponentInChildren<MeshRenderer>().bounds.center;
+            else
+                targetPoint = currObj.transform.position;
+
             if ( screenSpace.Contains(objScreenPoint = Camera.main.WorldToScreenPoint(targetPoint)) &&
                 objScreenPoint.z < detectionDistance &&
                 objScreenPoint.z > 0)
