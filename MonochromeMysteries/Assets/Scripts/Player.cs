@@ -102,8 +102,8 @@ public class Player : MonoBehaviour
     public bool isLookingAtSafe2;
     public bool isLookingAtSafe3;
     public GameObject passwordLetter1;
-
-    //public GameObject keypadPanel;
+    public GameObject darkBackground;
+    public GameObject pressCToCloseText;
     public static string safeName;
 
     private void Awake()
@@ -124,8 +124,8 @@ public class Player : MonoBehaviour
         if (mainPlayer == null)
             mainPlayer = gameObject;
 
-        if(cam == null)
-        cam = transform.Find("Main Camera").gameObject;
+        if (cam == null)
+            cam = transform.Find("Main Camera").gameObject;
         character = GetComponent<CharacterController>();
 
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
             audioSource.PlayOneShot(depossessClip);
             StartCoroutine(ExitPossession());
         }
-           
+
         if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>() || gameObject.GetComponent<Character>())
         {
             ppvToggle.Toggle(false);
@@ -198,35 +198,51 @@ public class Player : MonoBehaviour
 
         InteractWithSafe();
 
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape))
         {
             passwordLetter1.SetActive(false);
+            canMove = true;
+            canLook = true;
+            pressCToCloseText.SetActive(false);
+            darkBackground.SetActive(false);
         }
+
+        Debug.Log(Time.timeScale);
+
     }
 
     public void InteractWithSafe()
     {
-        Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        if (Physics.Raycast(safeRay, out hit))
+        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
         {
-            if (hit.collider.tag == "safe" && hit.distance < reticleDist)
+            Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            if (Physics.Raycast(safeRay, out hit))
             {
-                if (Input.GetKeyDown(KeyCode.F))
+                if (hit.collider.tag == "safe" && hit.distance < reticleDist)
                 {
-                    safeName = hit.collider.name;
-                    safeManager.ShowKeypad();
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        photographer.CameraLensActive = false;
+                        safeName = hit.collider.name;
+                        safeManager.ShowKeypad();
+                    }
                 }
-            }
-            if (hit.collider.tag == "letter" && hit.distance < reticleDist)
-            {
-                if (Input.GetKeyDown(KeyCode.F))
+                if (hit.collider.tag == "letter" && hit.distance < reticleDist)
                 {
-                    passwordLetter1.SetActive(true);
-                }
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        photographer.CameraLensActive = false;
+                        passwordLetter1.SetActive(true);
+                        canMove = false;
+                        canLook = false;
+                        pressCToCloseText.SetActive(true);
+                        darkBackground.SetActive(true);
+                    }
 
+                }
             }
         }
-    }
+     }
 
 
 

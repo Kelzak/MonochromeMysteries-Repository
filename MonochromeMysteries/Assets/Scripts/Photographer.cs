@@ -62,7 +62,7 @@ public class Photographer : Person
     }
 
     //Camera
-    bool canTakePhoto = true;
+    public bool canTakePhoto = true;
     public override void Ability()
     {
         if (Dialogue.leftClickPriority == true)

@@ -26,6 +26,8 @@ public class PadlockPuzzle : MonoBehaviour
     public GameObject keypadPanel;
     public InputField inputField;
 
+    public Photographer photographer;
+
     //public int totalInputs = 0;
 
     // Start is called before the first frame update
@@ -95,6 +97,10 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void ShowKeypad()
     {
+        GameController.TogglePause();
+        photographer.CameraLensActive = false;
+        photographer.canTakePhoto = false;
+        Time.timeScale = 0;
         Debug.Log(Player.safeName);
         keypadPanel.SetActive(true);
         Player.canMove = false;
@@ -105,6 +111,8 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void HideKeypadAndReset()
     {
+        GameController.TogglePause();
+        Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
         keypadPanel.SetActive(false);
         Player.canMove = true;
@@ -113,8 +121,16 @@ public class PadlockPuzzle : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         inputField.text = "";
         inputField.placeholder.GetComponent<Text>().text = "Enter password...";
+        photographer.CameraLensActive = true;
+        StartCoroutine(WaitToTurnOnCamera());
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         //totalInputs = 0;
+    }
+
+    public IEnumerator WaitToTurnOnCamera()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        photographer.canTakePhoto = true;
     }
 
     public void CheckifCodeisCorrect()
