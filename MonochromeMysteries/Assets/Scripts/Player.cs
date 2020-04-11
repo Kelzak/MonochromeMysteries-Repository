@@ -103,6 +103,7 @@ public class Player : MonoBehaviour
     public bool isLookingAtSafe3;
     public GameObject passwordLetter1;
     public GameObject journal;
+    public GameObject redRoomCode;
     public GameObject[] diary;
     public GameObject[] love;
     public GameObject darkBackground;
@@ -262,6 +263,7 @@ public class Player : MonoBehaviour
             }
             pressCToCloseText.SetActive(false);
             darkBackground.SetActive(false);
+            redRoomCode.SetActive(false);
         }
 
 
@@ -314,8 +316,11 @@ public class Player : MonoBehaviour
                         }
                         if (hit.collider.gameObject.name == "Manager's Journal")
                         {
-                            pageIndex = 0;
                             journal.SetActive(true);
+                        }
+                        if (hit.collider.gameObject.name == "Photographer's Safe Code")
+                        {
+                            redRoomCode.SetActive(true);
                         }
 
                         EnableControls(false);
