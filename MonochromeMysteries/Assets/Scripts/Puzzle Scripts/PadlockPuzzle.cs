@@ -22,17 +22,28 @@ public class PadlockPuzzle : MonoBehaviour
     public GameObject safe1;
     public GameObject safe2;
     public GameObject safe3;
+
+    [HideInInspector]
+    public bool safe1Open;
+    [HideInInspector]
+    public bool safe2Open;
+    [HideInInspector]
+    public bool safe3Open;
    
     public GameObject keypadPanel;
     public InputField inputField;
 
     public Photographer photographer;
 
+    SafeAnim safeAnim;
+
+
     //public int totalInputs = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+        safeAnim = GetComponent<SafeAnim>();
         //inputCodeText.text = "";
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         inputField.characterLimit = 6;
@@ -141,21 +152,30 @@ public class PadlockPuzzle : MonoBehaviour
             audioSource.PlayOneShot(safeOpeningSFX);
             Debug.Log("Correct!");
             HideKeypadAndReset();
-            safe1.SetActive(false);
+            safeAnim = safe1.transform.Find("Hinge").GetComponent<SafeAnim>();
+            safeAnim.OpenSafe(safe1);
+            safe1Open = true;
+            //safe1.SetActive(false);
         }
         else if (Player.safeName == safe2.name && inputField.text == correctCode2)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
             Debug.Log("Correct!");
             HideKeypadAndReset();
-            safe2.SetActive(false);
+            safeAnim = safe2.transform.Find("Hinge").GetComponent<SafeAnim>();
+
+            safeAnim.OpenSafe(safe2);
+            //safe2.SetActive(false);
         }
         else if (Player.safeName == safe3.name && inputField.text == correctCode3)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
             Debug.Log("Correct!");
             HideKeypadAndReset();
-            safe3.SetActive(false);
+            safeAnim = safe3.transform.Find("Hinge").GetComponent<SafeAnim>();
+
+            safeAnim.OpenSafe(safe3); 
+            //safe3.SetActive(false);
         }
         else
         {

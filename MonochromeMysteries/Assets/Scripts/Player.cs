@@ -280,6 +280,7 @@ public class Player : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.F))
                     {
+                        Debug.Log("get safe");
                         photographer.CameraLensActive = false;
                         safeName = hit.collider.name;
                         safeManager.ShowKeypad();

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 715644945857576593}
   - component: {fileID: 715644945857576592}
   - component: {fileID: 715644945857576599}
+  - component: {fileID: 969150960999352289}
+  - component: {fileID: 2401390651479937801}
   m_Layer: 0
   m_Name: LockedSafe1
   m_TagString: safe
@@ -93,3 +95,37 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &969150960999352289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715644945857576598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!114 &2401390651479937801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715644945857576598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef300d362a5f68a48a573a3c5119effa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateChecker: {fileID: 0}
+  playerDistGlow: 7
+  itemName: 
+  isPickup: 0
