@@ -73,7 +73,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         //Open/Close Menu
-        if(Input.GetKeyDown(KeyCode.Tab) && (!menuActive || pauseMenu.activeSelf == true))
+        if( (Input.GetKeyDown(KeyCode.Tab) && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Escape) && menuActive && pauseMenu.activeSelf == true))
         {
             TogglePause();
             pauseMenu.SetActive(paused);
@@ -98,7 +98,7 @@ public class GameController : MonoBehaviour
         }
 
         //Enter/Exit Menu
-        if(Input.GetKeyDown(KeyCode.F))
+        if(Input.GetKeyDown(KeyCode.F) || (Input.GetKeyDown(KeyCode.Escape) && menuActive))
         {
             TriggerMainMenu();
         }
