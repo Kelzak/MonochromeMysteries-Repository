@@ -206,14 +206,21 @@ public class PhotoLibrary : MonoBehaviour
         OnScrapbookChange?.Invoke();
     }
 
+    private void Update()
+    {
+        if (examining && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)))
+            ExaminePhoto(photoBeingExamined);
+    }
+
     bool examining = false;
+    PhotoInfo photoBeingExamined;
     /// <summary>
     /// Toggle the examining of a specific photo
     /// </summary>
     /// <param name="photo">The Photo in scrapbook to be examined</param>
     private void ExaminePhoto(PhotoInfo photo)
     {
-        Debug.Log(examining);
+        photoBeingExamined = photo;
         //If not examining, start examining
         if (examining == false)
         {
