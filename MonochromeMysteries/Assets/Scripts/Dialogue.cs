@@ -132,8 +132,8 @@ public class Dialogue : MonoBehaviour
             }
             continuePrompt.SetActive(false);
 
-            if (Input.GetMouseButtonDown(0))
-                yield return null;
+            //if (Input.GetMouseButtonDown(0))
+            //    yield return null;
             leftClickPriority = false;
 
             
