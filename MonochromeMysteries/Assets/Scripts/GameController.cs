@@ -73,7 +73,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         //Open/Close Menu
-        if( (Input.GetKeyDown(KeyCode.Tab) && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Escape) && menuActive && pauseMenu.activeSelf == true))
+        if( (Input.GetKeyDown(KeyCode.Tab) && !Player.isReadingLetter && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Escape) && menuActive && pauseMenu.activeSelf == true))
         {
             TogglePause();
             pauseMenu.SetActive(paused);
@@ -139,14 +139,14 @@ public class GameController : MonoBehaviour
         _instance.paused = !_instance.paused;
 
         if (_instance.paused)
-        {
+        { //Paused
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Player.EnableControls(false);
             Time.timeScale = 0;
         }
         else
-        {
+        { //Unpaused
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Player.EnableControls(true);

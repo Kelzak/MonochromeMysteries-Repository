@@ -250,6 +250,9 @@ public class Player : MonoBehaviour
             photographer.CameraLensActive = true;
             isReadingLetter = false;
             passwordLetter1.SetActive(false);
+            pressCToCloseText.SetActive(false);
+            darkBackground.SetActive(false);
+            redRoomCode.SetActive(false);
             journal.SetActive(false);
             foreach (GameObject page in diary)
             {
@@ -261,15 +264,13 @@ public class Player : MonoBehaviour
                 
                 page.SetActive(false);
             }
-            pressCToCloseText.SetActive(false);
-            darkBackground.SetActive(false);
-            redRoomCode.SetActive(false);
+
         }
 
 
         //Debug.Log(Time.timeScale);
     }
-    public bool isReadingLetter;
+    public static bool isReadingLetter;
     public void InteractWithSafe()
     {
         
