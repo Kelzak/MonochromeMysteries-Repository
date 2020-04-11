@@ -60,12 +60,22 @@ public class Rat : Possessable
         }
         else
         {
-            target.gameObject.GetComponentInChildren<HoverText>().UIstop = false;
-            Debug.Log("Let go");
-            target.transform.SetParent(null);
-            target.gameObject.GetComponent<Rigidbody>().useGravity = true;
-            target.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            hasKey = false;
+            try
+            {
+                target.gameObject.GetComponentInChildren<HoverText>().UIstop = false;
+                Debug.Log("Let go");
+                target.transform.SetParent(null);
+                target.gameObject.GetComponent<Rigidbody>().useGravity = true;
+                target.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+                hasKey = false;
+            }
+            catch (System.Exception)
+            {
+
+                //throw;
+            }
+            
+            
         }
     }
 
@@ -81,11 +91,14 @@ public class Rat : Possessable
             target = other.gameObject;
             hold = true;
         }
-        if((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
+        else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
         {
             target = other.gameObject;
             hold = false;
         }
+        //else
+        //    target = null;
+
 
         //if (Input.GetButtonDown("PickUp")) //which is "F"
         //{
@@ -110,6 +123,9 @@ public class Rat : Possessable
         //}
 
     }
+
+   
+
 
     private void OnDisable()
     {

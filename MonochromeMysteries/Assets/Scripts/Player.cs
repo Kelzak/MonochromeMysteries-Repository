@@ -102,9 +102,16 @@ public class Player : MonoBehaviour
     public bool isLookingAtSafe2;
     public bool isLookingAtSafe3;
     public GameObject passwordLetter1;
+    public GameObject journal;
+    public GameObject[] diary;
+    public GameObject[] love;
     public GameObject darkBackground;
     public GameObject pressCToCloseText;
     public static string safeName;
+
+    private int pageIndex;
+    private bool onDiary;
+    private bool onLove;
 
     private void Awake()
     {
@@ -193,8 +200,45 @@ public class Player : MonoBehaviour
             characterName.text = "\"The Spirit\"";
             isRat = false;
         }
+        
+        //flip pages of letters / books
+        if(onDiary)
+        {
+            if(Input.GetMouseButtonDown(0))
+            {
+                diary[pageIndex].SetActive(false);
+                if (pageIndex >= diary.Length)
+                {
+                    foreach (GameObject page in diary)
+                    {
 
-        //PickUp();
+                        page.SetActive(false);
+                    }
+                    pageIndex = 0;
+                }
+                else
+                {
+                    pageIndex++;
+                    diary[pageIndex].SetActive(true);
+                }  
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                diary[pageIndex].SetActive(false);
+                if (pageIndex < 0)
+                {
+                    pageIndex = 0;
+                }
+                else
+                {
+                    pageIndex--;
+                    diary[pageIndex].SetActive(true);
+                }
+            }
+        }
+
+
+        PickUp();
 
         InteractWithSafe();
 
@@ -205,12 +249,23 @@ public class Player : MonoBehaviour
             photographer.CameraLensActive = true;
             isReadingLetter = false;
             passwordLetter1.SetActive(false);
+            journal.SetActive(false);
+            foreach (GameObject page in diary)
+            {
+                
+                page.SetActive(false);
+            }
+            foreach (GameObject page in love)
+            {
+                
+                page.SetActive(false);
+            }
             pressCToCloseText.SetActive(false);
             darkBackground.SetActive(false);
         }
 
-        //Debug.Log(Time.timeScale);
 
+        //Debug.Log(Time.timeScale);
     }
     public bool isReadingLetter;
     public void InteractWithSafe()
@@ -239,7 +294,29 @@ public class Player : MonoBehaviour
                         Cursor.lockState = CursorLockMode.Confined;
                         Cursor.visible = false;
                         photographer.CameraLensActive = false;
-                        passwordLetter1.SetActive(true);
+
+                        if (hit.collider.gameObject.name == "Manager's Safe Code")
+                        {
+                            
+                            passwordLetter1.SetActive(true);
+                        }
+                        if (hit.collider.gameObject.name == "Mechanic's Diary")
+                        {
+                            Debug.Log("got diary");
+                            pageIndex = 0;
+                            diary[0].SetActive(true);
+                        }
+                        if (hit.collider.gameObject.name == "Love Letters")
+                        {
+                            pageIndex = 0;
+                            love[0].SetActive(true);
+                        }
+                        if (hit.collider.gameObject.name == "Manager's Journal")
+                        {
+                            pageIndex = 0;
+                            journal.SetActive(true);
+                        }
+
                         EnableControls(false);
                         pressCToCloseText.SetActive(true);
                         darkBackground.SetActive(true);
@@ -353,7 +430,7 @@ public class Player : MonoBehaviour
                 var selection = hit.transform;
                 if (selection.gameObject.GetComponent<Outline>())
                 {
-                    //Debug.Log("I'm looking at " + hit.transform.name);
+                    Debug.Log("I'm looking at " + hit.transform.name);
                     //Debug.Log("Outline spotted");
                     reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
 

@@ -78,6 +78,7 @@ public class DoorScript : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        _isInsideTrigger = false;
         if (stayOpen)
             return;
         if (other.tag == "Person" && isOpen && autoClose)
@@ -88,7 +89,7 @@ public class DoorScript : MonoBehaviour
             //OpenPanel.SetActive(false);
             isOpen = false;
         }
-        _isInsideTrigger = false;
+        
     }
 
     private bool IsOpenPanelActive
