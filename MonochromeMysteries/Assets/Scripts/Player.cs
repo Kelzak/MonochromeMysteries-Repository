@@ -257,7 +257,7 @@ public class Player : MonoBehaviour
                     {
                         page.SetActive(false);
                     }
-                    pageIndex = 0;
+                    pageIndex = diary.Length - 1;
                     diary[pageIndex].SetActive(true);
                 }
                 else
@@ -286,8 +286,49 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        if (onLove)
+        {
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+            {
+                love[pageIndex].SetActive(false);
+                if (pageIndex >= love.Length - 1)
+                {
+                    Debug.Log("Flip Page");
+                    foreach (GameObject page in love)
+                    {
+                        page.SetActive(false);
+                    }
+                    pageIndex = love.Length - 1;
+                    love[pageIndex].SetActive(true);
+                }
+                else
+                {
+                    pageIndex++;
+                    love[pageIndex].SetActive(true);
+                }
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                love[pageIndex].SetActive(false);
 
-        
+                if (pageIndex <= 0)
+                {
+                    Debug.Log("Flip Page");
+                    foreach (GameObject page in love)
+                    {
+                        page.SetActive(false);
+                    }
+                    pageIndex = 0;
+                    love[pageIndex].SetActive(true);
+                }
+                else
+                {
+                    pageIndex--;
+                    love[pageIndex].SetActive(true);
+                }
+            }
+        }
+
         PickUp();
 
         InteractWithSafe();
