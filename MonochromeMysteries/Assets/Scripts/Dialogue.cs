@@ -97,14 +97,14 @@ public class Dialogue : MonoBehaviour
 
             leftClickPriority = true;
             textPrinting = true;
-            for (int i = 0; i < currentMessage.Length && !Input.GetMouseButtonDown(0); i++)
+            for (int i = 0; i < currentMessage.Length && !Input.GetKeyDown(KeyCode.Space); i++)
             {
                 dialogueText.text += currentMessage[i];
                 yield return new WaitForSecondsRealtime(0.025f);
             }
             dialogueText.text = dialogueQueue.Peek().message;
             //Clear Mouse Button Down Buffer
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.Space))
                 yield return null;
             leftClickPriority = false;
             textPrinting = false;
@@ -118,7 +118,7 @@ public class Dialogue : MonoBehaviour
 
             int frameCount = 0;
             leftClickPriority = true;
-            while (!Input.GetMouseButtonDown(0))
+            while (!Input.GetKeyDown(KeyCode.Space))
             {
                 if (frameCount % 30 == 0 && !continuePrompt.activeSelf)
                     continuePrompt.SetActive(true);

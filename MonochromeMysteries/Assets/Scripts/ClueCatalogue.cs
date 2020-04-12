@@ -91,22 +91,46 @@ public class ClueCatalogue : MonoBehaviour
             else
                 targetPoint = currObj.transform.position;
 
-            if ( screenSpace.Contains(objScreenPoint = Camera.main.WorldToScreenPoint(targetPoint)) &&
-                objScreenPoint.z < detectionDistance &&
-                objScreenPoint.z > 0)
+            //Check three points on mesh to make sure clue gets identified
+            for (int j = 0; j < 3; j++)
             {
-                hit = Physics.RaycastAll(Camera.main.transform.position, targetPoint - Camera.main.transform.position, Vector3.Distance(Camera.main.transform.position, targetPoint), ~0, QueryTriggerInteraction.Ignore);
-                bool safe = true;
-                foreach(RaycastHit x in hit)
+                //Different points to Test
+                switch(j)
                 {
-                    safe = x.collider.gameObject == currObj || x.collider.gameObject.GetComponent<Player>();
-                    if (safe == false)
+                    case 0:
+                        if (currObj.GetComponent<MeshCollider>())
+                            targetPoint = currObj.GetComponent<MeshCollider>().bounds.center;
+                        break;
+                    case 1:
+                        if (currObj.GetComponent<MeshCollider>())
+                            targetPoint = currObj.GetComponent<MeshCollider>().bounds.max;
+                        break;
+                    case 2:
+                        if (currObj.GetComponent<MeshCollider>())
+                            targetPoint = currObj.GetComponent<MeshCollider>().bounds.min;
                         break;
                 }
-                if(safe)
-                { 
-                    Debug.Log("Detected: " + currObj.name);
-                    cluesDetected.Add(i);
+
+                //If the point is on screen and within detection distance
+                if (screenSpace.Contains(objScreenPoint = Camera.main.WorldToScreenPoint(targetPoint)) &&
+                    objScreenPoint.z < detectionDistance &&
+                    objScreenPoint.z > 0)
+                {
+                    //Check to make sure there is line of sight
+                    hit = Physics.RaycastAll(Camera.main.transform.position, targetPoint - Camera.main.transform.position, Vector3.Distance(Camera.main.transform.position, targetPoint), ~0, QueryTriggerInteraction.Ignore);
+                    bool safe = true;
+                    foreach (RaycastHit x in hit)
+                    {
+                        safe = x.collider.gameObject == currObj || x.collider.gameObject.GetComponent<Player>();
+                        if (safe == false)
+                            break;
+                    }
+                    if (safe)
+                    {
+                        Debug.Log("Detected: " + currObj.name);
+                        cluesDetected.Add(i);
+                        break;
+                    }
                 }
             }
         }
