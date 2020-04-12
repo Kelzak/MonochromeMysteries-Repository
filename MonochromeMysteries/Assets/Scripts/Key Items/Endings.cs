@@ -32,6 +32,22 @@ public class Endings : MonoBehaviour
         }
     }
 
+    public IEnumerator KnifeScript()
+    {
+        yield return new WaitForSeconds(1f);
+        Dialogue.AddLine(Dialogue.Character.Pete, "Well I’ll be, if I had to live in this room I’d be madder than a wet hen! And the stench: YUGH!");
+        Dialogue.AddLine(Dialogue.Character.Pete, "Anyhoo, it’s good to see you here, son. It shows me how motivated you are to find who did you wrong, even if it means stepping into other people’s business…and rat shit.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "You remind me a lot of myself back in my hotel inspectin’ days. Hehe, yeah those were crazy times...I reckon that’s why my gut was screamin’ at me to come lend you a helping hand.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "See, without any closure on your life, you’re gonna end up wandering around in this purgatory hell forever, and believe me that’s just enough time to drive any fella mad.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "There’s a lot of things that prohibit you from getting closure, and one of ‘ems your own emotions. I reckon you ain’t too happy about gettin’ whacked, huh?");
+        Dialogue.AddLine(Dialogue.Character.Pete, "It just ain’t fair...and if you ask this old geezer, ain’t nothing wrong with a little vigilante justice.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I brought you somethin’ that’ll help you out in that safe over yonder. You’ll be able to use it the way you are now, since I made this safe myself. I hope it finds you your ticket out, and more importantly, a little peace.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "If you’re gonna start solvin’ your murder, you’ll need to have a way to document evidence.Find a way next door to the Photographer’s room and bring him back here, would ya?");
+        Dialogue.AddLine(Dialogue.Character.Pete, "Good job on getting that there photographer in here. Now remember what I was sayin’ about those objects with a white aura ? Go and take some photographs of those right quick(by clicking the left mouse button).");
+        Dialogue.AddLine(Dialogue.Character.Pete, "Great you’ve collected some evidence. Take a look at those photographs in your scrapbook (by pressing tab). You’ll be able to examine them for more clues there.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "Well good luck out there youngin! I’ll be rootin’ for ya, but you’re on your own from here on out. I’m not as young a soul as I used to be, all this here excitement has gone and tuckered me out");
+    }
+
     public void UseKnife(string decision)
     {
         if(decision == "kill")
