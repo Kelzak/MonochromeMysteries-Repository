@@ -198,7 +198,7 @@ public class PadlockPuzzle : MonoBehaviour
             Debug.Log("Correct!");
             HideKeypadAndReset();
             safeAnim = safe2.transform.Find("Hinge").GetComponent<SafeAnim>();
-
+            safe2Open = true;
             safeAnim.OpenSafe(safe2);
             //safe2.SetActive(false);
         }
@@ -208,7 +208,7 @@ public class PadlockPuzzle : MonoBehaviour
             Debug.Log("Correct!");
             HideKeypadAndReset();
             safeAnim = safe3.transform.Find("Hinge").GetComponent<SafeAnim>();
-
+            safe3Open = true;
             safeAnim.OpenSafe(safe3); 
             //safe3.SetActive(false);
         }
@@ -218,7 +218,7 @@ public class PadlockPuzzle : MonoBehaviour
             Debug.Log("Correct!");
             HideKeypadAndReset();
             safeAnim = safe4.transform.Find("Hinge").GetComponent<SafeAnim>();
-
+            safe4Open = true;
             safeAnim.OpenSafe(safe4);
             //safe3.SetActive(false);
         }

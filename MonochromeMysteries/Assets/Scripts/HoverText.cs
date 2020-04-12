@@ -5,6 +5,7 @@ using UnityEditor;
 using TMPro;
 public class HoverText : MonoBehaviour
 {
+    [Multiline]
     public string myString;
     public TextMeshProUGUI text;
     public float fadeTime;

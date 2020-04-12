@@ -69,6 +69,7 @@ public class Player : MonoBehaviour
     public Sprite ratImage;
     public Image characterImage;
     public Text characterName;
+    public Text characterRole;
     public Sprite cameraImage;
     public Image itemImage;
     public Text itemName;
@@ -117,6 +118,8 @@ public class Player : MonoBehaviour
     //Ending Stuff
     public static bool hasKnife;
     public Endings endingManager;
+
+    private bool readtime;
 
     private void Awake()
     {
@@ -187,42 +190,48 @@ public class Player : MonoBehaviour
             itemImage.sprite = cameraImage;
             itemName.text = "Camera";
             characterImage.sprite = photographerImage;
-            characterName.text = "\"The Photographer\"";
+            characterRole.text = "\"The Photographer\"";
+            characterName.text = "Norman Adler";
             isRat = false;
         }
         else if (gameObject.GetComponent<Rat>())
         {
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = ratImage;
-            characterName.text = "\"The Rat\"";
+            characterRole.text = "\"The Rat\"";
+            characterName.text = "";
             isRat = true;
         }
         else if (gameObject.name == "Manager")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = null;
-            characterName.text = "\"The Manager\"";
+            characterRole.text = "\"The Manager\"";
+            characterName.text = "Camille Bastet";
             isRat = false;
         }
         else if (gameObject.name == "Exterminator")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = null;
-            characterName.text = "\"The Exterminator\"";
+            characterRole.text = "\"The Exterminator\"";
+            characterName.text = "Jonathan Abberdasky";
             isRat = false;
         }
         else if (gameObject.name == "Mechanic")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = null;
-            characterName.text = "\"The Mechanic\"";
+            characterRole.text = "\"The Mechanic\"";
+            characterName.text = "Janet Bastet";
             isRat = false;
         }
         else if (gameObject.name == "Hunter")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = null;
-            characterName.text = "\"The Hunter\"";
+            characterRole.text = "\"The Hunter\"";
+            characterName.text = "Ahab Sergei";
             isRat = false;
         }
         else
@@ -230,24 +239,26 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             itemName.text = "";
             characterImage.sprite = ghostImage;
-            characterName.text = "\"The Spirit\"";
+            characterRole.text = "\"The Spirit\"";
+            characterName.text = "";
             isRat = false;
         }
         
         //flip pages of letters / books
         if(onDiary)
         {
-            if(Input.GetMouseButtonDown(0))
+            if(Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
             {
                 diary[pageIndex].SetActive(false);
-                if (pageIndex >= diary.Length)
+                if (pageIndex >= diary.Length-1)
                 {
+                    Debug.Log("Flip Page");
                     foreach (GameObject page in diary)
                     {
-
                         page.SetActive(false);
                     }
                     pageIndex = 0;
+                    diary[pageIndex].SetActive(true);
                 }
                 else
                 {
@@ -258,9 +269,15 @@ public class Player : MonoBehaviour
             if (Input.GetMouseButtonDown(1))
             {
                 diary[pageIndex].SetActive(false);
-                if (pageIndex < 0)
+                if (pageIndex <= 0)
                 {
+                    Debug.Log("Flip Page");
+                    foreach (GameObject page in diary)
+                    {
+                        page.SetActive(false);
+                    }
                     pageIndex = 0;
+                    diary[pageIndex].SetActive(true);
                 }
                 else
                 {
@@ -270,7 +287,7 @@ public class Player : MonoBehaviour
             }
         }
 
-
+        
         PickUp();
 
         InteractWithSafe();
@@ -282,8 +299,9 @@ public class Player : MonoBehaviour
         
 
         //Exiting the letter screen (Coincides with InteractWithSafe())
-        if (isReadingLetter && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape)))
+        if (isReadingLetter && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.F) && readtime))
         {
+            
             GameController.TogglePause();
             if(photographer.GetComponent<Player>())
             {
@@ -307,6 +325,9 @@ public class Player : MonoBehaviour
                 
                 page.SetActive(false);
             }
+            onDiary = false;
+            onLove = false;
+            readtime = false;
 
         }
 
@@ -323,18 +344,55 @@ public class Player : MonoBehaviour
             {
                 if (hit.collider.tag == "safe" && hit.distance < reticleDist)
                 {
-                    if (Input.GetKeyDown(KeyCode.F))
+                    if (Input.GetKeyDown(KeyCode.F) && !readtime)
                     {
-                        Debug.Log("get safe");
-                        photographer.CameraLensActive = false;
+                        readtime = false;
                         safeName = hit.collider.name;
-                        safeManager.ShowKeypad();
+                        if (!safeManager.safe1Open && safeName == "LockedSafe1")
+                        {
+                            if (gameObject.GetComponent<Photographer>())
+                            {
+                                photographer.CameraLensActive = false;
+                            }
+                            safeManager.ShowKeypad();
+                            Debug.Log("get safe");
+                        }
+                        if (!safeManager.safe2Open && safeName == "LockedSafe2")
+                        {
+                            if (gameObject.GetComponent<Photographer>())
+                            {
+                                photographer.CameraLensActive = false;
+                            }
+                            safeManager.ShowKeypad();
+                            Debug.Log("get safe");
+                        }
+                        if (!safeManager.safe3Open && safeName == "LockedSafe3")
+                        {
+                            if (gameObject.GetComponent<Photographer>())
+                            {
+                                photographer.CameraLensActive = false;
+                            }
+                            safeManager.ShowKeypad();
+                            Debug.Log("get safe");
+                        }
+                        if (!safeManager.safe4Open && safeName == "LockedSafe4")
+                        {
+                            if (gameObject.GetComponent<Photographer>())
+                            {
+                                photographer.CameraLensActive = false;
+                            }
+                            safeManager.ShowKeypad();
+                            Debug.Log("get safe");
+                        }
+                        StartCoroutine(ReadTime());
                     }
                 }
                 if (hit.collider.tag == "letter" && hit.distance < reticleDist)
                 {
-                    if (Input.GetKeyDown(KeyCode.F))
+                    if (Input.GetKeyDown(KeyCode.F) && !readtime)
                     {
+                        readtime = false;
+                        StartCoroutine(ReadTime());
                         isReadingLetter = true;
                         GameController.TogglePause();
                         Cursor.lockState = CursorLockMode.Confined;
@@ -348,12 +406,14 @@ public class Player : MonoBehaviour
                         }
                         if (hit.collider.gameObject.name == "Mechanic's Diary")
                         {
+                            onDiary = true;
                             Debug.Log("got diary");
                             pageIndex = 0;
                             diary[0].SetActive(true);
                         }
                         if (hit.collider.gameObject.name == "Love Letters")
                         {
+                            onLove = true;
                             pageIndex = 0;
                             love[0].SetActive(true);
                         }
@@ -376,7 +436,11 @@ public class Player : MonoBehaviour
         }
      }
 
-
+    public IEnumerator ReadTime()
+    {
+        yield return new WaitForSecondsRealtime(.1f);
+        readtime = true;
+    }
 
     //Ray safeCheck = Camera.main.ViewportPointToRay(new Vector3(0, 1, 0));
 
@@ -488,7 +552,7 @@ public class Player : MonoBehaviour
                     {
                         if(selection.gameObject.CompareTag("Key"))
                         {
-                            Log.AddEntry("Picked up Key");
+                            Log.AddEntry("Picked up: " + selection.gameObject.name);
                             audioSource.PlayOneShot(obtainClip);
                             keys.Add(selection.gameObject);
                             Destroy(selection.gameObject);
