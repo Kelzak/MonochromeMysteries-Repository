@@ -87,7 +87,7 @@ public class Dialogue : MonoBehaviour
         while (transitionInProgress)
             yield return null;
 
-
+        //While there are still dialogue lines, continue to run
         while (dialogueQueue.Count > 0)
         {
             currentMessage = dialogueQueue.Peek().message.ToCharArray();
@@ -97,11 +97,18 @@ public class Dialogue : MonoBehaviour
 
             leftClickPriority = true;
             textPrinting = true;
+            //Print out the text one character at a time until skip key is pressed
             for (int i = 0; i < currentMessage.Length && !Input.GetKeyDown(KeyCode.Space); i++)
             {
+                //If dialogue panel is hidden because player is in main menu, wait for it to become unhidden to continue printing
+                while (hidden)
+                    yield return null;
+
                 dialogueText.text += currentMessage[i];
-                yield return new WaitForSecondsRealtime(0.025f);
+                if (i % 3 == 0)
+                    yield return null;
             }
+            //In case skip key was pressed, print out the rest of the message instantly
             dialogueText.text = dialogueQueue.Peek().message;
             //Clear Mouse Button Down Buffer
             if (Input.GetKeyDown(KeyCode.Space))
@@ -195,9 +202,29 @@ public class Dialogue : MonoBehaviour
         transitionInProgress = false;
     }
 
+
+    bool hidden = false;
+    /// <summary>
+    /// Specifically for hiding dialogue when MainMenu is opened
+    /// </summary>
+    /// <param name="shouldHide"></param>
+    private void HideDialogue(bool shouldHide)
+    {
+        hidden = shouldHide;
+        if(shouldHide && dialogueRunning)
+        {
+            panel.SetActive(false);
+        }
+        else if(dialogueRunning)
+        {
+            panel.SetActive(true);
+        }
+    }
+
     void Awake()
     {
         instance = this;
+        MainMenu.onMainMenuTriggered += HideDialogue;
     }
 
     // Start is called before the first frame update
@@ -221,5 +248,10 @@ public class Dialogue : MonoBehaviour
         {
             StartCoroutine(RunDialogue());
         }
+    }
+
+    private void OnDisable()
+    {
+        MainMenu.onMainMenuTriggered -= HideDialogue;
     }
 }

@@ -25,11 +25,12 @@ public class Television : MonoBehaviour
         tvStatic = screen.transform.Find("Static").gameObject;
 
         Transform menuOptions = transform.Find("Screen").Find("MainMenu").Find("MenuOptions");
-        buttons = new Button[] { menuOptions.Find("New Game").GetComponent<Button>(),
-                                     menuOptions.Find("Continue").GetComponent<Button>(),
-                                     menuOptions.Find("Resume").GetComponent<Button>(),
-                                     menuOptions.Find("How To Play").GetComponent<Button>(),
-                                     menuOptions.Find("Quit").GetComponent<Button>() };
+        buttons = new Button[] { menuOptions.Find("New Game").GetComponent<Button>(), //0
+                                     menuOptions.Find("Continue").GetComponent<Button>(), //1
+                                     menuOptions.Find("Resume").GetComponent<Button>(), //2
+                                     menuOptions.Find("How To Play").GetComponent<Button>(), //3
+                                     howToPlay.transform.Find("Back").GetComponent<Button>(), //4
+                                     menuOptions.Find("Quit").GetComponent<Button>() }; //5
 
         //Add Listeners
         GameController x = FindObjectOfType<GameController>();
@@ -39,7 +40,8 @@ public class Television : MonoBehaviour
         buttons[1].onClick.AddListener(() => MainMenu._instance.ChangeFromInitialOptions());
         buttons[2].onClick.AddListener(() => x.TriggerMainMenu());
         buttons[3].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("How To Play"));
-        buttons[4].onClick.AddListener(() => x.QuitGame());
+        buttons[4].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("MainMenu"));
+        buttons[5].onClick.AddListener(() => x.QuitGame());
 
         //Set the right buttons at start
         SwapButtons(true, ButtonName.NewGame, ButtonName.Options, ButtonName.Quit);

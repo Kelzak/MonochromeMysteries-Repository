@@ -14,7 +14,9 @@ public class MainMenu : MonoBehaviour
     private bool playerInTVRange = false;
     private GameObject currentMenu;
     private Television currentTV;
-    //0 is Resume, 1 is New Game
+
+    public delegate void MainMenuEvent(bool isActive);
+    public static event MainMenuEvent onMainMenuTriggered;
     
 
     public Television[] TVs;
@@ -114,12 +116,14 @@ public class MainMenu : MonoBehaviour
         if (active)
         {
             Player.EnableControls(false);
+            onMainMenuTriggered?.Invoke(true);
         }
         //Exiting menu so return to static
         else
         {
             currentTV.tvStatic.SetActive(true);
             currentTV.mainMenu.SetActive(false);
+            onMainMenuTriggered?.Invoke(false);
         }
 
         //Transitioning into TV, store player transform so camera can be returned properly
