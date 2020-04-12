@@ -156,7 +156,12 @@ public class PadlockPuzzle : MonoBehaviour
         {
             keypadPanel.SetActive(false);
         }
-        photographer.canTakePhoto = false;
+        if(photographer.GetComponent<Player>())
+        {
+            photographer.CameraLensActive = true;
+            photographer.canTakePhoto = false;
+               
+        }
         GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
@@ -169,7 +174,6 @@ public class PadlockPuzzle : MonoBehaviour
         symbolInputField.text = "";
         symbolInputField.placeholder.GetComponent<Text>().text = "Enter password...";
         StartCoroutine(WaitToTurnOnCamera());
-        photographer.CameraLensActive = true;
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         //totalInputs = 0;
     }
