@@ -434,54 +434,55 @@ public class Player : MonoBehaviour
                         }
                     }
                 }
-                if (hit.collider.tag == "letter" && hit.distance < reticleDist)
+            }
+            else if (hit.collider.tag == "letter" && hit.distance < reticleDist)
+            {
+                if (Input.GetKeyDown(KeyCode.F) && !readtime)
                 {
-                    if (Input.GetKeyDown(KeyCode.F) && !readtime)
+                    readtime = false;
+                    StartCoroutine(ReadTime());
+                    isReadingLetter = true;
+                    GameController.TogglePause();
+                    Cursor.lockState = CursorLockMode.Confined;
+                    Cursor.visible = false;
+                    photographer.CameraLensActive = false;
+
+                    if (hit.collider.gameObject.name == "Manager's Safe Code")
                     {
-                        readtime = false;
-                        StartCoroutine(ReadTime());
-                        isReadingLetter = true;
-                        GameController.TogglePause();
-                        Cursor.lockState = CursorLockMode.Confined;
-                        Cursor.visible = false;
-                        photographer.CameraLensActive = false;
 
-                        if (hit.collider.gameObject.name == "Manager's Safe Code")
-                        {
-
-                            passwordLetter1.SetActive(true);
-                        }
-                        if (hit.collider.gameObject.name == "Mechanic's Diary")
-                        {
-                            onDiary = true;
-                            Debug.Log("got diary");
-                            pageIndex = 0;
-                            diary[0].SetActive(true);
-                        }
-                        if (hit.collider.gameObject.name == "Love Letters")
-                        {
-                            onLove = true;
-                            pageIndex = 0;
-                            love[0].SetActive(true);
-                        }
-                        if (hit.collider.gameObject.name == "Love Note")
-                        {
-                            loveNote.SetActive(true);
-                        }
-                        if (hit.collider.gameObject.name == "Manager's Journal")
-                        {
-                            journal.SetActive(true);
-                        }
-                        if (hit.collider.gameObject.name == "Photographer's Safe Code")
-                        {
-                            redRoomCode.SetActive(true);
-                        }
-
-                        EnableControls(false);
-                        pressCToCloseText.SetActive(true);
-                        darkBackground.SetActive(true);
+                        passwordLetter1.SetActive(true);
                     }
+                    if (hit.collider.gameObject.name == "Mechanic's Diary")
+                    {
+                        onDiary = true;
+                        Debug.Log("got diary");
+                        pageIndex = 0;
+                        diary[0].SetActive(true);
+                    }
+                    if (hit.collider.gameObject.name == "Love Letters")
+                    {
+                        onLove = true;
+                        pageIndex = 0;
+                        love[0].SetActive(true);
+                    }
+                    if (hit.collider.gameObject.name == "Love Note")
+                    {
+                        loveNote.SetActive(true);
+                    }
+                    if (hit.collider.gameObject.name == "Manager's Journal")
+                    {
+                        journal.SetActive(true);
+                    }
+                    if (hit.collider.gameObject.name == "Photographer's Safe Code")
+                    {
+                        redRoomCode.SetActive(true);
+                    }
+
+                    EnableControls(false);
+                    pressCToCloseText.SetActive(true);
+                    darkBackground.SetActive(true);
                 }
+            
             }
         }
     }

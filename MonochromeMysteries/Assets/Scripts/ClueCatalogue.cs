@@ -127,7 +127,7 @@ public class ClueCatalogue : MonoBehaviour
                     }
                     if (safe)
                     {
-                        Debug.Log("Detected: " + currObj.name);
+                       // Debug.Log("Detected: " + currObj.name);
                         cluesDetected.Add(i);
                         break;
                     }

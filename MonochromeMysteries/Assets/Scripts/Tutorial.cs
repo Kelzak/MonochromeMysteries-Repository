@@ -172,7 +172,7 @@ public class Tutorial : MonoBehaviour
         {
             yield return null;
         }
-        Debug.Log("Photo Conditions Met");
+        //Debug.Log("Photo Conditions Met");
 
         Dialogue.ContinueDialogue();
         onFirstPhoto -= TriggerFirstPhoto;
@@ -217,6 +217,6 @@ public class Tutorial : MonoBehaviour
         {
             Destroy(wall);
         }
-        Debug.Log("TutorialEnd");
+        //Debug.Log("TutorialEnd");
     }
 }

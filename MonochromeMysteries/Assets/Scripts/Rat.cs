@@ -51,7 +51,7 @@ public class Rat : Possessable
         if (hold)
         {
             target.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
-            Debug.Log("Rat should be picking up key or knife");
+            //Debug.Log("Rat should be picking up key or knife");
             target.transform.SetParent(pickupDestination);
             target.transform.position = pickupDestination.position;
             target.transform.rotation = pickupDestination.rotation;
