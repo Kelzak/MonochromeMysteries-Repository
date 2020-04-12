@@ -46,7 +46,7 @@ public class DoorScript : MonoBehaviour
         {
             if(other.tag == "Person" && other.gameObject.name.Equals(whoDoor))
             {
-                Debug.Log("Yes person");
+                //Debug.Log("Yes person");
                 if (other.GetComponent<Player>())
                 {
                     _isInsideTrigger = true;
