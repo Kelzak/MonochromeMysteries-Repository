@@ -31,7 +31,6 @@ public class Player : MonoBehaviour
     public float lookVertical;
     [HideInInspector]
     public float verticalClamp = 60;
-    private const float VERTICAL_CLAMP = 60;
     [HideInInspector]
     public GameObject cam;
 
@@ -247,14 +246,14 @@ public class Player : MonoBehaviour
             characterName.text = "";
             isRat = false;
         }
-        
+
         //flip pages of letters / books
-        if(onDiary)
+        if (onDiary)
         {
-            if(Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
             {
                 diary[pageIndex].SetActive(false);
-                if (pageIndex >= diary.Length-1)
+                if (pageIndex >= diary.Length - 1)
                 {
                     Debug.Log("Flip Page");
                     foreach (GameObject page in diary)
@@ -268,7 +267,7 @@ public class Player : MonoBehaviour
                 {
                     pageIndex++;
                     diary[pageIndex].SetActive(true);
-                }  
+                }
             }
             if (Input.GetMouseButtonDown(1))
             {
@@ -339,16 +338,16 @@ public class Player : MonoBehaviour
 
         //if (hasKnife)
         //{
-          //  Debug.Log("You have the knife: " + hasKnife);
+        //  Debug.Log("You have the knife: " + hasKnife);
         //}
-        
+
 
         //Exiting the letter screen (Coincides with InteractWithSafe())
         if (isReadingLetter && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.F) && readtime))
         {
-            
+
             GameController.TogglePause();
-            if(photographer.GetComponent<Player>())
+            if (photographer.GetComponent<Player>())
             {
                 photographer.CameraLensActive = true;
                 photographer.canTakePhoto = true;
@@ -363,12 +362,12 @@ public class Player : MonoBehaviour
             journal.SetActive(false);
             foreach (GameObject page in diary)
             {
-                
+
                 page.SetActive(false);
             }
             foreach (GameObject page in love)
             {
-                
+
                 page.SetActive(false);
             }
             onDiary = false;
@@ -383,14 +382,14 @@ public class Player : MonoBehaviour
     public static bool isReadingLetter;
     public void InteractWithSafe()
     {
-        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
+        Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        if (Physics.Raycast(safeRay, out hit))
         {
-            Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            if (Physics.Raycast(safeRay, out hit))
+            if (hit.collider.tag == "safe" && hit.distance < reticleDist)
             {
-                if (hit.collider.tag == "safe" && hit.distance < reticleDist)
+                if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
                 {
-                    if (Input.GetKeyDown(KeyCode.F) && !readtime)
+                    if (Input.GetKeyDown(KeyCode.F))
                     {
                         readtime = false;
                         safeName = hit.collider.name;
@@ -401,17 +400,8 @@ public class Player : MonoBehaviour
                                 photographer.CameraLensActive = false;
                             }
                             safeManager.ShowKeypad();
-                            Debug.Log("get safe");
                         }
-                        if (!safeManager.safe2Open && safeName == "LockedSafe2")
-                        {
-                            if (gameObject.GetComponent<Photographer>())
-                            {
-                                photographer.CameraLensActive = false;
-                            }
-                            safeManager.ShowKeypad();
-                            Debug.Log("get safe");
-                        }
+
                         if (!safeManager.safe3Open && safeName == "LockedSafe3")
                         {
                             if (gameObject.GetComponent<Photographer>())
@@ -419,7 +409,6 @@ public class Player : MonoBehaviour
                                 photographer.CameraLensActive = false;
                             }
                             safeManager.ShowKeypad();
-                            Debug.Log("get safe");
                         }
                         if (!safeManager.safe4Open && safeName == "LockedSafe4")
                         {
@@ -428,9 +417,21 @@ public class Player : MonoBehaviour
                                 photographer.CameraLensActive = false;
                             }
                             safeManager.ShowKeypad();
-                            Debug.Log("get safe");
                         }
                         StartCoroutine(ReadTime());
+                    }
+                }
+                else if (StateChecker.isGhost)
+                {
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        readtime = false;
+                        safeName = hit.collider.name;
+                        if (!safeManager.safe2Open && safeName == "LockedSafe2")
+                        {
+                            safeManager.ShowKeypad();
+                            Debug.Log("get safe");
+                        }
                     }
                 }
                 if (hit.collider.tag == "letter" && hit.distance < reticleDist)
@@ -447,7 +448,7 @@ public class Player : MonoBehaviour
 
                         if (hit.collider.gameObject.name == "Manager's Safe Code")
                         {
-                            
+
                             passwordLetter1.SetActive(true);
                         }
                         if (hit.collider.gameObject.name == "Mechanic's Diary")
@@ -480,11 +481,10 @@ public class Player : MonoBehaviour
                         pressCToCloseText.SetActive(true);
                         darkBackground.SetActive(true);
                     }
-
                 }
             }
         }
-     }
+    }
 
     public IEnumerator ReadTime()
     {
@@ -494,54 +494,15 @@ public class Player : MonoBehaviour
 
     //Ray safeCheck = Camera.main.ViewportPointToRay(new Vector3(0, 1, 0));
 
+    public bool hasEnteredRatRoom = false;
     //PICKING UP OBJECTS
-    private void OnTriggerStay(Collider other)
-    { 
-        ////kevs stuff below
-        ///
-        //if (other.gameObject.tag == "Selectable")
-        //{
-        //    if (other.gameObject.GetComponent<Item>().itemName == "Camera")
-        //    {
-        //        Debug.Log("Text should appear");
-        //        //pickUpInstructions.gameObject.SetActive(true);
-        //    }
-        //    canPickup = true;
-        //    Debug.Log("CanPickUp = " + canPickup);
-
-        //    if (Input.GetKeyDown(KeyCode.F) && canPickup)
-        //    {
-        //        if (gameObject.tag == "Photographer" && other.gameObject.GetComponent<Item>().itemName == "Camera")
-        //        {
-        //            Debug.Log("Picking up Camera...");
-        //            hasCamera = true;
-        //            photographer.ToggleHUD(true);
-        //            Destroy(other.gameObject);
-        //            //pictureTakingInstructions.gameObject.SetActive(true);
-        //            //pickUpInstructions.gameObject.SetActive(false);
-        //            //itemSpecificInstructions.gameObject.SetActive(false);
-        //        }
-        //        else if (other.gameObject.GetComponent<Item>().itemName == "Key" && !(gameObject.GetComponent<Rat>()))
-        //        {
-        //            hasKey = true;
-        //            keyImage.SetActive(true);
-        //            Debug.Log("You picked up a key!");
-        //            Destroy(other.gameObject);
-        //        }
-        //    }
-        //}
-
-        //if (other.gameObject.tag == "LockedDoor")
-        //{
-        //    if (Input.GetKeyDown(KeyCode.F) && hasKey)
-        //    {
-        //        Debug.Log("You unlocked the door!");
-        //        Destroy(other.gameObject);
-        //        hasKey = false;
-        //        keyImage.SetActive(false);
-        //        Debug.Log("You dont have the key anymore");
-        //    }
-        //}
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "RatRoomEnterTrigger" && !hasEnteredRatRoom)
+        {
+            hasEnteredRatRoom = true;
+            StartCoroutine(endingManager.KnifeScript());
+        }
     }
 
     public bool IsInside()
@@ -556,7 +517,7 @@ public class Player : MonoBehaviour
         Ray indoorCheck = new Ray(GameObject.FindObjectOfType<Player>().transform.position + fwd, transform.up);
         //Debug.DrawLine(indoorCheck.origin, hit.transform.position);
 
-        
+
         if (Physics.Raycast(indoorCheck, out hit))
         {
             //Debug.Log(hit.collider.gameObject.tag);
@@ -575,7 +536,7 @@ public class Player : MonoBehaviour
         //Debug.Log(hit.collider.gameObject.name);
         return isInside;
     }
-    
+
     void PickUp()
     {
         if (this.gameObject.CompareTag("Rat") || this.gameObject.CompareTag("Player"))
@@ -600,14 +561,14 @@ public class Player : MonoBehaviour
                     //pickup
                     if (Input.GetKeyDown(KeyCode.F) && canPickup)
                     {
-                        if(selection.gameObject.CompareTag("Key"))
+                        if (selection.gameObject.CompareTag("Key"))
                         {
                             Log.AddEntry("Picked up: " + selection.gameObject.name);
                             audioSource.PlayOneShot(obtainClip);
                             keys.Add(selection.gameObject);
                             Destroy(selection.gameObject);
                         }
-                        else if(selection.gameObject.CompareTag("Knife"))
+                        else if (selection.gameObject.CompareTag("Knife"))
                         {
                             hasKnife = true;
                             isReadingLetter = true;
@@ -755,7 +716,7 @@ public class Player : MonoBehaviour
 
             StartCoroutine(Possess(target));
         }
-           
+
     }
 
     bool possessionInProgress = false;
@@ -783,15 +744,15 @@ public class Player : MonoBehaviour
         }
 
         Transform targetTransform;
-        if(target.transform.Find("CamPoint"))
+        if (target.GetComponent<Photographer>())
         {
-            targetTransform = target.transform.Find("CamPoint");
+            targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
         }
         else
         {
-            targetTransform = target.transform;
+            targetTransform = target.GetComponent<Character>() ? target.transform.Find("CamPoint") : target.transform;
         }
-        
+
 
         //Cam Shift & Alpha fade
         EnableControls(false);
@@ -862,12 +823,11 @@ public class Player : MonoBehaviour
         {
             field.SetValue(copy, field.GetValue(this));
         }
-        target.GetComponent<Player>().verticalClamp = target.GetComponent<Possessable>().verticalClamp;
 
         EnableControls(true);
 
         //First Rat possession
-        if(target.GetComponent<Rat>() && Dialogue.holding)
+        if (target.GetComponent<Rat>() && Dialogue.holding)
         {
             Tutorial.instance.OnFirstRatPossession();
         }
@@ -888,8 +848,8 @@ public class Player : MonoBehaviour
 
         possessionInProgress = false;
 
-        
-        
+
+
 
     }
 
@@ -912,7 +872,7 @@ public class Player : MonoBehaviour
         float checkRadius = thisMaxExtents + mainPlayerMaxExtents * 2;
         Vector3 closestPointOnFloor = Vector3.zero;
         bool safeExitPoint = false;
-        
+
         //Test points around player like a coordinate plane (ex (0,0), (0, 1), (0,2), ..., etc)
         int[] multiplierOptions = { 0, 1, -1 };
         Vector3 temp = exitPoint;
@@ -930,7 +890,7 @@ public class Player : MonoBehaviour
 
                 //In case there are multiple floors, get the highest one
                 List<int> floorIndexes = new List<int>();
-               
+
                 //Make sure there's enough space around the point
                 Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents / 2);
                 for (int k = 0; k < hit.Length; k++)
@@ -963,8 +923,8 @@ public class Player : MonoBehaviour
 
                 //Make sure point is visible
                 RaycastHit[] visibleHit;
-                visibleHit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.1f, 0.1f, 0.1f), heightModified - cam.transform.position, cam.transform.rotation, Vector3.Distance(heightModified, cam.transform.position), ~0, QueryTriggerInteraction.Ignore); 
-                foreach(RaycastHit x in visibleHit)
+                visibleHit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.1f, 0.1f, 0.1f), heightModified - cam.transform.position, cam.transform.rotation, Vector3.Distance(heightModified, cam.transform.position), ~0, QueryTriggerInteraction.Ignore);
+                foreach (RaycastHit x in visibleHit)
                 {
                     if (x.collider.gameObject != gameObject)
                     {
@@ -972,7 +932,7 @@ public class Player : MonoBehaviour
                         continue;
                     }
                 }
-                
+
 
                 if (safeExitPoint)
                     break;
@@ -1017,7 +977,7 @@ public class Player : MonoBehaviour
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
 
         Vector3 startPoint = transform.position;
-        if (transform.Find("CamPoint"))
+        if (GetComponent<Photographer>())
             startPoint = transform.Find("CamPoint").position + camOffset;
 
         //Zoom out
@@ -1064,7 +1024,7 @@ public class Player : MonoBehaviour
             {
                 GetComponent<NavPerson>().enabled = true;
             }
-                
+
             Destroy(GetComponent<Player>());
         }
 
@@ -1075,11 +1035,11 @@ public class Player : MonoBehaviour
     {
         if (!StateChecker.isGhost)
         {
-            if(Input.GetAxis("Horizontal") > 0 || Input.GetAxis("Vertical") > 0 || Input.GetAxis("Horizontal") < 0 || Input.GetAxis("Vertical") < 0)
+            if (Input.GetAxis("Horizontal") > 0 || Input.GetAxis("Vertical") > 0 || Input.GetAxis("Horizontal") < 0 || Input.GetAxis("Vertical") < 0)
             {
                 audioSource.volume = stepVolume;
                 int rand;
-                if(isRat)
+                if (isRat)
                 {
                     rand = Random.Range(0, ratSteps.Length);
                     step = ratSteps[rand];
@@ -1110,7 +1070,7 @@ public class Player : MonoBehaviour
 
     private void HideReticle(bool shouldHide)
     {
-        if(shouldHide)
+        if (shouldHide)
         {
             reticle.gameObject.SetActive(false);
         }
