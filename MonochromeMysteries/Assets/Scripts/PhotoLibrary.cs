@@ -148,7 +148,7 @@ public class PhotoLibrary : MonoBehaviour
             Vector3 startPos = Vector3.zero;
             Vector3 endPos = startPos;
             float shiftValue = subMenu.sizeDelta.x + photoSlot.GetComponentInParent<GridLayoutGroup>().cellSize.x / 2;
-            Debug.Log(subMenu_Active);
+            //Debug.Log(subMenu_Active);
             if (!subMenu_Active)
                 endPos.x += shiftValue * GameController.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
             else

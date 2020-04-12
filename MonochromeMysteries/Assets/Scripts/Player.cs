@@ -430,7 +430,7 @@ public class Player : MonoBehaviour
                         if (!safeManager.safe2Open && safeName == "LockedSafe2")
                         {
                             safeManager.ShowKeypad();
-                            Debug.Log("get safe");
+                            //Debug.Log("get safe");
                         }
                     }
                 }

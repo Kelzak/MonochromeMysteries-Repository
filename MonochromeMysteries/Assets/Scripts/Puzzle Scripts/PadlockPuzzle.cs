@@ -139,7 +139,7 @@ public class PadlockPuzzle : MonoBehaviour
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
         Time.timeScale = 0;
-        Debug.Log(Player.safeName);
+        //Debug.Log(Player.safeName);
         Player.canMove = false;
         Player.canLook = false;
         Cursor.visible = true;
@@ -199,7 +199,7 @@ public class PadlockPuzzle : MonoBehaviour
         else if (Player.safeName == safe2.name && symbolInputField.text == correctCode2)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
-            Debug.Log("Correct!");
+            //Debug.Log("Correct!");
             HideKeypadAndReset();
             safeAnim = safe2.transform.Find("Hinge").GetComponent<SafeAnim>();
             safe2Open = true;
@@ -209,7 +209,7 @@ public class PadlockPuzzle : MonoBehaviour
         else if (Player.safeName == safe3.name && inputField.text == correctCode3)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
-            Debug.Log("Correct!");
+            //Debug.Log("Correct!");
             HideKeypadAndReset();
             safeAnim = safe3.transform.Find("Hinge").GetComponent<SafeAnim>();
             safe3Open = true;
@@ -219,7 +219,7 @@ public class PadlockPuzzle : MonoBehaviour
         else if (Player.safeName == safe4.name && inputField.text == correctCode4)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
-            Debug.Log("Correct!");
+            //Debug.Log("Correct!");
             HideKeypadAndReset();
             safeAnim = safe4.transform.Find("Hinge").GetComponent<SafeAnim>();
             safe4Open = true;
