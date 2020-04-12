@@ -156,11 +156,7 @@ public class PadlockPuzzle : MonoBehaviour
         {
             keypadPanel.SetActive(false);
         }
-        if(photographer.GetComponent<Player>())
-        {
-            photographer.CameraLensActive = true;
-            photographer.canTakePhoto = false;
-        }
+        photographer.canTakePhoto = false;
         GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
@@ -173,7 +169,7 @@ public class PadlockPuzzle : MonoBehaviour
         symbolInputField.text = "";
         symbolInputField.placeholder.GetComponent<Text>().text = "Enter password...";
         StartCoroutine(WaitToTurnOnCamera());
-        
+        photographer.CameraLensActive = true;
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         //totalInputs = 0;
     }
@@ -240,69 +236,6 @@ public class PadlockPuzzle : MonoBehaviour
     }
 }
 
-/*
- * 
-            Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            if (Physics.Raycast(safeRay, out hit))
-            {
-                if (hit.collider.tag == "safe" && hit.distance < reticleDist)
-                {
-                if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
-                   {
-                    if (Input.GetKeyDown(KeyCode.F) && !readtime)
-                    {
-                        readtime = false;
-                        safeName = hit.collider.name;
-                        if (!safeManager.safe1Open && safeName == "LockedSafe1")
-                        {
-                            if (gameObject.GetComponent<Photographer>())
-                            {
-                                photographer.CameraLensActive = false;
-                            }
-                            safeManager.ShowKeypad();
-                            Debug.Log("get safe");
-                        }
-
-                        if (!safeManager.safe3Open && safeName == "LockedSafe3")
-                        {
-                            if (gameObject.GetComponent<Photographer>())
-                            {
-                                photographer.CameraLensActive = false;
-                            }
-                            safeManager.ShowKeypad();
-                            Debug.Log("get safe");
-                        }
-                        if (!safeManager.safe4Open && safeName == "LockedSafe4")
-                        {
-                            if (gameObject.GetComponent<Photographer>())
-                            {
-                                photographer.CameraLensActive = false;
-                            }
-                            safeManager.ShowKeypad();
-                            Debug.Log("get safe");
-                        }
-                        StartCoroutine(ReadTime());
-                    }
-                    if (StateChecker.isGhost)
-                  {
-                                      if (Input.GetKeyDown(KeyCode.F) && !readtime)
-                    {
-                        readtime = false;
-                        safeName = hit.collider.name;
-                                                if (!safeManager.safe2Open && safeName == "LockedSafe2")
-                        {
-                            if (gameObject.GetComponent<Photographer>())
-                            {
-                                photographer.CameraLensActive = false;
-                            }
-                            safeManager.ShowKeypad();
-                            Debug.Log("get safe");
-                        }
-                }
-
-
-
-//UNUSED CODE
 /*if (Input.GetKeyDown(KeyCode.Alpha1))
 {
     if (Player.isAtTheFirstSafe)
