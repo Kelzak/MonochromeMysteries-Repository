@@ -16,6 +16,7 @@ TagManager:
   - Sky
   - safe
   - letter
+  - Knife
   layers:
   - Default
   - TransparentFX

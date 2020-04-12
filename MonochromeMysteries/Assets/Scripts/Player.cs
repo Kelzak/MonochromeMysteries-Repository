@@ -114,6 +114,10 @@ public class Player : MonoBehaviour
     private bool onDiary;
     private bool onLove;
 
+    //Ending Stuff
+    public static bool hasKnife;
+    public Endings endingManager;
+
     private void Awake()
     {
         //ppvToggle.Toggle(true);
@@ -160,7 +164,7 @@ public class Player : MonoBehaviour
             StartCoroutine(ExitPossession());
         }
 
-        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>() || gameObject.GetComponent<Character>())
+        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>() || gameObject.GetComponent<Person>())
         {
             ppvToggle.Toggle(false);
         }
@@ -192,6 +196,34 @@ public class Player : MonoBehaviour
             characterImage.sprite = ratImage;
             characterName.text = "\"The Rat\"";
             isRat = true;
+        }
+        else if (gameObject.name == "Manager")
+        {
+            itemImage.transform.parent.gameObject.SetActive(false);
+            characterImage.sprite = null;
+            characterName.text = "\"The Manager\"";
+            isRat = false;
+        }
+        else if (gameObject.name == "Exterminator")
+        {
+            itemImage.transform.parent.gameObject.SetActive(false);
+            characterImage.sprite = null;
+            characterName.text = "\"The Exterminator\"";
+            isRat = false;
+        }
+        else if (gameObject.name == "Mechanic")
+        {
+            itemImage.transform.parent.gameObject.SetActive(false);
+            characterImage.sprite = null;
+            characterName.text = "\"The Mechanic\"";
+            isRat = false;
+        }
+        else if (gameObject.name == "Hunter")
+        {
+            itemImage.transform.parent.gameObject.SetActive(false);
+            characterImage.sprite = null;
+            characterName.text = "\"The Hunter\"";
+            isRat = false;
         }
         else
         {
@@ -243,12 +275,23 @@ public class Player : MonoBehaviour
 
         InteractWithSafe();
 
+        //if (hasKnife)
+        //{
+          //  Debug.Log("You have the knife: " + hasKnife);
+        //}
+        
+
         //Exiting the letter screen (Coincides with InteractWithSafe())
         if (isReadingLetter && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape)))
         {
             GameController.TogglePause();
-            photographer.CameraLensActive = true;
+            if(photographer.GetComponent<Player>())
+            {
+                photographer.CameraLensActive = true;
+                photographer.canTakePhoto = true;
+            }
             isReadingLetter = false;
+            endingManager.knifeInstructions.SetActive(false);
             passwordLetter1.SetActive(false);
             pressCToCloseText.SetActive(false);
             darkBackground.SetActive(false);
@@ -419,7 +462,7 @@ public class Player : MonoBehaviour
         //Debug.Log(hit.collider.gameObject.name);
         return isInside;
     }
-
+    
     void PickUp()
     {
         if (this.gameObject.CompareTag("Rat") || this.gameObject.CompareTag("Player"))
@@ -442,12 +485,24 @@ public class Player : MonoBehaviour
                     reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
 
                     //pickup
-                    if (Input.GetKeyDown(KeyCode.F) && selection.gameObject.CompareTag("Key") && canPickup)
+                    if (Input.GetKeyDown(KeyCode.F) && canPickup)
                     {
-                        Log.AddEntry("Picked up Key");
-                        audioSource.PlayOneShot(obtainClip);
-                        keys.Add(selection.gameObject);
-                        Destroy(selection.gameObject);
+                        if(selection.gameObject.CompareTag("Key"))
+                        {
+                            Log.AddEntry("Picked up Key");
+                            audioSource.PlayOneShot(obtainClip);
+                            keys.Add(selection.gameObject);
+                            Destroy(selection.gameObject);
+                        }
+                        else if(selection.gameObject.CompareTag("Knife"))
+                        {
+                            hasKnife = true;
+                            isReadingLetter = true;
+                            Log.AddEntry("Picked up Knife");
+                            audioSource.PlayOneShot(obtainClip);
+                            endingManager.ShowKnifeInstructions();
+                            Destroy(selection.gameObject);
+                        }
                     }
                 }
                 //else if (selection.gameObject.CompareTag("Person"))

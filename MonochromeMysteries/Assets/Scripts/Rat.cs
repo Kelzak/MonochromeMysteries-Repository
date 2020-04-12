@@ -50,7 +50,7 @@ public class Rat : Possessable
         if (hold)
         {
             target.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
-            Debug.Log("Rat should be picking up key");
+            Debug.Log("Rat should be picking up key or knife");
             target.transform.SetParent(pickupDestination);
             target.transform.position = pickupDestination.position;
             target.transform.rotation = pickupDestination.rotation;
@@ -63,7 +63,7 @@ public class Rat : Possessable
             try
             {
                 target.gameObject.GetComponentInChildren<HoverText>().UIstop = false;
-                Debug.Log("Let go");
+                //Debug.Log("Let go");
                 target.transform.SetParent(null);
                 target.gameObject.GetComponent<Rigidbody>().useGravity = true;
                 target.gameObject.GetComponent<Rigidbody>().isKinematic = false;
@@ -86,12 +86,12 @@ public class Rat : Possessable
 
     private void OnTriggerStay(Collider other)
     {
-        if(Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter") && !hasKey)
+        if(Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && !hasKey)
         {
             target = other.gameObject;
             hold = true;
         }
-        else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
+        else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
         {
             target = other.gameObject;
             hold = false;

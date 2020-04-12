@@ -6,9 +6,12 @@ using UnityEngine.UI;
 public class PadlockPuzzle : MonoBehaviour
 {
     [SerializeField]
+    //Safe1 in the manager's office
     public static string correctCode1 = "030646"; //The mechanic's birthday
-    public static string correctCode2 = "654321";
-    public static string correctCode3 = "000000";
+    //Safe2 in the rat room
+    public static string correctCode2 = "654321"; //Symbols are used here
+    public static string correctCode3 = "000000"; 
+    public static string correctCode4 = "000000";
     /*public static string enteredCode1;
     public static string enteredCode2;
     public static string enteredCode3;*/
@@ -22,6 +25,7 @@ public class PadlockPuzzle : MonoBehaviour
     public GameObject safe1;
     public GameObject safe2;
     public GameObject safe3;
+    public GameObject safe4;
 
     [HideInInspector]
     public bool safe1Open;
@@ -29,6 +33,8 @@ public class PadlockPuzzle : MonoBehaviour
     public bool safe2Open;
     [HideInInspector]
     public bool safe3Open;
+    [HideInInspector]
+    public bool safe4Open;
    
     public GameObject keypadPanel;
     public InputField inputField;
@@ -52,7 +58,7 @@ public class PadlockPuzzle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //FOR TESTING PURPOSES
+        /* //FOR TESTING
         if(Input.GetKeyDown(KeyCode.H))
         {
             HideKeypadAndReset();
@@ -60,7 +66,7 @@ public class PadlockPuzzle : MonoBehaviour
         else if(Input.GetKeyDown(KeyCode.J))
         {
             ShowKeypad();
-        }
+        }*/
     }
 
     private void OnMouseDown()
@@ -94,6 +100,12 @@ public class PadlockPuzzle : MonoBehaviour
                     //enteredCode3 += numberPressed;
                     //totalInputs += 1;
                 }
+                else if (Player.safeName == safe4.name)
+                {
+                    inputField.text += numberPressed;
+                    //enteredCode3 += numberPressed;
+                    //totalInputs += 1;
+                }
             }
         }
         else //when backspace is pressed
@@ -108,6 +120,7 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void ShowKeypad()
     {
+        if(Player.safeName == safe2.name)
         GameController.TogglePause();
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
