@@ -9,6 +9,8 @@ public class FlashLight : MonoBehaviour
     void Start()
     {
         light = GetComponent<Light>();
+
+        MainMenu.onMainMenuTriggered += HideLight;
     }
 
     // Update is called once per frame
@@ -23,4 +25,13 @@ public class FlashLight : MonoBehaviour
             light.enabled = false;
         }
     }
+
+    private void HideLight(bool shouldHide)
+    {
+        if (shouldHide)
+            gameObject.SetActive(false);
+        else
+            gameObject.SetActive(true);
+    }
+
 }

@@ -116,7 +116,7 @@ MonoBehaviour:
   verticalClamp: 60
   cam: {fileID: 0}
   moveSpeed: 5
-  possess_Distance: 5
+  possess_Distance: 7
   camOffset: {x: 0, y: 0, z: 0}
   hasKey: 0
   ppvToggle: {fileID: 0}
@@ -128,6 +128,7 @@ MonoBehaviour:
   ratImage: {fileID: 0}
   characterImage: {fileID: 0}
   characterName: {fileID: 0}
+  characterRole: {fileID: 0}
   cameraImage: {fileID: 0}
   itemImage: {fileID: 0}
   itemName: {fileID: 0}
@@ -145,10 +146,19 @@ MonoBehaviour:
   ratSteps: []
   stepVolume: 0
   walkSoundInterval: 0.5
+  safeManager: {fileID: 0}
   isLookingAtSafe1: 0
   isLookingAtSafe2: 0
   isLookingAtSafe3: 0
-  keypadPanel: {fileID: 0}
+  passwordLetter1: {fileID: 0}
+  journal: {fileID: 0}
+  redRoomCode: {fileID: 0}
+  loveNote: {fileID: 0}
+  diary: []
+  love: []
+  darkBackground: {fileID: 0}
+  pressCToCloseText: {fileID: 0}
+  endingManager: {fileID: 0}
 --- !u!143 &3522378898957226858
 CharacterController:
   m_ObjectHideFlags: 0

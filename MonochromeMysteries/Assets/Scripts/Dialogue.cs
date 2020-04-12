@@ -244,7 +244,7 @@ public class Dialogue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(dialogueQueue.Count > 0 && !dialogueRunning)
+        if (dialogueQueue != null && dialogueQueue.Count > 0 && !dialogueRunning)
         {
             StartCoroutine(RunDialogue());
         }

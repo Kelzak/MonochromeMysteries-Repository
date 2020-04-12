@@ -269,7 +269,12 @@ public class NavPerson : MonoBehaviour
             Vector3 playerPos = player.transform.position;
             Quaternion _lookRotation = Quaternion.LookRotation((playerPos - transform.position).normalized);
 
+            if (gameObject.name == "guide")
+                _lookRotation.eulerAngles = new Vector3(_lookRotation.eulerAngles.x, _lookRotation.eulerAngles.y + 180, _lookRotation.eulerAngles.z);
+
+
             transform.rotation = Quaternion.Slerp(transform.rotation, _lookRotation, Time.deltaTime * turnSpeed);
+
         }
     }
     void LookAround()
