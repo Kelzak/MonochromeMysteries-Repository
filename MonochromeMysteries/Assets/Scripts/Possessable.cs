@@ -17,6 +17,7 @@ public abstract class Possessable : MonoBehaviour
     private bool isHighlighted = false;
     private static Possessable highlightedObject;
     protected Vector3 camOffset = Vector3.zero;
+    public float verticalClamp = 60;
 
     [SerializeField]
     protected static GameObject possessionVignette;

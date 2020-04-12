@@ -34,6 +34,7 @@ public class Rat : Possessable
         int rand = Random.Range(squeakInterval / 2, squeakInterval * 2);
         InvokeRepeating("Squeak", 5f, squeakInterval);
         base.Start();
+        verticalClamp = 30f;
 
         canMove = true;
 

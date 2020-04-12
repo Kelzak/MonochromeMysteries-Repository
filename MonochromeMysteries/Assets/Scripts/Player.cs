@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     public float lookVertical;
     [HideInInspector]
     public float verticalClamp = 60;
+    private const float VERTICAL_CLAMP = 60;
     [HideInInspector]
     public GameObject cam;
 
@@ -782,13 +783,13 @@ public class Player : MonoBehaviour
         }
 
         Transform targetTransform;
-        if(target.GetComponent<Photographer>())
+        if(target.transform.Find("CamPoint"))
         {
-            targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
+            targetTransform = target.transform.Find("CamPoint");
         }
         else
         {
-            targetTransform = target.GetComponent<Character>() ? target.transform.Find("CamPoint") : target.transform;
+            targetTransform = target.transform;
         }
         
 
@@ -861,6 +862,7 @@ public class Player : MonoBehaviour
         {
             field.SetValue(copy, field.GetValue(this));
         }
+        target.GetComponent<Player>().verticalClamp = target.GetComponent<Possessable>().verticalClamp;
 
         EnableControls(true);
 
@@ -1015,7 +1017,7 @@ public class Player : MonoBehaviour
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
 
         Vector3 startPoint = transform.position;
-        if (GetComponent<Photographer>())
+        if (transform.Find("CamPoint"))
             startPoint = transform.Find("CamPoint").position + camOffset;
 
         //Zoom out
