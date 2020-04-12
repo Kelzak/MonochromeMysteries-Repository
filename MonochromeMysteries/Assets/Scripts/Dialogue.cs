@@ -9,7 +9,7 @@ public class Dialogue : MonoBehaviour
 
     const int MAX_CHARACTERS = 87;
 
-    public static bool leftClickPriority = false;
+    //public static bool leftClickPriority = false;
 
     public static bool holding = false;
     public GameObject panel;
@@ -95,7 +95,7 @@ public class Dialogue : MonoBehaviour
             this.speakerImage.sprite = dialogueQueue.Peek().speakerPicture;
             this.speakerName.text = dialogueQueue.Peek().speakerName;
 
-            leftClickPriority = true;
+            //leftClickPriority = true;
             textPrinting = true;
             //Print out the text one character at a time until skip key is pressed
             for (int i = 0; i < currentMessage.Length && !Input.GetKeyDown(KeyCode.Space); i++)
@@ -113,7 +113,7 @@ public class Dialogue : MonoBehaviour
             //Clear Mouse Button Down Buffer
             if (Input.GetKeyDown(KeyCode.Space))
                 yield return null;
-            leftClickPriority = false;
+            //leftClickPriority = false;
             textPrinting = false;
 
             while (dialogueQueue.Peek().holdLine == true)
@@ -124,7 +124,7 @@ public class Dialogue : MonoBehaviour
             holding = false;
 
             int frameCount = 0;
-            leftClickPriority = true;
+            //leftClickPriority = true;
             while (!Input.GetKeyDown(KeyCode.Space))
             {
                 if (frameCount % 30 == 0 && !continuePrompt.activeSelf)
@@ -141,7 +141,7 @@ public class Dialogue : MonoBehaviour
 
             //if (Input.GetMouseButtonDown(0))
             //    yield return null;
-            leftClickPriority = false;
+            //leftClickPriority = false;
 
             
 
