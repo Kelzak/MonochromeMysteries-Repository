@@ -327,6 +327,7 @@ GameObject:
   - component: {fileID: 3374355439826413112}
   - component: {fileID: 3374355439826413113}
   - component: {fileID: 3374355439826413118}
+  - component: {fileID: 5359914652494411913}
   - component: {fileID: 3374355439826413116}
   - component: {fileID: 3374355439826413119}
   m_Layer: 0
@@ -508,6 +509,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d141013565a9bdb4286109964a51e65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalClamp: 60
+  canTakePhoto: 1
 --- !u!82 &3374355439826413112
 AudioSource:
   m_ObjectHideFlags: 0
@@ -714,6 +717,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: -1
   m_Mesh: {fileID: 8625290327840942402, guid: 9a5709648ec1ea443833863d08cebb98, type: 3}
+--- !u!114 &5359914652494411913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3374355439826413059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33904d5f367549b43ad674faf9315f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3374355439826413116
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -182,6 +182,7 @@ public class DoorScript : MonoBehaviour
                     if(personalDoor)
                     {
                         return;
+
                     }
                     rand = Random.Range(0, lockedDoor.Length);
                     sound = lockedDoor[rand];
