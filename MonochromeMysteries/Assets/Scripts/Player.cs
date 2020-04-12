@@ -912,9 +912,9 @@ public class Player : MonoBehaviour
         //Test points around player like a coordinate plane (ex (0,0), (0, 1), (0,2), ..., etc)
         int[] multiplierOptions = { 0, 1, -1 };
         Vector3 temp = exitPoint;
-        for (int i = 0; i < multiplierOptions.Length && safeExitPoint == false; i++) //Diagonals
+        for (int i = 0; i < multiplierOptions.Length; i++) //Diagonals
         {
-            for (int j = multiplierOptions.Length - 1; j > 0 && safeExitPoint == false; j--) //Cardinal Directions
+            for (int j = multiplierOptions.Length - 1; j > 0; j--) //Cardinal Directions
             {
                 //Set temp to point being tested, account for size of mesh to make sure it doesn't clip through wall
                 temp = GetComponent<MeshRenderer>().bounds.center + (transform.forward * checkRadius * multiplierOptions[j]) + (transform.right * checkRadius * multiplierOptions[i]);
@@ -922,14 +922,11 @@ public class Player : MonoBehaviour
                 //point is deemed safe until proven not
                 safeExitPoint = true;
 
-                //Make sure point is visible
-                RaycastHit visibleHit;
-                if (Physics.Linecast(cam.transform.position, temp, out visibleHit) && (visibleHit.collider.gameObject != gameObject) && visibleHit.collider.gameObject.tag != "Floor")
-                {
-                    safeExitPoint = false;
-                    continue;
-                }
 
+
+                //In case there are multiple floors, get the highest one
+                List<int> floorIndexes = new List<int>();
+               
                 //Make sure there's enough space around the point
                 Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents / 2);
                 for (int k = 0; k < hit.Length; k++)
@@ -939,10 +936,46 @@ public class Player : MonoBehaviour
                         safeExitPoint = false;
                         break;
                     }
-                    else
-                        closestPointOnFloor = hit[k].ClosestPoint(temp);
+                    else if (hit[k].gameObject.tag == "Floor")
+                        floorIndexes.Add(k);
                 }
+
+                float maxHeight = Mathf.NegativeInfinity;
+                int highestIndex = -1;
+                //In case there are multiple floors, find the highest one to avoid clipping
+                foreach (int x in floorIndexes)
+                {
+                    if (hit[x].bounds.center.y > maxHeight)
+                        maxHeight = hit[x].transform.position.y;
+                    highestIndex = x;
+                }
+                Vector3 heightModified = temp;
+                heightModified.y += mainPlayer.GetComponent<MeshRenderer>().bounds.extents.y;
+                if (highestIndex != -1)
+                {
+                    closestPointOnFloor = hit[highestIndex].ClosestPointOnBounds(heightModified);
+                    heightModified.y = closestPointOnFloor.y + mainPlayer.GetComponent<MeshRenderer>().bounds.extents.y;
+                }
+
+                //Make sure point is visible
+                RaycastHit[] visibleHit;
+                visibleHit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.1f, 0.1f, 0.1f), heightModified - cam.transform.position, cam.transform.rotation, Vector3.Distance(heightModified, cam.transform.position), ~0, QueryTriggerInteraction.Ignore); 
+                foreach(RaycastHit x in visibleHit)
+                {
+                    if (x.collider.gameObject != gameObject)
+                    {
+                        safeExitPoint = false;
+                        continue;
+                    }
+                }
+                
+
+                if (safeExitPoint)
+                    break;
             }
+
+            if (safeExitPoint)
+                break;
         }
 
         if (safeExitPoint) //Safe exit point with no collisions found
