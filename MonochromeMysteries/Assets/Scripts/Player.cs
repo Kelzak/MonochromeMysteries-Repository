@@ -316,7 +316,6 @@ public class Player : MonoBehaviour
     public static bool isReadingLetter;
     public void InteractWithSafe()
     {
-        
         if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
         {
             Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));

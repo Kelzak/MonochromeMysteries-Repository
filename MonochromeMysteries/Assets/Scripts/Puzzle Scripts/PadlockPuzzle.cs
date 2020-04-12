@@ -9,8 +9,8 @@ public class PadlockPuzzle : MonoBehaviour
     //Safe1 in the manager's office
     public static string correctCode1 = "030646"; //The mechanic's birthday
     //Safe2 in the rat room
-    public static string correctCode2 = "654321"; //Symbols are used here
-    public static string correctCode3 = "000000"; 
+    public static string correctCode2 = "918"; //Symbols are used here
+    public static string correctCode3 = "746583"; 
     public static string correctCode4 = "000000";
     /*public static string enteredCode1;
     public static string enteredCode2;
@@ -37,7 +37,9 @@ public class PadlockPuzzle : MonoBehaviour
     public bool safe4Open;
    
     public GameObject keypadPanel;
+    public GameObject symbolPanel;
     public InputField inputField;
+    public InputField symbolInputField;
 
     public Photographer photographer;
 
@@ -53,6 +55,7 @@ public class PadlockPuzzle : MonoBehaviour
         //inputCodeText.text = "";
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         inputField.characterLimit = 6;
+        symbolInputField.characterLimit = 3;
     }
 
     // Update is called once per frame
@@ -80,6 +83,10 @@ public class PadlockPuzzle : MonoBehaviour
         audioSource.PlayOneShot(buttonPressedSFX);
         if(numberPressed != "backspace")
         {
+            if (inputField.text.Length != 3 && Player.safeName == safe2.name)
+            {
+                symbolInputField.text += numberPressed;
+            }
             if (inputField.text.Length != 6)
             {
                 if (Player.safeName == safe1.name)
@@ -87,12 +94,6 @@ public class PadlockPuzzle : MonoBehaviour
                     inputField.text += numberPressed;
                     //enteredCode1 += numberPressed;
                     //totalInputs += 1;
-                }
-                else if (Player.safeName == safe2.name)
-                {
-                    inputField.text += numberPressed;
-                    //enteredCode2 += numberPressed;
-                   //totalInputs += 1;
                 }
                 else if (Player.safeName == safe3.name)
                 {
@@ -115,18 +116,30 @@ public class PadlockPuzzle : MonoBehaviour
                 inputField.text = inputField.text.Remove(inputField.text.Length - 1, 1);
                // totalInputs -= 1;
             }
+            if (symbolInputField.text.Length > 0)
+            {
+                symbolInputField.text = symbolInputField.text.Remove(symbolInputField.text.Length - 1, 1);
+                // totalInputs -= 1;
+            }
+
         }
     }
 
     public void ShowKeypad()
     {
         if(Player.safeName == safe2.name)
+        {
+            symbolPanel.SetActive(true);
+        }
+        else
+        {
+            keypadPanel.SetActive(true);
+        }
         GameController.TogglePause();
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
         Time.timeScale = 0;
         Debug.Log(Player.safeName);
-        keypadPanel.SetActive(true);
         Player.canMove = false;
         Player.canLook = false;
         Cursor.visible = true;
@@ -135,17 +148,26 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void HideKeypadAndReset()
     {
+        if (Player.safeName == safe2.name)
+        {
+            symbolPanel.SetActive(false);
+        }
+        else
+        {
+            keypadPanel.SetActive(false);
+        }
         photographer.canTakePhoto = false;
         GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
-        keypadPanel.SetActive(false);
         Player.canMove = true;
         Player.canLook = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         inputField.text = "";
         inputField.placeholder.GetComponent<Text>().text = "Enter password...";
+        symbolInputField.text = "";
+        symbolInputField.placeholder.GetComponent<Text>().text = "Enter password...";
         StartCoroutine(WaitToTurnOnCamera());
         photographer.CameraLensActive = true;
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
@@ -170,7 +192,7 @@ public class PadlockPuzzle : MonoBehaviour
             safe1Open = true;
             //safe1.SetActive(false);
         }
-        else if (Player.safeName == safe2.name && inputField.text == correctCode2)
+        else if (Player.safeName == safe2.name && symbolInputField.text == correctCode2)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
             Debug.Log("Correct!");
@@ -190,12 +212,24 @@ public class PadlockPuzzle : MonoBehaviour
             safeAnim.OpenSafe(safe3); 
             //safe3.SetActive(false);
         }
+        else if (Player.safeName == safe4.name && inputField.text == correctCode4)
+        {
+            audioSource.PlayOneShot(safeOpeningSFX);
+            Debug.Log("Correct!");
+            HideKeypadAndReset();
+            safeAnim = safe4.transform.Find("Hinge").GetComponent<SafeAnim>();
+
+            safeAnim.OpenSafe(safe4);
+            //safe3.SetActive(false);
+        }
         else
         {
             audioSource.PlayOneShot(incorrectSFX);
             inputField.placeholder.GetComponent<Text>().text = "Incorrect";
+            symbolInputField.placeholder.GetComponent<Text>().text = "Incorrect";
             //inputCodeText.text = "";
             inputField.text = "";
+            symbolInputField.text = "";
             //enteredCode1 = enteredCode2 = enteredCode3 = "";
             //totalInputs = 0;
         }
