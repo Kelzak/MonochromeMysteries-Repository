@@ -42,10 +42,7 @@ public class Endings : MonoBehaviour
         Dialogue.AddLine(Dialogue.Character.Pete, "There’s a lot of things that prohibit you from getting closure, and one of ‘ems your own emotions. I reckon you ain’t too happy about gettin’ whacked, huh?");
         Dialogue.AddLine(Dialogue.Character.Pete, "It just ain’t fair...and if you ask this old geezer, ain’t nothing wrong with a little vigilante justice.");
         Dialogue.AddLine(Dialogue.Character.Pete, "I brought you somethin’ that’ll help you out in that safe over yonder. You’ll be able to use it the way you are now, since I made this safe myself. I hope it finds you your ticket out, and more importantly, a little peace.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "If you’re gonna start solvin’ your murder, you’ll need to have a way to document evidence.Find a way next door to the Photographer’s room and bring him back here, would ya?");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Good job on getting that there photographer in here. Now remember what I was sayin’ about those objects with a white aura ? Go and take some photographs of those right quick(by clicking the left mouse button).");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Great you’ve collected some evidence. Take a look at those photographs in your scrapbook (by pressing tab). You’ll be able to examine them for more clues there.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Well good luck out there youngin! I’ll be rootin’ for ya, but you’re on your own from here on out. I’m not as young a soul as I used to be, all this here excitement has gone and tuckered me out");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I’ll let you get back to getting revenge on the bastard who put you in this mess. Bless your heart, son.");
     }
 
     public void UseKnife(string decision)
