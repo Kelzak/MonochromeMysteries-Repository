@@ -135,6 +135,8 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
+        MainMenu.onMainMenuTriggered += HideReticle;
+
         camOffset = new Vector3(0, 0.25f, 0);
 
         if (mainPlayer == null)
@@ -1102,6 +1104,23 @@ public class Player : MonoBehaviour
             }
         }
 
+    }
+
+    private void HideReticle(bool shouldHide)
+    {
+        if(shouldHide)
+        {
+            reticle.gameObject.SetActive(false);
+        }
+        else
+        {
+            reticle.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnDisable()
+    {
+        MainMenu.onMainMenuTriggered -= HideReticle;
     }
 
 }
