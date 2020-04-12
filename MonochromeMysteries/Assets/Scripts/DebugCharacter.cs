@@ -8,7 +8,7 @@ public class DebugCharacter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pos = this.transform.position;
+        pos = transform.position;
     }
 
     // Update is called once per frame
@@ -16,7 +16,7 @@ public class DebugCharacter : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Minus))
         {
-            this.transform.position = pos;
+            transform.position = pos;
         }
     }
 }
