@@ -52,12 +52,12 @@ public class Endings : MonoBehaviour
             if(photographer.GetComponent<Player>()) //you win
             {
                 Debug.Log("You chose correctly!");
-                //SceneManager.LoadScene("WinScene");
+                SceneManager.LoadScene("WinScene");
             }
             else if(photographer.GetComponent<Player>() == null) //you lose
             {
                 Debug.Log("You chose wrong :(");
-                //SceneManager.LoadScene("LoseScene");
+                SceneManager.LoadScene("LoseScene");
             }
         }
         else if(decision == "notyet")
