@@ -31,8 +31,8 @@ public class RatTrap : MonoBehaviour
             {
 
                 int rand = Random.Range(0, disableTrap.Length);
-                //AudioClip sound = disableTrap[rand];
-                //audioSource.PlayOneShot(sound);
+                AudioClip sound = disableTrap[rand];
+                audioSource.PlayOneShot(sound);
 
                 Destroy(this.gameObject);
             }

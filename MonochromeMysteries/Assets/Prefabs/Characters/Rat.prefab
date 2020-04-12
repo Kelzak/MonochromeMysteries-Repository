@@ -146,8 +146,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupDestination: {fileID: 3341057057285768617}
   hasKey: 0
-  squeakInterval: 10
-  squeakVolume: 0.5
+  squeakInterval: 20
+  squeakVolume: 0.25
   stepsSource: {fileID: 3341057057106122542}
   squeakSource: {fileID: 6116610002201844464}
   squeaks:

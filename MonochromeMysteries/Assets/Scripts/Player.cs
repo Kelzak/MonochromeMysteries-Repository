@@ -105,6 +105,7 @@ public class Player : MonoBehaviour
     public GameObject passwordLetter1;
     public GameObject journal;
     public GameObject redRoomCode;
+    public GameObject loveNote;
     public GameObject[] diary;
     public GameObject[] love;
     public GameObject darkBackground;
@@ -355,6 +356,7 @@ public class Player : MonoBehaviour
             pressCToCloseText.SetActive(false);
             darkBackground.SetActive(false);
             redRoomCode.SetActive(false);
+            loveNote.SetActive(false);
             journal.SetActive(false);
             foreach (GameObject page in diary)
             {
@@ -457,6 +459,10 @@ public class Player : MonoBehaviour
                             onLove = true;
                             pageIndex = 0;
                             love[0].SetActive(true);
+                        }
+                        if (hit.collider.gameObject.name == "Love Note")
+                        {
+                            loveNote.SetActive(true);
                         }
                         if (hit.collider.gameObject.name == "Manager's Journal")
                         {
