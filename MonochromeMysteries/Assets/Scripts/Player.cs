@@ -590,7 +590,7 @@ public class Player : MonoBehaviour
                 var selection = hit.transform;
                 if (selection.gameObject.GetComponent<Outline>())
                 {
-                    Debug.Log("I'm looking at " + hit.transform.name);
+                    //Debug.Log("I'm looking at " + hit.transform.name);
                     //Debug.Log("Outline spotted");
                     reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
 
