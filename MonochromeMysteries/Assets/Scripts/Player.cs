@@ -672,9 +672,13 @@ public class Player : MonoBehaviour
     {
         GameObject target = null;
         float targetDist = 0;
+        //The distance forward to go forward
+        Vector3 targetPos = cam.transform.position + gameObject.transform.forward * possess_Distance;
+        //using targetDist temporarily to find raycast distance
+        targetDist = Vector3.Distance(targetPos, cam.transform.position) / Mathf.Cos((-cam.transform.rotation.eulerAngles.x) * Mathf.Deg2Rad);
+        Debug.Log(targetDist);
         //Scan area directly in front for targets
-        RaycastHit[] //hit = Physics.RaycastAll(cam.transform.position, cam.transform.forward, possess_Distance);
-        hit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.25f, 0.25f, 0.25f), cam.transform.forward, Quaternion.identity, possess_Distance);
+        RaycastHit[] hit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.25f, 0.25f, 0.25f), cam.transform.forward, Quaternion.identity, targetDist);
         foreach (RaycastHit x in hit)
         {
             //If a possessable target is found and its not the gameObject that this is on
@@ -745,14 +749,10 @@ public class Player : MonoBehaviour
         }
 
         Transform targetTransform;
-        if (target.GetComponent<Photographer>())
-        {
-            targetTransform = target.GetComponent<Photographer>() ? target.transform.Find("CamPoint") : target.transform;
-        }
+        if (target.transform.Find("CamPoint"))
+            targetTransform = target.transform.Find("CamPoint");
         else
-        {
-            targetTransform = target.GetComponent<Character>() ? target.transform.Find("CamPoint") : target.transform;
-        }
+            targetTransform = target.transform;
 
 
         //Cam Shift & Alpha fade
@@ -978,7 +978,7 @@ public class Player : MonoBehaviour
             gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
 
         Vector3 startPoint = transform.position;
-        if (GetComponent<Photographer>())
+        if (transform.Find("CamPoint"))
             startPoint = transform.Find("CamPoint").position + camOffset;
 
         //Zoom out
