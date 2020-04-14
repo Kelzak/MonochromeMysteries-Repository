@@ -676,7 +676,6 @@ public class Player : MonoBehaviour
         Vector3 targetPos = cam.transform.position + gameObject.transform.forward * possess_Distance;
         //using targetDist temporarily to find raycast distance
         targetDist = Vector3.Distance(targetPos, cam.transform.position) / Mathf.Cos((-cam.transform.rotation.eulerAngles.x) * Mathf.Deg2Rad);
-        Debug.Log(targetDist);
         //Scan area directly in front for targets
         RaycastHit[] hit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.25f, 0.25f, 0.25f), cam.transform.forward, Quaternion.identity, targetDist);
         foreach (RaycastHit x in hit)
