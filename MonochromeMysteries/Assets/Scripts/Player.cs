@@ -67,6 +67,10 @@ public class Player : MonoBehaviour
     public Text ghostName;
     public Sprite photographerImage;
     public Sprite ratImage;
+    public Sprite managerImage;
+    public Sprite mechanicImage;
+    public Sprite exterminatorImage;
+    public Sprite hunterImage;
     public Image characterImage;
     public Text characterName;
     public Text characterRole;
@@ -75,7 +79,7 @@ public class Player : MonoBehaviour
     public Text itemName;
     public GameObject keyImage;
     public Image reticle;
-    public float reticleDist;
+    public static float reticleDist = 7;
     public AudioClip obtainClip;
     public AudioClip possessClip;
     public AudioClip depossessClip;
@@ -102,25 +106,15 @@ public class Player : MonoBehaviour
     public bool isLookingAtSafe1;
     public bool isLookingAtSafe2;
     public bool isLookingAtSafe3;
-    public GameObject passwordLetter1;
-    public GameObject journal;
-    public GameObject redRoomCode;
-    public GameObject loveNote;
-    public GameObject[] diary;
-    public GameObject[] love;
-    public GameObject darkBackground;
-    public GameObject pressCToCloseText;
     public static string safeName;
-
-    private int pageIndex;
-    private bool onDiary;
-    private bool onLove;
-
+    
     //Ending Stuff
     public static bool hasKnife;
     public Endings endingManager;
 
-    private bool readtime;
+    //Reading letters stuff
+    public Readables readables;
+    
 
     private void Awake()
     {
@@ -178,16 +172,85 @@ public class Player : MonoBehaviour
         {
             ppvToggle.Toggle(true);
         }
-        /*
-        if (!hasPossessedForTheFirstTime)
-        {
-            possessionInstructions.gameObject.SetActive(true);
-        }
-        else
-        {
-            possessionInstructions.gameObject.SetActive(false);
-        }*/
 
+
+        DisplayCharacterInfo(); //Displays character portrait, name, and role
+        InteractWithSafe();
+        PickUp();
+        
+    }
+    
+    public void InteractWithSafe()
+    {
+        Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        if (Physics.Raycast(safeRay, out hit))
+        {
+            //Debug.Log("hitting " + hit.collider.name + " + " + hit.collider.tag);
+            if (hit.collider.tag == "safe" && hit.distance < reticleDist)
+            {
+                if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
+                {
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        safeName = hit.collider.name;
+                        if (!safeManager.safe1Open && safeName == "LockedSafe1")
+                        {
+                            if (gameObject.GetComponent<Photographer>())
+                            {
+                                photographer.CameraLensActive = false;
+                            }
+                            safeManager.ShowKeypad();
+                        }
+                        else if (!safeManager.safe3Open && safeName == "LockedSafe3")
+                        {
+                            if (gameObject.GetComponent<Photographer>())
+                            {
+                                photographer.CameraLensActive = false;
+                            }
+                            safeManager.ShowKeypad();
+                        }
+                        else if (!safeManager.safe4Open && safeName == "LockedSafe4")
+                        {
+                            if (gameObject.GetComponent<Photographer>())
+                            {
+                                photographer.CameraLensActive = false;
+                            }
+                            safeManager.ShowKeypad();
+                        }
+                    }
+                }
+                else if (StateChecker.isGhost)
+                {
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        safeName = hit.collider.name;
+                        if (!safeManager.safe2Open && safeName == "LockedSafe2")
+                        {
+                            safeManager.ShowKeypad();
+                        }
+                    }
+                }
+            }
+        }
+    }
+   
+
+
+    //Ray safeCheck = Camera.main.ViewportPointToRay(new Vector3(0, 1, 0));
+
+    public bool hasEnteredRatRoom = false;
+    //PICKING UP OBJECTS
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "RatRoomEnterTrigger" && !hasEnteredRatRoom)
+        {
+            hasEnteredRatRoom = true;
+            StartCoroutine(endingManager.KnifeScript());
+        }
+    }
+
+    public void DisplayCharacterInfo()
+    {
         if (gameObject.GetComponent<Photographer>())
         {
             itemImage.sprite = cameraImage;
@@ -208,7 +271,7 @@ public class Player : MonoBehaviour
         else if (gameObject.name == "Manager")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
-            characterImage.sprite = null;
+            characterImage.sprite = managerImage;
             characterRole.text = "\"The Manager\"";
             characterName.text = "Camille Bastet";
             isRat = false;
@@ -216,7 +279,7 @@ public class Player : MonoBehaviour
         else if (gameObject.name == "Exterminator")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
-            characterImage.sprite = null;
+            characterImage.sprite = exterminatorImage;
             characterRole.text = "\"The Exterminator\"";
             characterName.text = "Jonathan Abberdasky";
             isRat = false;
@@ -224,7 +287,7 @@ public class Player : MonoBehaviour
         else if (gameObject.name == "Mechanic")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
-            characterImage.sprite = null;
+            characterImage.sprite = mechanicImage;
             characterRole.text = "\"The Mechanic\"";
             characterName.text = "Janet Bastet";
             isRat = false;
@@ -232,7 +295,7 @@ public class Player : MonoBehaviour
         else if (gameObject.name == "Hunter")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
-            characterImage.sprite = null;
+            characterImage.sprite = hunterImage;
             characterRole.text = "\"The Hunter\"";
             characterName.text = "Ahab Sergei";
             isRat = false;
@@ -245,264 +308,6 @@ public class Player : MonoBehaviour
             characterRole.text = "\"The Spirit\"";
             characterName.text = "";
             isRat = false;
-        }
-
-        //flip pages of letters / books
-        if (onDiary)
-        {
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-            {
-                diary[pageIndex].SetActive(false);
-                if (pageIndex >= diary.Length - 1)
-                {
-                    Debug.Log("Flip Page");
-                    foreach (GameObject page in diary)
-                    {
-                        page.SetActive(false);
-                    }
-                    pageIndex = diary.Length - 1;
-                    diary[pageIndex].SetActive(true);
-                }
-                else
-                {
-                    pageIndex++;
-                    diary[pageIndex].SetActive(true);
-                }
-            }
-            if (Input.GetMouseButtonDown(1))
-            {
-                diary[pageIndex].SetActive(false);
-                if (pageIndex <= 0)
-                {
-                    Debug.Log("Flip Page");
-                    foreach (GameObject page in diary)
-                    {
-                        page.SetActive(false);
-                    }
-                    pageIndex = 0;
-                    diary[pageIndex].SetActive(true);
-                }
-                else
-                {
-                    pageIndex--;
-                    diary[pageIndex].SetActive(true);
-                }
-            }
-        }
-        if (onLove)
-        {
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-            {
-                love[pageIndex].SetActive(false);
-                if (pageIndex >= love.Length - 1)
-                {
-                    Debug.Log("Flip Page");
-                    foreach (GameObject page in love)
-                    {
-                        page.SetActive(false);
-                    }
-                    pageIndex = love.Length - 1;
-                    love[pageIndex].SetActive(true);
-                }
-                else
-                {
-                    pageIndex++;
-                    love[pageIndex].SetActive(true);
-                }
-            }
-            if (Input.GetMouseButtonDown(1))
-            {
-                love[pageIndex].SetActive(false);
-
-                if (pageIndex <= 0)
-                {
-                    Debug.Log("Flip Page");
-                    foreach (GameObject page in love)
-                    {
-                        page.SetActive(false);
-                    }
-                    pageIndex = 0;
-                    love[pageIndex].SetActive(true);
-                }
-                else
-                {
-                    pageIndex--;
-                    love[pageIndex].SetActive(true);
-                }
-            }
-        }
-
-        PickUp();
-
-        InteractWithSafe();
-
-        //if (hasKnife)
-        //{
-        //  Debug.Log("You have the knife: " + hasKnife);
-        //}
-
-
-        //Exiting the letter screen (Coincides with InteractWithSafe())
-        if (isReadingLetter && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.F) && readtime))
-        {
-
-            GameController.TogglePause();
-            if (photographer.GetComponent<Player>())
-            {
-                photographer.CameraLensActive = true;
-                photographer.canTakePhoto = true;
-            }
-            isReadingLetter = false;
-            endingManager.knifeInstructions.SetActive(false);
-            passwordLetter1.SetActive(false);
-            pressCToCloseText.SetActive(false);
-            darkBackground.SetActive(false);
-            redRoomCode.SetActive(false);
-            loveNote.SetActive(false);
-            journal.SetActive(false);
-            foreach (GameObject page in diary)
-            {
-
-                page.SetActive(false);
-            }
-            foreach (GameObject page in love)
-            {
-
-                page.SetActive(false);
-            }
-            onDiary = false;
-            onLove = false;
-            readtime = false;
-
-        }
-
-
-        //Debug.Log(Time.timeScale);
-    }
-    public static bool isReadingLetter;
-    public void InteractWithSafe()
-    {
-        Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        if (Physics.Raycast(safeRay, out hit))
-        {
-            if (hit.collider.tag == "safe" && hit.distance < reticleDist)
-            {
-                if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
-                {
-                    if (Input.GetKeyDown(KeyCode.F))
-                    {
-                        readtime = false;
-                        safeName = hit.collider.name;
-                        if (!safeManager.safe1Open && safeName == "LockedSafe1")
-                        {
-                            if (gameObject.GetComponent<Photographer>())
-                            {
-                                photographer.CameraLensActive = false;
-                            }
-                            safeManager.ShowKeypad();
-                        }
-
-                        if (!safeManager.safe3Open && safeName == "LockedSafe3")
-                        {
-                            if (gameObject.GetComponent<Photographer>())
-                            {
-                                photographer.CameraLensActive = false;
-                            }
-                            safeManager.ShowKeypad();
-                        }
-                        if (!safeManager.safe4Open && safeName == "LockedSafe4")
-                        {
-                            if (gameObject.GetComponent<Photographer>())
-                            {
-                                photographer.CameraLensActive = false;
-                            }
-                            safeManager.ShowKeypad();
-                        }
-                        StartCoroutine(ReadTime());
-                    }
-                }
-                else if (StateChecker.isGhost)
-                {
-                    if (Input.GetKeyDown(KeyCode.F))
-                    {
-                        readtime = false;
-                        safeName = hit.collider.name;
-                        if (!safeManager.safe2Open && safeName == "LockedSafe2")
-                        {
-                            safeManager.ShowKeypad();
-                            //Debug.Log("get safe");
-                        }
-                    }
-                }
-            }
-            else if (hit.collider.tag == "letter" && hit.distance < reticleDist)
-            {
-                if (Input.GetKeyDown(KeyCode.F) && !readtime)
-                {
-                    readtime = false;
-                    StartCoroutine(ReadTime());
-                    isReadingLetter = true;
-                    GameController.TogglePause();
-                    Cursor.lockState = CursorLockMode.Confined;
-                    Cursor.visible = false;
-                    photographer.CameraLensActive = false;
-
-                    if (hit.collider.gameObject.name == "Manager's Safe Code")
-                    {
-
-                        passwordLetter1.SetActive(true);
-                    }
-                    if (hit.collider.gameObject.name == "Mechanic's Diary")
-                    {
-                        onDiary = true;
-                        Debug.Log("got diary");
-                        pageIndex = 0;
-                        diary[0].SetActive(true);
-                    }
-                    if (hit.collider.gameObject.name == "Love Letters")
-                    {
-                        onLove = true;
-                        pageIndex = 0;
-                        love[0].SetActive(true);
-                    }
-                    if (hit.collider.gameObject.name == "Love Note")
-                    {
-                        loveNote.SetActive(true);
-                    }
-                    if (hit.collider.gameObject.name == "Manager's Journal")
-                    {
-                        journal.SetActive(true);
-                    }
-                    if (hit.collider.gameObject.name == "Photographer's Safe Code")
-                    {
-                        redRoomCode.SetActive(true);
-                    }
-
-                    EnableControls(false);
-                    pressCToCloseText.SetActive(true);
-                    darkBackground.SetActive(true);
-                }
-            
-            }
-        }
-    }
-
-    public IEnumerator ReadTime()
-    {
-        yield return new WaitForSecondsRealtime(.1f);
-        readtime = true;
-    }
-
-    //Ray safeCheck = Camera.main.ViewportPointToRay(new Vector3(0, 1, 0));
-
-    public bool hasEnteredRatRoom = false;
-    //PICKING UP OBJECTS
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.name == "RatRoomEnterTrigger" && !hasEnteredRatRoom)
-        {
-            hasEnteredRatRoom = true;
-            StartCoroutine(endingManager.KnifeScript());
         }
     }
 
@@ -572,7 +377,7 @@ public class Player : MonoBehaviour
                         else if (selection.gameObject.CompareTag("Knife"))
                         {
                             hasKnife = true;
-                            isReadingLetter = true;
+                            Readables.isReadingLetter = true;
                             Log.AddEntry("Picked up Knife");
                             audioSource.PlayOneShot(obtainClip);
                             endingManager.ShowKnifeInstructions();

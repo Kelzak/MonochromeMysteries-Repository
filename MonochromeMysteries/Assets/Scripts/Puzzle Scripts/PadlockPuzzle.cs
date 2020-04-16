@@ -139,7 +139,6 @@ public class PadlockPuzzle : MonoBehaviour
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
         Time.timeScale = 0;
-        //Debug.Log(Player.safeName);
         Player.canMove = false;
         Player.canLook = false;
         Cursor.visible = true;

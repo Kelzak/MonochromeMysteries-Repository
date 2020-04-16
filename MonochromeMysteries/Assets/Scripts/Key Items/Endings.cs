@@ -20,10 +20,10 @@ public class Endings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !Player.isReadingLetter && !StateChecker.isGhost)
+        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !Readables.isReadingLetter && !StateChecker.isGhost)
         {
             knifeConfirmation.SetActive(true);
-            Player.isReadingLetter = true;
+            Readables.isReadingLetter = true;
             GameController.TogglePause();
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
@@ -92,6 +92,6 @@ public class Endings : MonoBehaviour
             photographer.CameraLensActive = true;
             photographer.canTakePhoto = true;
         }
-        Player.isReadingLetter = false;
+        Readables.isReadingLetter = false;
     }
 }
