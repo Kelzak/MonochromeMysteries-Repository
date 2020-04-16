@@ -11,7 +11,7 @@ public class PadlockPuzzle : MonoBehaviour
     //Safe2 in the rat room
     public static string correctCode2 = "918"; //Symbols are used here
     public static string correctCode3 = "746583"; 
-    public static string correctCode4 = "000000";
+    public static string correctCode4 = "101372";
     /*public static string enteredCode1;
     public static string enteredCode2;
     public static string enteredCode3;*/

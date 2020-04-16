@@ -348,10 +348,10 @@ public class Player : MonoBehaviour
     public bool IsInside()
     {
         bool isInside;
-        Vector3 fwd = new Vector3(0, 1, 0);
+        Vector3 fwd = new Vector3(0, 6, 0);
         if (StateChecker.isGhost)
         {
-            fwd = new Vector3(0, 1, 0);
+            fwd = new Vector3(0, 2, 0);
         }
 
         Ray indoorCheck = new Ray(GameObject.FindObjectOfType<Player>().transform.position + fwd, transform.up);
