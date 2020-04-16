@@ -86,7 +86,7 @@ public class Readables : MonoBehaviour
                     }
 
                     Player.EnableControls(false);
-                    pressCToCloseText.SetActive(true);
+                   // pressCToCloseText.SetActive(true);
                     darkBackground.SetActive(true);
                     StartCoroutine(ReadTime());
                 }
@@ -108,7 +108,7 @@ public class Readables : MonoBehaviour
             isReadingLetter = false;
             endingManager.knifeInstructions.SetActive(false);
             passwordLetter1.SetActive(false);
-            pressCToCloseText.SetActive(false);
+           // pressCToCloseText.SetActive(false);
             darkBackground.SetActive(false);
             redRoomCode.SetActive(false);
             loveNote.SetActive(false);

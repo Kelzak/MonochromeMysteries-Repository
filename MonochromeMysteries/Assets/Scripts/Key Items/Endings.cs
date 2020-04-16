@@ -10,6 +10,7 @@ public class Endings : MonoBehaviour
     //public Player player;
     public GameObject knifeInstructions;
     public GameObject knifeConfirmation;
+    public Text personDecidedText;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,7 @@ public class Endings : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !Readables.isReadingLetter && !StateChecker.isGhost)
         {
             knifeConfirmation.SetActive(true);
+            personDecidedText.text = "Are you certain " + Player.characterRoleForEnding + " is the person who murdered you?";
             Readables.isReadingLetter = true;
             GameController.TogglePause();
             Cursor.lockState = CursorLockMode.Confined;
