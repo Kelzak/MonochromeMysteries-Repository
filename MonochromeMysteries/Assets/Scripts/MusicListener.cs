@@ -17,25 +17,21 @@ public class MusicListener : MonoBehaviour
 
     private GameObject temp;
     private GameObject player;
-    private GameObject camera;
-    private Vector3 target;
     private int index = 0;
     // Start is called before the first frame update
     void Start()
     {
-        camera = GameObject.FindGameObjectWithTag("MainCamera");
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        target = camera.transform.position;
-        //Debug.Log(target);
+        player = GameObject.FindObjectOfType<Player>().gameObject;
         for (int i = 0; i < musicBoxes.Length; i++)
         {
-            dist = Vector3.Distance(target, musicBoxes[index].transform.position);
-            if (dist > Vector3.Distance(target, musicBoxes[i].transform.position))
+            dist = Vector3.Distance(player.transform.position, musicBoxes[index].transform.position);
+            if (dist > Vector3.Distance(player.transform.position, musicBoxes[i].transform.position))
             {
                 index = i;
             }
@@ -45,12 +41,12 @@ public class MusicListener : MonoBehaviour
             if(i == index)
             {
                 audioSource = musicBoxes[i].GetComponent<AudioSource>();
-                audioSource.volume = Mathf.Lerp(0, musicVolume, 10f);
+                audioSource.volume = Mathf.Lerp(0, musicVolume, 1f);
             }
             else
             {
                 audioSource = musicBoxes[i].GetComponent<AudioSource>();
-                audioSource.volume = Mathf.Lerp(musicVolume, 0, 10f);
+                audioSource.volume = Mathf.Lerp(musicVolume, 0, 1f);
             }
             
         }

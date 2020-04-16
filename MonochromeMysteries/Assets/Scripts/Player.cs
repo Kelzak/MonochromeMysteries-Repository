@@ -113,8 +113,6 @@ public class Player : MonoBehaviour
 
     //Reading letters stuff
     public Readables readables;
-
-    private bool ratWalk;
     
 
     private void Awake()
@@ -171,19 +169,6 @@ public class Player : MonoBehaviour
         PickUp();
         //readables.ReadLetter();
         Interact();
-
-        if(GetComponent<Rat>() && !ratWalk)
-        {
-            CancelInvoke();
-            ratWalk = true;
-            InvokeRepeating("WalkAudio", 0f, 0.2f);
-        }
-        else if(!GetComponent<Rat>() && ratWalk)
-        {
-            CancelInvoke();
-            ratWalk = false;
-            InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
-        }
     }
 
     void Interact()
@@ -363,7 +348,7 @@ public class Player : MonoBehaviour
     public bool IsInside()
     {
         bool isInside;
-        Vector3 fwd = new Vector3(0, 5, 0);
+        Vector3 fwd = new Vector3(0, 6, 0);
         if (StateChecker.isGhost)
         {
             fwd = new Vector3(0, 2, 0);
