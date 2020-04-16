@@ -33,7 +33,7 @@ public class Readables : MonoBehaviour
     void Update()
     {
         FlipPage();
-        ReadLetter();
+        //ReadLetter();
         StopReadingLetter();
     }
 
@@ -45,7 +45,7 @@ public class Readables : MonoBehaviour
         {
             if (letterHit.collider.tag == "letter" && letterHit.distance < Player.reticleDist)
             {
-                if (Input.GetKeyDown(KeyCode.F) && !readtime)
+                if (Input.GetKeyDown(KeyCode.F))
                 {
                     readtime = false;
                     StartCoroutine(ReadTime());
@@ -59,28 +59,28 @@ public class Readables : MonoBehaviour
                     {
                         passwordLetter1.SetActive(true);
                     }
-                    if (letterHit.collider.gameObject.name == "Mechanic's Diary")
+                    else if (letterHit.collider.gameObject.name == "Mechanic's Diary")
                     {
                         onDiary = true;
                         Debug.Log("got diary");
                         pageIndex = 0;
                         diary[0].SetActive(true);
                     }
-                    if (letterHit.collider.gameObject.name == "Love Letters")
+                    else if (letterHit.collider.gameObject.name == "Love Letters")
                     {
                         onLove = true;
                         pageIndex = 0;
                         love[0].SetActive(true);
                     }
-                    if (letterHit.collider.gameObject.name == "Love Note")
+                    else if (letterHit.collider.gameObject.name == "Love Note")
                     {
                         loveNote.SetActive(true);
                     }
-                    if (letterHit.collider.gameObject.name == "Manager's Journal")
+                    else if (letterHit.collider.gameObject.name == "Manager's Journal")
                     {
                         journal.SetActive(true);
                     }
-                    if (letterHit.collider.gameObject.name == "Photographer's Safe Code")
+                    else if (letterHit.collider.gameObject.name == "Photographer's Safe Code")
                     {
                         redRoomCode.SetActive(true);
                     }

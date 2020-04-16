@@ -166,7 +166,7 @@ public class Player : MonoBehaviour
         DisplayCharacterInfo(); //Displays character portrait, name, and role
         InteractWithSafe();
         PickUp();
-        
+        readables.ReadLetter();
     }
 
     private void GrayscaleToggle()
@@ -258,6 +258,7 @@ public class Player : MonoBehaviour
             itemName.text = "Camera";
             characterImage.sprite = photographerImage;
             characterRole.text = "\"The Photographer\"";
+            characterRoleForEnding = "The Photographer";
             characterName.text = "Norman Adler";
             isRat = false;
         }
@@ -274,6 +275,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = managerImage;
             characterRole.text = "\"The Manager\"";
+            characterRoleForEnding = "The Manager";
             characterName.text = "Camille Bastet";
             isRat = false;
         }
@@ -282,6 +284,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = exterminatorImage;
             characterRole.text = "\"The Exterminator\"";
+            characterRoleForEnding = "The Exterminator";
             characterName.text = "Jonathan Abberdasky";
             isRat = false;
         }
@@ -290,6 +293,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = mechanicImage;
             characterRole.text = "\"The Mechanic\"";
+            characterRoleForEnding = "The Mechanic";
             characterName.text = "Janet Bastet";
             isRat = false;
         }
@@ -298,6 +302,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = hunterImage;
             characterRole.text = "\"The Hunter\"";
+            characterRoleForEnding = "The Hunter";
             characterName.text = "Ahab Sergei";
             isRat = false;
         }
