@@ -68,6 +68,7 @@ public class Endings : MonoBehaviour
 
     public void ShowKnifeInstructions()
     {
+        Readables.isReadingLetter = true;
         knifeInstructions.SetActive(true);
         GameController.TogglePause();
         Cursor.lockState = CursorLockMode.Confined;

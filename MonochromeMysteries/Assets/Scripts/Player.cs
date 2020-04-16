@@ -5,12 +5,13 @@
  * Changes: Added header
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
-
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour
 {
@@ -164,7 +165,18 @@ public class Player : MonoBehaviour
             StartCoroutine(ExitPossession());
         }
 
-        if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Rat>() || gameObject.GetComponent<Person>())
+
+
+        GrayscaleToggle();
+        DisplayCharacterInfo(); //Displays character portrait, name, and role
+        InteractWithSafe();
+        PickUp();
+        
+    }
+
+    private void GrayscaleToggle()
+    {
+        if (!StateChecker.isGhost)
         {
             ppvToggle.Toggle(false);
         }
@@ -172,14 +184,8 @@ public class Player : MonoBehaviour
         {
             ppvToggle.Toggle(true);
         }
-
-
-        DisplayCharacterInfo(); //Displays character portrait, name, and role
-        InteractWithSafe();
-        PickUp();
-        
     }
-    
+
     public void InteractWithSafe()
     {
         Ray safeRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -345,11 +351,6 @@ public class Player : MonoBehaviour
 
     void PickUp()
     {
-        if (this.gameObject.CompareTag("Rat") || this.gameObject.CompareTag("Player"))
-            canPickup = false;
-        else
-            canPickup = true;
-
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -367,17 +368,16 @@ public class Player : MonoBehaviour
                     //pickup
                     if (Input.GetKeyDown(KeyCode.F) && canPickup)
                     {
-                        if (selection.gameObject.CompareTag("Key"))
+                        if (selection.gameObject.CompareTag("Key") && !StateChecker.isGhost)
                         {
                             Log.AddEntry("Picked up: " + selection.gameObject.name);
                             audioSource.PlayOneShot(obtainClip);
                             keys.Add(selection.gameObject);
                             Destroy(selection.gameObject);
                         }
-                        else if (selection.gameObject.CompareTag("Knife"))
+                        else if (selection.gameObject.CompareTag("Knife") && StateChecker.isGhost)
                         {
                             hasKnife = true;
-                            Readables.isReadingLetter = true;
                             Log.AddEntry("Picked up Knife");
                             audioSource.PlayOneShot(obtainClip);
                             endingManager.ShowKnifeInstructions();
