@@ -186,6 +186,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a58545a7a42f35a43b52bfda63c8aed2, type: 3}
   - {fileID: 8300000, guid: 9e2a5b5e3ffc8254e9b2f5987cd76864, type: 3}
   - {fileID: 8300000, guid: 01e91d84b273d854b9d852ef2fe05dbe, type: 3}
+  obtainClip: {fileID: 8300000, guid: 8899e86f1b4512a4b9dc70bcdb543fc2, type: 3}
 --- !u!143 &8798810534219446739
 CharacterController:
   m_ObjectHideFlags: 0
@@ -349,7 +350,7 @@ MonoBehaviour:
   canSeeGhost: 0
   stepSources: {fileID: 0}
   isFemale: 0
-  walkSoundInterval: 0.3
+  walkSoundInterval: 0.2
   maleSteps:
   - {fileID: 8300000, guid: 27a7e70f6373639488dd40c05cf90f10, type: 3}
   femaleSteps: []
@@ -487,3 +488,4 @@ MonoBehaviour:
   playerDistGlow: 7
   itemName: 
   isPickup: 0
+  glowOverride: 0
