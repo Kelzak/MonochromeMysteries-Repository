@@ -139,8 +139,8 @@ public abstract class Possessable : MonoBehaviour
 
         Material mat = GetComponent<MeshRenderer>().material;
         mat.EnableKeyword("_EMISSION");
-        Color baseColor = mat.color;
-        Color highlightColor = new Color(0 / 255f, 0 / 255f, 255 / 255f);
+        Color baseColor = Color.black;
+        Color highlightColor = new Color(0 / 255f, 0 / 255f, 140 / 255f);
 
         mat.SetColor("_EmissionColor", baseColor);
         while (this == highlightedObject)

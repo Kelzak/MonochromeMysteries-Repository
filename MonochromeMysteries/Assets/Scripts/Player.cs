@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
     CharacterController character;
 
     [Header("Possession")]
-    public float possess_Distance = 3;
+    private float possess_Distance = 10;
     public Vector3 camOffset;
 
     //KEVON'S ADDITION TO CODE//
