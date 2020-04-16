@@ -24,6 +24,7 @@ public class Rat : Possessable
     public AudioSource stepsSource;
     public AudioSource squeakSource;
     public AudioClip[] squeaks;
+    public AudioClip obtainClip;
 
     private bool hold;
     private GameObject target;
@@ -89,11 +90,13 @@ public class Rat : Possessable
     {
         if(Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && !hasKey)
         {
+            squeakSource.PlayOneShot(obtainClip);
             target = other.gameObject;
             hold = true;
         }
         else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
         {
+            squeakSource.PlayOneShot(obtainClip);
             target = other.gameObject;
             hold = false;
         }

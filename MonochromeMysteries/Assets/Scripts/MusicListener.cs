@@ -38,7 +38,7 @@ public class MusicListener : MonoBehaviour
         }
         for (int i = 0; i < musicBoxes.Length; i++)
         {
-            if(i == index)
+            if (i == index)
             {
                 audioSource = musicBoxes[i].GetComponent<AudioSource>();
                 audioSource.volume = Mathf.Lerp(0, musicVolume, 1f);
@@ -48,9 +48,9 @@ public class MusicListener : MonoBehaviour
                 audioSource = musicBoxes[i].GetComponent<AudioSource>();
                 audioSource.volume = Mathf.Lerp(musicVolume, 0, 1f);
             }
-            
+
         }
-        
+
 
     }
 }
