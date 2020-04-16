@@ -523,17 +523,23 @@ public class Player : MonoBehaviour
         //The distance forward to go forward
         Vector3 targetPos = cam.transform.position + gameObject.transform.forward * possess_Distance;
         //using targetDist temporarily to find raycast distance
-        targetDist = Vector3.Distance(targetPos, cam.transform.position) / Mathf.Cos((-cam.transform.rotation.eulerAngles.x) * Mathf.Deg2Rad);
+        targetDist = Vector3.Distance(targetPos, cam.transform.position) / (Mathf.Cos((-cam.transform.rotation.eulerAngles.x) * Mathf.Deg2Rad));
+        
         //Scan area directly in front for targets
-        RaycastHit[] hit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.25f, 0.25f, 0.25f), cam.transform.forward, Quaternion.identity, targetDist);
+        RaycastHit[] hit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.25f, 0.25f, 0.25f), cam.transform.forward, cam.transform.rotation, targetDist);
+        targetDist = Mathf.Infinity;
         foreach (RaycastHit x in hit)
         {
             //If a possessable target is found and its not the gameObject that this is on
             if (x.collider.gameObject.GetComponent<Possessable>() != null && x.collider.gameObject != gameObject)
-            {
+            {               
                 //Set target to first found possessable entity and then stop looking, and only one thing can be targeted
-                target = x.collider.gameObject;
-                targetDist = x.distance;
+                if (x.distance < targetDist)
+                {
+                    target = x.collider.gameObject;
+                    targetDist = x.distance;
+                    
+                }
             }
         }
 
