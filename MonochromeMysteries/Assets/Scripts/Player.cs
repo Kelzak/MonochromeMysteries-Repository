@@ -56,11 +56,7 @@ public class Player : MonoBehaviour
     public static bool isAtTheFirstSafe;
     public static bool isAtTheSecondSafe;
     public static bool isAtTheThirdSafe;
-
-    //public Text pickUpInstructions;
-    //public Text possessionInstructions;
-    //public Text pictureTakingInstructions;
-    //public Text itemSpecificInstructions;
+    
     public bool hasPossessedForTheFirstTime;
 
     //UI Images and Texts
@@ -75,6 +71,7 @@ public class Player : MonoBehaviour
     public Image characterImage;
     public Text characterName;
     public Text characterRole;
+    public static string characterRoleForEnding;
     public Sprite cameraImage;
     public Image itemImage;
     public Text itemName;
@@ -164,9 +161,7 @@ public class Player : MonoBehaviour
             audioSource.PlayOneShot(depossessClip);
             StartCoroutine(ExitPossession());
         }
-
-
-
+        
         GrayscaleToggle();
         DisplayCharacterInfo(); //Displays character portrait, name, and role
         InteractWithSafe();
@@ -312,6 +307,7 @@ public class Player : MonoBehaviour
             itemName.text = "";
             characterImage.sprite = ghostImage;
             characterRole.text = "\"The Spirit\"";
+            //characterRoleForEnding = "The Spirit";
             characterName.text = "";
             isRat = false;
         }
@@ -366,9 +362,9 @@ public class Player : MonoBehaviour
                     reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
 
                     //pickup
-                    if (Input.GetKeyDown(KeyCode.F) && canPickup)
+                    if (Input.GetKeyDown(KeyCode.F))
                     {
-                        if (selection.gameObject.CompareTag("Key") && !StateChecker.isGhost)
+                        if (selection.gameObject.CompareTag("Key") && !StateChecker.isGhost && !gameObject.GetComponent<Rat>())
                         {
                             Log.AddEntry("Picked up: " + selection.gameObject.name);
                             audioSource.PlayOneShot(obtainClip);
