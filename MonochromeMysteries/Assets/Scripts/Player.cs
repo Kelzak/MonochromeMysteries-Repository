@@ -550,6 +550,7 @@ public class Player : MonoBehaviour
         if (target.GetComponent<NavPerson>())
         {
             target.GetComponent<NavPerson>().enabled = false;
+            target.GetComponent<UnityEngine.AI.NavMeshAgent>().updatePosition = false;
         }
 
         Transform targetTransform;
@@ -648,6 +649,12 @@ public class Player : MonoBehaviour
 
             if (GetComponent<NavPerson>())
                 GetComponent<NavPerson>().enabled = true;
+            if (GetComponent<UnityEngine.AI.NavMeshAgent>())
+            {
+                GetComponent<UnityEngine.AI.NavMeshAgent>().Warp(gameObject.transform.position);
+                GetComponent<UnityEngine.AI.NavMeshAgent>().updatePosition = true;
+            }
+
             Destroy(GetComponent<Player>());
         }
 
@@ -828,6 +835,11 @@ public class Player : MonoBehaviour
             if (GetComponent<NavPerson>())
             {
                 GetComponent<NavPerson>().enabled = true;
+            }
+            if (GetComponent<UnityEngine.AI.NavMeshAgent>())
+            {
+                GetComponent<UnityEngine.AI.NavMeshAgent>().Warp(gameObject.transform.position);
+                GetComponent<UnityEngine.AI.NavMeshAgent>().updatePosition = true;
             }
 
             Destroy(GetComponent<Player>());
