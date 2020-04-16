@@ -26,6 +26,8 @@ public class Item : MonoBehaviour, IObserver
 
     public bool isPickup;
 
+    public bool glowOverride;
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,14 +40,14 @@ public class Item : MonoBehaviour, IObserver
         // adds this object to observer list in statechecker
         stateChecker.RegisterObserver(this);
 
-        playerDistGlow = 10f;
+        playerDistGlow = Player.reticleDist;
     }
 
     // Update is called once per frame
     void Update()
     {
         //changes materials 
-        if (isGhost == true && isClose == true)
+        if (isGhost == true && isClose == true || glowOverride)
         {
             item.GetComponent<Outline>().enabled = true;
             //reticle.color = new Color(255.0f, 255.0f, 0.0f);

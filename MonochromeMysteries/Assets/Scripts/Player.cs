@@ -81,6 +81,7 @@ public class Player : MonoBehaviour
     public AudioClip obtainClip;
     public AudioClip possessClip;
     public AudioClip depossessClip;
+    public GameObject darkBackground;
 
 
     //sound stuff
@@ -166,7 +167,33 @@ public class Player : MonoBehaviour
         DisplayCharacterInfo(); //Displays character portrait, name, and role
         InteractWithSafe();
         PickUp();
-        readables.ReadLetter();
+        //readables.ReadLetter();
+        Interact();
+    }
+
+    void Interact()
+    {
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        if (Physics.Raycast(ray, out hit))
+        {
+            //reading objects
+            if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist)
+            {
+                GameObject temp = hit.collider.gameObject;
+                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                {
+                    temp.GetComponent<Read>().Open();
+                }
+            }
+
+            //glowing objects
+            if (hit.collider.gameObject.GetComponent<Outline>() && hit.distance < Player.reticleDist)
+            {
+                GameObject temp = hit.collider.gameObject;
+                Outline outline = temp.GetComponent<Outline>();
+                outline.enabled = true;
+            }
+        }
     }
 
     private void GrayscaleToggle()
@@ -321,7 +348,7 @@ public class Player : MonoBehaviour
     public bool IsInside()
     {
         bool isInside;
-        Vector3 fwd = new Vector3(0, 4, 0);
+        Vector3 fwd = new Vector3(0, 1, 0);
         if (StateChecker.isGhost)
         {
             fwd = new Vector3(0, 1, 0);

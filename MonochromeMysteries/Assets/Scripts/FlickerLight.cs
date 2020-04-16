@@ -10,6 +10,8 @@ public class FlickerLight : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        minWaitTime = .2f;
+        maxWaitTime = 5f;
         light = GetComponent<Light>();
         StartCoroutine(Flashing());
     }

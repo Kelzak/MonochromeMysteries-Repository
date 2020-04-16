@@ -17,6 +17,7 @@ TagManager:
   - safe
   - letter
   - Knife
+  - read background
   layers:
   - Default
   - TransparentFX
