@@ -71,7 +71,6 @@ GameObject:
   - component: {fileID: 6116610002201844473}
   - component: {fileID: 6116610002201844478}
   - component: {fileID: 6116610002201844479}
-  - component: {fileID: 6116610002201844476}
   - component: {fileID: 4048364822124506685}
   - component: {fileID: 8798810534219446739}
   - component: {fileID: 3341057057106122542}
@@ -80,6 +79,7 @@ GameObject:
   - component: {fileID: 6116610002201844464}
   - component: {fileID: 6116610002201844465}
   - component: {fileID: 6116610002201844466}
+  - component: {fileID: 5016617756921414453}
   m_Layer: 0
   m_Name: Rat
   m_TagString: Rat
@@ -150,19 +150,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6116610002201844476
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6116610002201844477}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4048364822124506685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,3 +476,16 @@ MonoBehaviour:
   itemName: 
   isPickup: 0
   glowOverride: 0
+--- !u!65 &5016617756921414453
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6116610002201844477}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 227.3269, y: 199.1037, z: 741.1323}
+  m_Center: {x: 0, y: 116.85308, z: -36.721405}

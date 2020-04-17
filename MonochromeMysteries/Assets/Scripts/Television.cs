@@ -33,15 +33,14 @@ public class Television : MonoBehaviour
                                      menuOptions.Find("Quit").GetComponent<Button>() }; //5
 
         //Add Listeners
-        GameController x = FindObjectOfType<GameController>();
-        buttons[0].onClick.AddListener(() => x.TriggerMainMenu());
-        buttons[0].onClick.AddListener(() => MainMenu._instance.ChangeFromInitialOptions());
-        buttons[1].onClick.AddListener(() => x.TriggerMainMenu());
-        buttons[1].onClick.AddListener(() => MainMenu._instance.ChangeFromInitialOptions());
-        buttons[2].onClick.AddListener(() => x.TriggerMainMenu());
+        buttons[0].onClick.AddListener(() => MainMenu.TriggerMainMenu());
+        buttons[0].onClick.AddListener(() => MainMenu.ChangeFromInitialOptions());
+        buttons[1].onClick.AddListener(() => MainMenu.TriggerMainMenu());
+        buttons[1].onClick.AddListener(() => MainMenu.ChangeFromInitialOptions());
+        buttons[2].onClick.AddListener(() => MainMenu.TriggerMainMenu());
         buttons[3].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("How To Play"));
         buttons[4].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("MainMenu"));
-        buttons[5].onClick.AddListener(() => x.QuitGame());
+        buttons[5].onClick.AddListener(() => GameController.QuitGame());
 
         //Set the right buttons at start
         SwapButtons(true, ButtonName.NewGame, ButtonName.Options, ButtonName.Quit);

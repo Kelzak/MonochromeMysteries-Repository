@@ -97,16 +97,6 @@ public class GameController : MonoBehaviour
             menuActive = paused;
         }
 
-        //Enter/Exit Menu
-        if(Input.GetKeyDown(KeyCode.F) || (Input.GetKeyDown(KeyCode.Escape) && menuActive))
-        {
-            TriggerMainMenu();
-        }
-        //Just Save
-        if(Input.GetKeyDown(KeyCode.X) && MainMenu.IsInRange())
-        {
-            //Save code
-        }
     }
 
     public void ChangeMenu(Menu newMenu)
@@ -120,13 +110,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void TriggerMainMenu()
-    {
-        if (!MainMenu._instance.tvTransitionInProgress && MainMenu.IsInRange() && (!menuActive || MainMenu.active))
-            MainMenu._instance.StartCoroutine(MainMenu._instance.TriggerTV());
-    }
-
-    public void QuitGame()
+    public static void QuitGame()
     {
         Application.Quit();
     }
@@ -156,23 +140,37 @@ public class GameController : MonoBehaviour
 
     private IEnumerator InitializeGame()
     {
-        while(MainMenu._instance.TVs.Length == 0)
+        soul.transform.position = playerSpawn.transform.position;
+        soul.transform.rotation = playerSpawn.transform.rotation;
+
+        while (MainMenu._instance.TVs.Length == 0)
         {
             yield return null;
         }
 
-        Television startTV = MainMenu._instance.TVs[0];
+        float shortestDist = Mathf.Infinity;
+        int shortestIndex = -1;
+        for(int i = 0; i < MainMenu._instance.TVs.Length; i++)
+        {
+            float temp;
+            if ((temp = Vector3.Distance(MainMenu._instance.TVs[i].transform.Find("CamPoint").position, playerSpawn.transform.position)) < shortestDist)
+            {
+                shortestDist = temp;
+                shortestIndex = i;
+            }
+        }
+        Television startTV = MainMenu._instance.TVs[shortestIndex];
         MainMenu._instance.SetCurrentTV(startTV);
 
         //Vector3 target = transform.forward;
         //target.z += soul.GetComponent<MeshRenderer>().bounds.size.z * 400;
-        soul.transform.position = playerSpawn.transform.position;
+        
         soul.transform.rotation = startTV.transform.Find("CamPoint").rotation;
 
         yield return new WaitForFixedUpdate();
 
-        MainMenu._instance.UpdateTVRanges();
-        TriggerMainMenu();
+        MainMenu.UpdateTVRanges();
+        MainMenu.TriggerMainMenu();
     }
 
 }

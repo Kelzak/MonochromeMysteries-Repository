@@ -51,12 +51,9 @@ public class Log : MonoBehaviour
         trueCount++;
 
         //Shift every entry
-        while (isShifting)
-            yield return null;
         StartCoroutine(Shift(Vector3.down));
         while (isShifting)
             yield return null;
-
         //Create new Entry
         GameObject entryInstance = Instantiate<GameObject>(logEntryPrefab, panel.transform);
         string textFull = text;
@@ -64,35 +61,47 @@ public class Log : MonoBehaviour
         if (textFull.Length >= MAX_CHARACTERS)
             text += "...";
         entryInstance.GetComponent<Text>().text = text;
-        while (isShifting)
-            yield return null;
+
         entries.Enqueue(new LogEntry(text, entryInstance));
 
         StartCoroutine(LogEntryDecay());
     }
 
-    float transitionTime = 0.25f;
+    float transitionTime = 0.25f, totalShift;
     bool isShifting = false;
     public IEnumerator Shift(Vector3 direction)
     {
+        totalShift += logEntryPrefab.GetComponent<Text>().fontSize * 2 * GameController.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
+        if (isShifting)
+            yield break;
+
         isShifting = true;
         float currentTime = 0;
-        float moveDist = logEntryPrefab.GetComponent<Text>().fontSize * 2;
-        //Get All the start positions so they can be used for lerp
-        List<Vector3> startPositions = new List<Vector3>();
-        foreach (LogEntry x in entries)
-        {
-            startPositions.Add(x.@object.transform.position);
-        }
+        //Get All the current positions so they can be used for lerp
+        List<Vector3> currPositions = new List<Vector3>();
 
         //Move Log Entry in direction over time
         while (currentTime < transitionTime)
         {
+            foreach (LogEntry x in entries)
+            {
+                currPositions.Add(x.@object.transform.position);
+            }
+
             for (int i = 0; i < entries.Count; i++)
             {
-                entries.ToArray()[i].@object.transform.position = Vector3.Lerp(startPositions[i], startPositions[i] + direction * moveDist * GetComponentInParent<CanvasScaler>().scaleFactor, 
+                entries.ToArray()[i].@object.transform.position = Vector3.Lerp(currPositions[i], currPositions[i] + direction * totalShift, 
                                                                                Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             }
+
+            Canvas.ForceUpdateCanvases();
+            yield return new WaitForEndOfFrame();
+            Canvas.ForceUpdateCanvases();
+
+            if(currPositions.Count > 0)
+            totalShift -= Vector3.Distance(currPositions[0], entries.ToArray()[0].@object.transform.position);
+
+            currPositions.Clear();
 
             currentTime += Time.deltaTime;
             yield return null;

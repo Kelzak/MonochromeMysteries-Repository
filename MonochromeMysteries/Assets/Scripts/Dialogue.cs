@@ -105,7 +105,7 @@ public class Dialogue : MonoBehaviour
                     yield return null;
 
                 dialogueText.text += currentMessage[i];
-                if (i % 3 == 0)
+                if (i % 2 == 0)
                     yield return null;
             }
             //In case skip key was pressed, print out the rest of the message instantly
@@ -113,9 +113,37 @@ public class Dialogue : MonoBehaviour
             //Clear Mouse Button Down Buffer
             if (Input.GetKeyDown(KeyCode.Space))
                 yield return null;
-            //leftClickPriority = false;
             textPrinting = false;
 
+            //Press Button To continue
+            int frameCount = 0, triggerFrame = 30;
+            while (!Input.GetKeyDown(KeyCode.Space))
+            {
+                if (frameCount % triggerFrame == 0 && !continuePrompt.activeSelf)
+                    continuePrompt.SetActive(true);
+                else if (frameCount % triggerFrame == triggerFrame / 2 && continuePrompt.activeSelf)
+                    continuePrompt.SetActive(false);
+                else if (frameCount == triggerFrame)
+                    frameCount = 0;
+
+                frameCount++;
+                yield return null;
+            }
+            continuePrompt.SetActive(false);
+
+
+            //Wait if line is designated to hold until condition is met
+            //Fade away panel after text is read
+            if (dialogueQueue.Peek().holdLine == true)
+            {
+                StartCoroutine(SetDialogueWindowActive(false));
+                while (transitionInProgress)
+                    yield return null;
+                Tutorial.UpdateObjective();
+                Tutorial.ShowObjective(true);
+            }
+
+            //Wait for hold to be taken off
             while (dialogueQueue.Peek().holdLine == true)
             {
                 holding = true;
@@ -123,21 +151,16 @@ public class Dialogue : MonoBehaviour
             }
             holding = false;
 
-            int frameCount = 0;
-            //leftClickPriority = true;
-            while (!Input.GetKeyDown(KeyCode.Space))
+            //Fade Panel back in
+            if (panel.activeSelf == false)
             {
-                if (frameCount % 30 == 0 && !continuePrompt.activeSelf)
-                    continuePrompt.SetActive(true);
-                else if (frameCount % 30 == 15 && continuePrompt.activeSelf)
-                    continuePrompt.SetActive(false);
-                else if (frameCount == 30)
-                    frameCount = 0;
-
-                frameCount++;
-                yield return null;
+                dialogueText.text = "";
+                Tutorial.ShowObjective(false);
+                StartCoroutine(SetDialogueWindowActive(true));
+                while (transitionInProgress)
+                    yield return null;
             }
-            continuePrompt.SetActive(false);
+
 
             //if (Input.GetMouseButtonDown(0))
             //    yield return null;

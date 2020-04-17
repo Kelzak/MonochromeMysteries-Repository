@@ -76,11 +76,7 @@ public class Photographer : Person
             TakePhoto(Screen.width, Screen.height);
             Player.EnableControls(true);
 
-            //First Photo
-            if(Dialogue.holding)
-            {
-                Tutorial.instance.OnFirstPhoto();
-            }
+
         }
         else if(!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() >= PhotoLibrary.MAX_PHOTOS)
         {

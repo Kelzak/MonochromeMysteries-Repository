@@ -17,7 +17,6 @@ public class MainMenu : MonoBehaviour
 
     public delegate void MainMenuEvent(bool isActive);
     public static event MainMenuEvent onMainMenuTriggered;
-    
 
     public Television[] TVs;
 
@@ -36,15 +35,46 @@ public class MainMenu : MonoBehaviour
 
         TVs = FindObjectsOfType<Television>();
 
-       
-
     }
+
+    int frameCount = 0, triggerFrame = 30;
     // Update is called once per frame
     void Update()
     {
         //TV UPDATE
         //Check each tv to see if player is in range
-        UpdateTVRanges();
+        if (frameCount % triggerFrame == 0)
+            UpdateTVRanges();
+        else if (frameCount % triggerFrame == triggerFrame)
+            frameCount = 0;
+        frameCount++;
+
+        //Enter/Exit Main Menu
+        if (Input.GetKeyDown(KeyCode.F) || (Input.GetKeyDown(KeyCode.Escape) && MainMenu.GetCurrentMenu() == "MainMenu" && GameController.menuActive))
+        {
+            TriggerMainMenu();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && GameController.menuActive)
+        {
+            TriggerSwitchMenu("MainMenu");
+        }
+
+        //Just Save
+        if (Input.GetKeyDown(KeyCode.X) && MainMenu.IsInRange())
+        {
+            //Save code
+        }
+    }
+
+    public static string GetCurrentMenu()
+    {
+        return _instance.currentMenu.name;
+    }
+
+    public static void TriggerMainMenu()
+    {
+        if (!MainMenu._instance.tvTransitionInProgress && MainMenu.IsInRange() && (!GameController.menuActive || MainMenu.active))
+            MainMenu._instance.StartCoroutine(MainMenu._instance.TriggerTV());
     }
 
     public void TriggerSwitchMenu(string menu)
@@ -58,9 +88,9 @@ public class MainMenu : MonoBehaviour
         return _instance.playerInTVRange;
     }
 
-    public void ChangeFromInitialOptions()
+    public static void ChangeFromInitialOptions()
     {
-        foreach(Television instance in TVs)
+        foreach(Television instance in _instance.TVs)
         {
             //Turn new game button off and resume on
             instance.SwapButtons(false, Television.ButtonName.NewGame, Television.ButtonName.Continue);
@@ -73,21 +103,21 @@ public class MainMenu : MonoBehaviour
         currentTV = set;
     }
 
-    public void UpdateTVRanges()
+    public static void UpdateTVRanges()
     {
-        playerInTVRange = false;
-        for (int i = 0; i < TVs.Length; i++)
+        _instance.playerInTVRange = false;
+        for (int i = 0; i < _instance.TVs.Length; i++)
         {
-            if (TVs[i].CheckForPlayerInRange())
+            if (_instance.TVs[i].CheckForPlayerInRange())
             {
-                playerInTVRange = true;
-                lastTvIndex = i;
-                currentTV = TVs[i];
+                _instance.playerInTVRange = true;
+                _instance.lastTvIndex = i;
+                _instance.currentTV = _instance.TVs[i];
             }
         }
 
-        if (!playerInTVRange)
-            lastTvIndex = -1;
+        if (!_instance.playerInTVRange)
+            _instance.lastTvIndex = -1;
     }
 
     //Store the player transform to return after player exits the menu

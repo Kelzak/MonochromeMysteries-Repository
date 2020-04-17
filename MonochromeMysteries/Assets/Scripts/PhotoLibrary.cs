@@ -282,9 +282,17 @@ public class PhotoLibrary : MonoBehaviour
     /// <param name="clues">An array of ints representing the indexes of clues in ClueCatalogue</param>
     public static void StorePhoto(Texture2D photo, params int[] clues)
     {
+        foreach(int x in clues)
+        {
+            if(ClueCatalogue._instance.clues[x].name == "Dead Body")
+                //First Photo
+                if (Dialogue.holding)
+                {
+                    Tutorial.instance.OnFirstPhoto();
+                }
+        }
+
         photo = _instance.CropPhoto(photo, 160 * 2, 150 * 2);
-
-
 
         //Create Image
         Sprite newSprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), Vector2.zero, 100f);
