@@ -30,12 +30,15 @@ public class Log : MonoBehaviour
 
     public static void AddEntry(string text)
     {
-        if (instance.trueCount < MAX_ENTRIES)
-            instance.StartCoroutine(instance.AddEntryCoroutine(text));
+        instance.StartCoroutine(instance.AddEntryCoroutine(text));
     }
 
+    bool addingEntry = false;
     public IEnumerator AddEntryCoroutine(string text)
     {
+        while (addingEntry || isShifting)
+            yield return null;
+        addingEntry = true;
         //If there will be too many entries, delete the oldest one
         if (trueCount + 1 >= MAX_ENTRIES && text != entries.Peek().text)
         {
@@ -45,6 +48,7 @@ public class Log : MonoBehaviour
         }
         else if(trueCount >= MAX_ENTRIES && text == entries.Peek().text)
         {
+            addingEntry = false;
             yield break;
         }
 
@@ -54,6 +58,7 @@ public class Log : MonoBehaviour
         StartCoroutine(Shift(Vector3.down));
         while (isShifting)
             yield return null;
+
         //Create new Entry
         GameObject entryInstance = Instantiate<GameObject>(logEntryPrefab, panel.transform);
         string textFull = text;
@@ -65,45 +70,51 @@ public class Log : MonoBehaviour
         entries.Enqueue(new LogEntry(text, entryInstance));
 
         StartCoroutine(LogEntryDecay());
+        addingEntry = false;
     }
 
-    float transitionTime = 0.25f, totalShift;
+    float transitionTime = 0.25f;
     bool isShifting = false;
     public IEnumerator Shift(Vector3 direction)
     {
-        totalShift += logEntryPrefab.GetComponent<Text>().fontSize * 2 * GameController.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
-        if (isShifting)
-            yield break;
-
+        while (isShifting)
+            yield return null;
         isShifting = true;
+        float shiftDist = logEntryPrefab.GetComponent<Text>().fontSize * 1.5f * (Screen.width / 800) * (Screen.height / 600);
+        //if (isShifting)
+        //    yield break;
+
+       
         float currentTime = 0;
         //Get All the current positions so they can be used for lerp
-        List<Vector3> currPositions = new List<Vector3>();
+        List<Vector3> startPosition = new List<Vector3>();
+
+        foreach (LogEntry x in entries)
+        {
+            startPosition.Add(x.@object.transform.position);
+        }
 
         //Move Log Entry in direction over time
         while (currentTime < transitionTime)
         {
-            foreach (LogEntry x in entries)
-            {
-                currPositions.Add(x.@object.transform.position);
-            }
-
+            currentTime += Time.deltaTime;
             for (int i = 0; i < entries.Count; i++)
             {
-                entries.ToArray()[i].@object.transform.position = Vector3.Lerp(currPositions[i], currPositions[i] + direction * totalShift, 
+                entries.ToArray()[i].@object.transform.position = Vector3.Lerp(startPosition[i], startPosition[i] + (direction * shiftDist), 
                                                                                Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
             }
 
-            Canvas.ForceUpdateCanvases();
-            yield return new WaitForEndOfFrame();
-            Canvas.ForceUpdateCanvases();
+            //Canvas.ForceUpdateCanvases();
+            //yield return new WaitForEndOfFrame();
+            //Canvas.ForceUpdateCanvases();
 
-            if(currPositions.Count > 0)
-            totalShift -= Vector3.Distance(currPositions[0], entries.ToArray()[0].@object.transform.position);
+            //if(currPositions.Count > 0)
+            //totalToShift -= Vector3.Distance(currPositions[0], Vector3.Lerp(currPositions[0], currPositions[0] + (direction * totalToShift),
+            //                                                                   Mathf.SmoothStep(0f, 1f, currentTime / transitionTime)));
 
-            currPositions.Clear();
+            //startPosition.Clear();
 
-            currentTime += Time.deltaTime;
+            
             yield return null;
         }
         isShifting = false;
@@ -114,13 +125,16 @@ public class Log : MonoBehaviour
     {
         decayInProgress = true;
         yield return new WaitForSecondsRealtime(MESSAGE_LIFETIME);
-        LogEntry toRemove = entries.Peek();
+        while (isShifting)
+            yield return null;
+        LogEntry toRemove = entries.Dequeue();
         Text textComp = toRemove.@object.GetComponent<Text>();
         Color targetColor = new Color(0, 0, 0, 0), startColor = textComp.color;
 
         float currentTime = 0, transitionTime = 0.25f;
         while (currentTime < transitionTime)
         {
+            currentTime += Time.deltaTime;
             if (toRemove == null || textComp == null)
             {
                 yield break;
@@ -128,14 +142,11 @@ public class Log : MonoBehaviour
 
             textComp.color = Color.Lerp(startColor, targetColor, Mathf.SmoothStep(0f, 1f, currentTime / transitionTime));
 
-            currentTime += Time.deltaTime;
             yield return null;
         }
 
-        while (isShifting)
-            yield return null;
-        entries.Dequeue();
         Destroy(toRemove.@object);
+        //entries.Dequeue();
         trueCount--;
             
         

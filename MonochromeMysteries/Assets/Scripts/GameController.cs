@@ -57,7 +57,6 @@ public class GameController : MonoBehaviour
 
         cam = Camera.main;
         soul = GameObject.Find("Player");
-        soul.transform.position = playerSpawn.transform.position;
         //Initialize Game
         StartCoroutine(InitializeGame());
         
@@ -141,7 +140,7 @@ public class GameController : MonoBehaviour
     private IEnumerator InitializeGame()
     {
         soul.transform.position = playerSpawn.transform.position;
-        soul.transform.rotation = playerSpawn.transform.rotation;
+        //soul.transform.rotation = playerSpawn.transform.rotation;
 
         while (MainMenu._instance.TVs.Length == 0)
         {
@@ -165,9 +164,9 @@ public class GameController : MonoBehaviour
         //Vector3 target = transform.forward;
         //target.z += soul.GetComponent<MeshRenderer>().bounds.size.z * 400;
         
-        soul.transform.rotation = startTV.transform.Find("CamPoint").rotation;
+        soul.transform.rotation = startTV.transform.Find("CamPoint").localRotation;
 
-        yield return new WaitForFixedUpdate();
+        yield return new WaitForEndOfFrame();
 
         MainMenu.UpdateTVRanges();
         MainMenu.TriggerMainMenu();
