@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Dialogue : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Dialogue : MonoBehaviour
     public GameObject panel;
     private Image speakerImage;
     private Text speakerName;
-    private Text dialogueText;
+    private TMP_Text dialogueText;
     private GameObject continuePrompt;
 
     public Queue<DialogueLine> dialogueQueue;
@@ -212,7 +213,7 @@ public class Dialogue : MonoBehaviour
         {
             x.CrossFadeAlpha(endAlpha, 0.5f, true);
         }
-        foreach (Text x in panel.GetComponentsInChildren<Text>())
+        foreach (TMP_Text x in panel.GetComponentsInChildren<TMP_Text>())
         {
             x.CrossFadeAlpha(endAlpha, 0.5f, true);
         }
@@ -256,7 +257,7 @@ public class Dialogue : MonoBehaviour
         panel = GameObject.Find("HUD").transform.Find("Dialogue").gameObject;
         speakerImage = panel.transform.Find("PhotoSlot").Find("Image").GetComponent<Image>();
         speakerName = panel.transform.Find("PhotoSlot").Find("Label").GetComponent<Text>();
-        dialogueText = panel.transform.Find("Text").GetComponent<Text>();
+        dialogueText = panel.transform.Find("Text").GetComponent<TMP_Text>();
         continuePrompt = panel.transform.Find("Prompt").gameObject;
 
         continuePrompt.SetActive(false);
