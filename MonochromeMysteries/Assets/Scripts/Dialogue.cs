@@ -217,6 +217,10 @@ public class Dialogue : MonoBehaviour
         {
             x.CrossFadeAlpha(endAlpha, 0.5f, true);
         }
+        foreach (Text x in panel.GetComponentsInChildren<Text>())
+        {
+            x.CrossFadeAlpha(endAlpha, 0.5f, true);
+        }
         yield return new WaitForSecondsRealtime(0.5f);
 
 

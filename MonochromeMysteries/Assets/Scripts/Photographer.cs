@@ -78,7 +78,7 @@ public class Photographer : Person
 
 
         }
-        else if(!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() >= PhotoLibrary.MAX_PHOTOS)
+        else if (!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() >= PhotoLibrary.MAX_PHOTOS)
         {
             Log.AddEntry("You have no more room for photos");
         }
@@ -152,11 +152,13 @@ public class Photographer : Person
             //Store Picture In Library
             float width = hud.transform.Find("Lens").GetComponent<RectTransform>().sizeDelta.x;
             float height = hud.transform.Find("Lens").GetComponent<RectTransform>().sizeDelta.y;
+
             PhotoLibrary.StorePhoto(renderResult, 
                                     ClueCatalogue._instance.DetectCluesOnScreen(Screen.width / 2 -  width / 2, 
                                                                                 Screen.height / 2 - height / 2,
                                                                                 width,
                                                                                 height));
+
         }
     }
 

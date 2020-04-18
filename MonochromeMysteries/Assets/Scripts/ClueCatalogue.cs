@@ -86,11 +86,15 @@ public class ClueCatalogue : MonoBehaviour
         for (int i = 0; i < clues.Length; i++)
         {
             currObj = clues[i].@object;
+
+            if (currObj == null)
+                continue;
+
             if (currObj.GetComponentInChildren<MeshRenderer>())
                 targetPoint = currObj.GetComponentInChildren<MeshRenderer>().bounds.center;
             else
                 targetPoint = currObj.transform.position;
-
+;
             //Check three points on mesh to make sure clue gets identified
             for (int j = 0; j < 3; j++)
             {
@@ -127,7 +131,7 @@ public class ClueCatalogue : MonoBehaviour
                     }
                     if (safe)
                     {
-                       // Debug.Log("Detected: " + currObj.name);
+                        // Debug.Log("Detected: " + currObj.name);
                         cluesDetected.Add(i);
                         break;
                     }
