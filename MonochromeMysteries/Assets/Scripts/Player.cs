@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
     public GameObject cam;
 
     [Header("Movement")]
-    public float moveSpeed = 10f;
+    private float moveSpeed = 9f;
     [HideInInspector]
     public static bool canMove = true;
 
