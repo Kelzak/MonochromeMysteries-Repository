@@ -11,10 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/matts new.unity
     guid: a743b64f8a5cf434ab5774601a0efa1a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/New Main.unity
     guid: cce996dcbab8d2e43a509b010247cb55
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/KevonTestFinal.unity
     guid: e51a46a9d430e974981078b280bf5ba0
   - enabled: 1

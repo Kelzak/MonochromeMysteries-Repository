@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Tutorial : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class Tutorial : MonoBehaviour
     public GameObject[] invisibleWalls;
 
     private Queue<string> objectives;
-    private UnityEngine.UI.Text objectiveText;
+    private TMP_Text objectiveText;
 
     public event TutorialEvent onFirstMovement;
     public event TutorialEvent onFirstRatPossession;
@@ -35,7 +36,7 @@ public class Tutorial : MonoBehaviour
         Dialogue.AddLine(Dialogue.Character.Pete, true, "You see that rat over there? You can possess him (by pressing E and depossess him by pressing Q) to get into spaces tighter than my grandpappy’s trousers after Thanksgivin’ dinner.");
         objectives.Enqueue("Possess a rat (Press E to Possess)");
         Dialogue.AddLine(Dialogue.Character.Pete, "Creatures you possess can also pick up items with the F key. Don’t be afraid to use your new abilities to get to where the evidence be hidin’.");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "If you’re gonna start solvin’ your murder, you’ll need to have a way to document evidence.Find a way next door to the Photographer’s room and bring him back here, would ya?");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "If you’re gonna start solvin’ your murder, you’ll need to have a way to document evidence. Find a way next door to the Photographer’s room and bring him back here, would ya?");
         OnPhotographerEnter();
         objectives.Enqueue("Find the Photographer and bring him to the crime scene");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "Good job on getting that there photographer in here. Now remember what I was sayin’ about those objects with a white aura ? Go and take some photographs of those right quick(by clicking the left mouse button).");
@@ -79,7 +80,7 @@ public class Tutorial : MonoBehaviour
         onFirstCloseScrapbook += TriggerFirstCloseScrapbook;
 
         objectives = new Queue<string>();
-        objectiveText = GameController.mainHUD.transform.Find("Objective").GetComponent<UnityEngine.UI.Text>();
+        objectiveText = GameController.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
 
         StartCoroutine(DialogueScript());
         StartCoroutine(WaitForPhotographerEnter());

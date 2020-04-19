@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
+using TMPro;
 using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour
@@ -60,8 +61,8 @@ public class Player : MonoBehaviour
     public bool hasPossessedForTheFirstTime;
 
     //UI Images and Texts
+    public GameObject HUD;
     public Sprite ghostImage;
-    public Text ghostName;
     public Sprite photographerImage;
     public Sprite ratImage;
     public Sprite managerImage;
@@ -70,8 +71,8 @@ public class Player : MonoBehaviour
     public Sprite hunterImage;
     public Image characterImage;
     public Text characterName;
-    public Text characterRole;
-    public static string characterRoleForEnding;
+    private TMP_Text characterRole;
+    public static string characterRoleForEnding = " ";
     public Sprite cameraImage;
     public Image itemImage;
     public Text itemName;
@@ -94,7 +95,7 @@ public class Player : MonoBehaviour
     public AudioClip[] ratSteps;
     public float stepVolume;
     public float walkSoundInterval = .5f;
-    private bool isRat;
+    public static bool isRat;
 
     //pick up stuff
     public static List<GameObject> keys = new List<GameObject>();
@@ -124,6 +125,9 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        characterRoleForEnding = " ";
+        HUD = GameObject.Find("HUD");
+        characterRole = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterRole").GetComponent<TMP_Text>();
         audioSource = GetComponent<AudioSource>();
         canPickup = false;
         Cursor.visible = false;
@@ -287,6 +291,7 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.name == "RatRoomEnterTrigger" && !hasEnteredRatRoom)
         {
+            Destroy(other.gameObject);
             hasEnteredRatRoom = true;
             StartCoroutine(endingManager.KnifeScript());
         }
@@ -300,7 +305,7 @@ public class Player : MonoBehaviour
             itemName.text = "Camera";
             characterImage.sprite = photographerImage;
             characterRole.text = "\"The Photographer\"";
-            characterRoleForEnding = "The Photographer";
+            characterRoleForEnding = "Photographer";
             characterName.text = "Norman Adler";
             isRat = false;
         }
@@ -317,7 +322,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = managerImage;
             characterRole.text = "\"The Manager\"";
-            characterRoleForEnding = "The Manager";
+            characterRoleForEnding = "Manager";
             characterName.text = "Camille Bastet";
             isRat = false;
         }
@@ -326,7 +331,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = exterminatorImage;
             characterRole.text = "\"The Exterminator\"";
-            characterRoleForEnding = "The Exterminator";
+            characterRoleForEnding = "Exterminator";
             characterName.text = "Jonathan Abberdasky";
             isRat = false;
         }
@@ -335,7 +340,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = mechanicImage;
             characterRole.text = "\"The Mechanic\"";
-            characterRoleForEnding = "The Mechanic";
+            characterRoleForEnding = "Mechanic";
             characterName.text = "Janet Bastet";
             isRat = false;
         }
@@ -344,7 +349,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = hunterImage;
             characterRole.text = "\"The Hunter\"";
-            characterRoleForEnding = "The Hunter";
+            characterRoleForEnding = "Hunter";
             characterName.text = "Ahab Sergei";
             isRat = false;
         }
@@ -354,7 +359,7 @@ public class Player : MonoBehaviour
             itemName.text = "";
             characterImage.sprite = ghostImage;
             characterRole.text = "\"The Spirit\"";
-            //characterRoleForEnding = "The Spirit";
+            characterRoleForEnding = "uhhhh";
             characterName.text = "";
             isRat = false;
         }

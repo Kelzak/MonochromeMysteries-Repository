@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Endings : MonoBehaviour
 {
@@ -10,25 +11,23 @@ public class Endings : MonoBehaviour
     //public Player player;
     public GameObject knifeInstructions;
     public GameObject knifeConfirmation;
-    public Text personDecidedText;
+    public TMP_Text personDecidedText;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        personDecidedText = GameController.mainHUD.transform.Find("KnifeConfirmationPanel").Find("PersonToKill").GetComponent<TMP_Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !Readables.isReadingLetter && !StateChecker.isGhost)
+        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !Readables.isReadingLetter && !StateChecker.isGhost && !Player.isRat)
         {
             knifeConfirmation.SetActive(true);
-            personDecidedText.text = "Are you certain " + Player.characterRoleForEnding + " is the person who murdered you?";
+            personDecidedText.text = "Are you certain the <b>" + Player.characterRoleForEnding + "</b> is the person who murdered you?";
             Readables.isReadingLetter = true;
             GameController.TogglePause();
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
             photographer.CameraLensActive = false;
             photographer.canTakePhoto = false;
         }
@@ -93,8 +92,14 @@ public class Endings : MonoBehaviour
         if (photographer.GetComponent<Player>())
         {
             photographer.CameraLensActive = true;
-            photographer.canTakePhoto = true;
+            StartCoroutine(WaitToTurnOnCamera());
         }
         Readables.isReadingLetter = false;
+    }
+
+    public IEnumerator WaitToTurnOnCamera()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        photographer.canTakePhoto = true;
     }
 }
