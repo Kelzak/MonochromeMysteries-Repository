@@ -213,7 +213,7 @@ public class Player : MonoBehaviour
             }
 
             //reading objects
-            if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist)
+            if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
                 
                 GameObject temp = hit.collider.gameObject;
@@ -228,7 +228,7 @@ public class Player : MonoBehaviour
             }
             
             //doors
-            else if (hit.collider.gameObject.CompareTag("door") && hit.distance < Player.reticleDist)
+            else if (hit.collider.gameObject.CompareTag("door") && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
                 GameObject temp = hit.collider.gameObject;
                 reticle.color = Color.white;
@@ -249,7 +249,7 @@ public class Player : MonoBehaviour
                 }   
             }
             //safes or tvs or music box
-            else if (hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box") && hit.distance < Player.reticleDist)
+            else if (hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box") && hit.distance < Player.reticleDist / 2 && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
                 GameObject temp = hit.collider.gameObject;
                 reticle.color = Color.white;
