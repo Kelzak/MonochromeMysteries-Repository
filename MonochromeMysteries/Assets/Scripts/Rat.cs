@@ -7,6 +7,7 @@
  
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Rat : Possessable
@@ -26,7 +27,9 @@ public class Rat : Possessable
     public AudioClip[] squeaks;
     public AudioClip obtainClip;
 
-    private bool hold;
+    public TMP_Text displayText;
+
+    public static bool hold;
     private GameObject target;
 
     // Start is called before the first frame update
@@ -51,9 +54,10 @@ public class Rat : Possessable
         }
         if (hold)
         {
-            target.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
-            //Debug.Log("Rat should be picking up key or knife");
             target.transform.SetParent(pickupDestination);
+
+            //target.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
+            //Debug.Log("Rat should be picking up key or knife");
             target.transform.position = pickupDestination.position;
             target.transform.rotation = pickupDestination.rotation;
             target.gameObject.GetComponent<Rigidbody>().useGravity = false;
@@ -64,7 +68,7 @@ public class Rat : Possessable
         {
             try
             {
-                target.gameObject.GetComponentInChildren<HoverText>().UIstop = false;
+                //target.gameObject.GetComponentInChildren<HoverText>().UIstop = false;
                 //Debug.Log("Let go");
                 target.transform.SetParent(null);
                 target.gameObject.GetComponent<Rigidbody>().useGravity = true;
@@ -88,13 +92,14 @@ public class Rat : Possessable
 
     private void OnTriggerStay(Collider other)
     {
-        if(Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && !hasKey)
+        if(Input.GetButtonDown("PickUp") && (other.gameObject.tag == "pickup" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && !hasKey)
         {
+
             squeakSource.PlayOneShot(obtainClip);
             target = other.gameObject;
             hold = true;
         }
-        else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "Key" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
+        else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "pickup" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
         {
             squeakSource.PlayOneShot(obtainClip);
             target = other.gameObject;

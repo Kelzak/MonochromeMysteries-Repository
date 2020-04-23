@@ -105,7 +105,7 @@ public class Read : MonoBehaviour
             }
 
             //show flip page icons
-            if (toRead.Length > 1 && index != 0)
+            if (toRead.Length >= 1 && index != 0)
             {
                 flipLeftIcon.SetActive(true);
             }
@@ -113,7 +113,7 @@ public class Read : MonoBehaviour
             {
                 flipLeftIcon.SetActive(false);
             }
-            if (toRead.Length > 1 && index != toRead.Length-1)
+            if (toRead.Length >= 1 && index != toRead.Length-1)
             {
                 flipRightIcon.SetActive(true);
             }
