@@ -36,6 +36,8 @@ public class Read : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //flipLeftIcon = GameController.mainHUD.transform.Find("LeftMouseIcon").GetComponent<GameObject>();
+        //flipRightIcon = GameController.mainHUD.transform.Find("RightMouseIcon").GetComponent<GameObject>();
         photographer = FindObjectOfType<Photographer>();
         ending = FindObjectOfType<Endings>();
         player = FindObjectOfType<Player>();

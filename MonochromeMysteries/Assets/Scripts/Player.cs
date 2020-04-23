@@ -70,7 +70,7 @@ public class Player : MonoBehaviour
     public Sprite exterminatorImage;
     public Sprite hunterImage;
     public Image characterImage;
-    public Text characterName;
+    public TMP_Text characterName;
     private TMP_Text characterRole;
     public static string characterRoleForEnding = " ";
     public Sprite cameraImage;
@@ -128,6 +128,8 @@ public class Player : MonoBehaviour
         characterRoleForEnding = " ";
         HUD = GameObject.Find("HUD");
         characterRole = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterRole").GetComponent<TMP_Text>();
+        characterName = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterName").GetComponent<TMP_Text>();
+
         audioSource = GetComponent<AudioSource>();
         canPickup = false;
         Cursor.visible = false;
@@ -305,6 +307,7 @@ public class Player : MonoBehaviour
             itemName.text = "Camera";
             characterImage.sprite = photographerImage;
             characterRole.text = "\"The Photographer\"";
+            characterRole.color = new Color32(179,255,235,255); //grayish
             characterRoleForEnding = "Photographer";
             characterName.text = "Norman Adler";
             isRat = false;
@@ -314,6 +317,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = ratImage;
             characterRole.text = "\"The Rat\"";
+            characterRole.color = new Color32(100, 100, 100, 255); //dark gray
             characterName.text = "";
             isRat = true;
         }
@@ -322,6 +326,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = managerImage;
             characterRole.text = "\"The Manager\"";
+            characterRole.color = new Color32(212, 175, 55, 255); //gold
             characterRoleForEnding = "Manager";
             characterName.text = "Camille Bastet";
             isRat = false;
@@ -331,6 +336,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = exterminatorImage;
             characterRole.text = "\"The Exterminator\"";
+            characterRole.color = new Color32(179, 255, 235, 255); //green
             characterRoleForEnding = "Exterminator";
             characterName.text = "Jonathan Abberdasky";
             isRat = false;
@@ -340,6 +346,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = mechanicImage;
             characterRole.text = "\"The Mechanic\"";
+            characterRole.color = new Color32(255, 182, 163, 255); //violet
             characterRoleForEnding = "Mechanic";
             characterName.text = "Janet Bastet";
             isRat = false;
@@ -349,6 +356,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = hunterImage;
             characterRole.text = "\"The Hunter\"";
+            characterRole.color = new Color32(235, 111, 255, 255); //red
             characterRoleForEnding = "Hunter";
             characterName.text = "Ahab Sergei";
             isRat = false;
@@ -356,11 +364,12 @@ public class Player : MonoBehaviour
         else
         {
             itemImage.transform.parent.gameObject.SetActive(false);
-            itemName.text = "";
+            //itemName.text = "";
             characterImage.sprite = ghostImage;
             characterRole.text = "\"The Spirit\"";
-            characterRoleForEnding = "uhhhh";
-            characterName.text = "";
+            characterRole.color = new Color32(0, 255, 255, 255); //ghostly blue
+            characterRoleForEnding = "awkward";
+            characterName.text = "?";
             isRat = false;
         }
     }
