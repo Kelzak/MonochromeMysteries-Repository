@@ -14,8 +14,9 @@ public class Dialogue : MonoBehaviour
 
     public static bool holding = false;
     public GameObject panel;
+    private GameObject playerPortrait;
     private Image speakerImage;
-    private Text speakerName;
+    private TMP_Text speakerName;
     private TMP_Text dialogueText;
     private GameObject continuePrompt;
 
@@ -242,10 +243,13 @@ public class Dialogue : MonoBehaviour
         if(shouldHide && dialogueRunning)
         {
             panel.SetActive(false);
+            playerPortrait.SetActive(false);
         }
         else if(dialogueRunning)
         {
             panel.SetActive(true);
+            playerPortrait.SetActive(true);
+
         }
     }
 
@@ -259,8 +263,9 @@ public class Dialogue : MonoBehaviour
     void Start()
     {
         panel = GameObject.Find("HUD").transform.Find("Dialogue").gameObject;
+        playerPortrait = GameObject.Find("CharacterPortrait");
         speakerImage = panel.transform.Find("PhotoSlot").Find("Image").GetComponent<Image>();
-        speakerName = panel.transform.Find("PhotoSlot").Find("Label").GetComponent<Text>();
+        speakerName = panel.transform.Find("PhotoSlot").Find("NameLabel").GetComponent<TMP_Text>();
         dialogueText = panel.transform.Find("Text").GetComponent<TMP_Text>();
         continuePrompt = panel.transform.Find("Prompt").gameObject;
 

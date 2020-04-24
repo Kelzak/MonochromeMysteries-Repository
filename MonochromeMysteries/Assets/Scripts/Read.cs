@@ -36,6 +36,8 @@ public class Read : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //flipLeftIcon = GameController.mainHUD.transform.Find("LeftMouseIcon").GetComponent<GameObject>();
+        //flipRightIcon = GameController.mainHUD.transform.Find("RightMouseIcon").GetComponent<GameObject>();
         photographer = FindObjectOfType<Photographer>();
         ending = FindObjectOfType<Endings>();
         player = FindObjectOfType<Player>();
@@ -103,7 +105,7 @@ public class Read : MonoBehaviour
             }
 
             //show flip page icons
-            if (toRead.Length > 1 && index != 0)
+            if (toRead.Length >= 1 && index != 0)
             {
                 flipLeftIcon.SetActive(true);
             }
@@ -111,7 +113,7 @@ public class Read : MonoBehaviour
             {
                 flipLeftIcon.SetActive(false);
             }
-            if (toRead.Length > 1 && index != toRead.Length-1)
+            if (toRead.Length >= 1 && index != toRead.Length-1)
             {
                 flipRightIcon.SetActive(true);
             }

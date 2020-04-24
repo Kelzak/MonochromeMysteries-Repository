@@ -70,7 +70,7 @@ public class Player : MonoBehaviour
     public Sprite exterminatorImage;
     public Sprite hunterImage;
     public Image characterImage;
-    public Text characterName;
+    public TMP_Text characterName;
     private TMP_Text characterRole;
     public static string characterRoleForEnding = " ";
     public Sprite cameraImage;
@@ -114,6 +114,8 @@ public class Player : MonoBehaviour
 
     //Reading letters stuff
     public Readables readables;
+    public TMP_Text displayText;
+    private float fadeTime = 1f;
 
     private bool ratWalk;
 
@@ -128,6 +130,8 @@ public class Player : MonoBehaviour
         characterRoleForEnding = " ";
         HUD = GameObject.Find("HUD");
         characterRole = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterRole").GetComponent<TMP_Text>();
+        characterName = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterName").GetComponent<TMP_Text>();
+
         audioSource = GetComponent<AudioSource>();
         canPickup = false;
         Cursor.visible = false;
@@ -195,25 +199,96 @@ public class Player : MonoBehaviour
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         if (Physics.Raycast(ray, out hit))
         {
-            //reading objects
-            if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist)
-            {
-                GameObject temp = hit.collider.gameObject;
-                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
-                {
-                    temp.GetComponent<Read>().Open();
-                }
-            }
-
             //glowing objects
             if (hit.collider.gameObject.GetComponent<Outline>() && hit.distance < Player.reticleDist)
             {
                 GameObject temp = hit.collider.gameObject;
                 Outline outline = temp.GetComponent<Outline>();
                 outline.enabled = true;
+                reticle.color = temp.GetComponent<Outline>().OutlineColor;
+            }
+            else
+            {
+                reticle.color = new Color32(0, 255, 255, 100);
+            }
+
+            //reading objects
+            if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
+            {
+                
+                GameObject temp = hit.collider.gameObject;
+                reticle.color = temp.GetComponent<Outline>().OutlineColor;
+                displayText.text = "Press F to Read";
+                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                {
+                    temp.GetComponent<Read>().Open();
+                }
+            }
+            
+            //doors
+            else if (hit.collider.gameObject.CompareTag("door") && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
+            {
+                GameObject temp = hit.collider.gameObject;
+                reticle.color = Color.white;
+                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                if (temp.GetComponentInParent<DoorScript>().isOpen)
+                {
+                    displayText.text = "Press F to Close";
+                }
+                else
+                {
+                    displayText.text = "Press F to Open";
+
+                }
+                //open
+                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                {
+                    temp.GetComponentInParent<DoorScript>().Activate();
+                }   
+            }
+            //safes or tvs or music box
+            else if (hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box") && hit.distance < Player.reticleDist / 2 && !GetComponent<Rat>() && !StateChecker.isGhost)
+            {
+                GameObject temp = hit.collider.gameObject;
+                reticle.color = Color.white;
+                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                displayText.text = "Press F to Use";   
+            }
+            //pickup?
+            else if (hit.collider.gameObject.CompareTag("pickup") || hit.collider.gameObject.CompareTag("letter") && hit.distance < Player.reticleDist && !StateChecker.isGhost)
+            {
+                GameObject temp = hit.collider.gameObject;
+                reticle.color = temp.GetComponent<Outline>().OutlineColor;
+                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+                if (GetComponent<Rat>() && hit.distance < Player.reticleDist / 4)
+                {
+                    if(Rat.hold)
+                    {
+                        displayText.text = "Press F to Drop";
+                    }
+                    else
+                    {
+                        displayText.text = "Press F to Drag";
+                    }
+                }
+                else if (!GetComponent<Rat>())
+                {
+                    displayText.text = "Press F to Pickup";
+                }
+            }
+            else
+            {
+                displayText.text = "";
+                displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+                
             }
         }
     }
+
+
 
     private void GrayscaleToggle()
     {
@@ -307,9 +382,10 @@ public class Player : MonoBehaviour
         if (gameObject.GetComponent<Photographer>())
         {
             itemImage.sprite = cameraImage;
-            itemName.text = "Camera";
+            //itemName.text = "Camera";
             characterImage.sprite = photographerImage;
             characterRole.text = "\"The Photographer\"";
+            characterRole.color = new Color32(179,255,235,255); //grayish
             characterRoleForEnding = "Photographer";
             characterName.text = "Norman Adler";
             isRat = false;
@@ -319,6 +395,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = ratImage;
             characterRole.text = "\"The Rat\"";
+            characterRole.color = new Color32(100, 100, 100, 255); //dark gray
             characterName.text = "";
             isRat = true;
         }
@@ -327,6 +404,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = managerImage;
             characterRole.text = "\"The Manager\"";
+            characterRole.color = new Color32(212, 175, 55, 255); //gold
             characterRoleForEnding = "Manager";
             characterName.text = "Camille Bastet";
             isRat = false;
@@ -336,6 +414,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = exterminatorImage;
             characterRole.text = "\"The Exterminator\"";
+            characterRole.color = new Color32(179, 255, 235, 255); //green
             characterRoleForEnding = "Exterminator";
             characterName.text = "Jonathan Abberdasky";
             isRat = false;
@@ -345,6 +424,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = mechanicImage;
             characterRole.text = "\"The Mechanic\"";
+            characterRole.color = new Color32(255, 182, 163, 255); //violet
             characterRoleForEnding = "Mechanic";
             characterName.text = "Janet Bastet";
             isRat = false;
@@ -354,6 +434,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = hunterImage;
             characterRole.text = "\"The Hunter\"";
+            characterRole.color = new Color32(235, 111, 255, 255); //red
             characterRoleForEnding = "Hunter";
             characterName.text = "Ahab Sergei";
             isRat = false;
@@ -361,11 +442,12 @@ public class Player : MonoBehaviour
         else
         {
             itemImage.transform.parent.gameObject.SetActive(false);
-            itemName.text = "";
+            //itemName.text = "";
             characterImage.sprite = ghostImage;
             characterRole.text = "\"The Spirit\"";
-            characterRoleForEnding = "uhhhh";
-            characterName.text = "";
+            characterRole.color = new Color32(0, 255, 255, 255); //ghostly blue
+            characterRoleForEnding = "awkward";
+            characterName.text = "?";
             isRat = false;
         }
     }
@@ -416,12 +498,12 @@ public class Player : MonoBehaviour
                 {
                     //Debug.Log("I'm looking at " + hit.transform.name);
                     //Debug.Log("Outline spotted");
-                    reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
+                    //reticle.color = selection.gameObject.GetComponent<Outline>().OutlineColor;
 
                     //pickup
                     if (Input.GetKeyDown(KeyCode.F))
                     {
-                        if (selection.gameObject.CompareTag("Key") && !StateChecker.isGhost && !gameObject.GetComponent<Rat>())
+                        if (selection.gameObject.CompareTag("pickup") && !StateChecker.isGhost && !gameObject.GetComponent<Rat>())
                         {
                             Log.AddEntry("Picked up: " + selection.gameObject.name);
                             audioSource.PlayOneShot(obtainClip);
@@ -442,16 +524,13 @@ public class Player : MonoBehaviour
                 //{
                 //    reticle.color = new Color32(254, 224, 0, 100);
                 //}
-                else
-                {
-                    reticle.color = new Color32(0, 255, 255, 100);
-                }
 
-                if (selection.gameObject.GetComponent<HoverText>())
-                {
-                    Debug.Log("hover text");
-                    selection.gameObject.GetComponent<HoverText>().display = true;
-                }
+            //maybe?
+                //if (selection.gameObject.GetComponent<HoverText>())
+                //{
+                //    Debug.Log("hover text");
+                //    selection.gameObject.GetComponent<HoverText>().display = true;
+                //}
             }
         }
     }

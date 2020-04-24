@@ -18,6 +18,10 @@ TagManager:
   - letter
   - Knife
   - read background
+  - door
+  - pickup
+  - TV
+  - music box
   layers:
   - Default
   - TransparentFX

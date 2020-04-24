@@ -20,6 +20,9 @@ public class MainMenu : MonoBehaviour
 
     public Television[] TVs;
 
+    public GameObject playerPortrait;
+
+
     //Says whether the MAIN MENU ONLY is active
     public static bool active = false;
 
@@ -35,6 +38,7 @@ public class MainMenu : MonoBehaviour
 
         TVs = FindObjectsOfType<Television>();
 
+        playerPortrait = GameObject.Find("CharacterPortrait");
     }
 
     int frameCount = 0, triggerFrame = 30;
@@ -74,7 +78,9 @@ public class MainMenu : MonoBehaviour
     public static void TriggerMainMenu()
     {
         if (!MainMenu._instance.tvTransitionInProgress && MainMenu.IsInRange() && (!GameController.menuActive || MainMenu.active))
+        {
             MainMenu._instance.StartCoroutine(MainMenu._instance.TriggerTV());
+        }
     }
 
     public void TriggerSwitchMenu(string menu)

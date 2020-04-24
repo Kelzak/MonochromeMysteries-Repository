@@ -25,7 +25,7 @@ public class DoorScript : MonoBehaviour
     private int rand;
     private AudioClip sound;
 
-    private bool isOpen;
+    public bool isOpen;
     public bool autoClose = true;
     public bool stayOpen;
 
@@ -76,22 +76,6 @@ public class DoorScript : MonoBehaviour
         }
     }
 
-    void OnTriggerExit(Collider other)
-    {
-        _isInsideTrigger = false;
-        if (stayOpen)
-            return;
-        if (other.tag == "Person" && isOpen && autoClose)
-        {
-            _isInsideTrigger = false;
-            _animator.SetBool("open", false);
-            Invoke("DoorShut", 1.5f);
-            //OpenPanel.SetActive(false);
-            isOpen = false;
-        }
-        
-    }
-
     private bool IsOpenPanelActive
     {
         get
@@ -99,108 +83,57 @@ public class DoorScript : MonoBehaviour
             return OpenPanel.activeInHierarchy;
         }
     }
+    public void Activate()
+    {
+        if(personalDoor)
+        {
+
+        }
+        //regular open
+        if(!isLocked && !isOpen)
+        {
+            Open();
+        }
+        //locked open
+        else if(isLocked && !isOpen && Player.keys.Contains(key))
+        {
+            isLocked = false;
+            Open();
+        }
+        //close door if able
+        else if(isOpen && !stayOpen)
+        {
+            _animator.SetBool("open", false);
+
+            Invoke("DoorShut", 1.5f);
+
+            isOpen = false;
+        }
+        //door locked
+        else if(isLocked && !isOpen)
+        {
+            rand = Random.Range(0, lockedDoor.Length);
+            sound = lockedDoor[rand];
+            audioSource.PlayOneShot(sound);
+            Log.AddEntry("The Door is Locked");
+        }
+        
+    }
+    private void Open()
+    {
+        _animator.SetBool("open", true);
+
+        int rand = Random.Range(0, openDoor.Length);
+        AudioClip sound = openDoor[rand];
+        audioSource.PlayOneShot(sound);
+
+        isOpen = true;
+    }
 
     // Update is called once per frame
     void Update()
     {
-        //person specific
-        if (personalDoor && isPlayer && _isInsideTrigger && !isOpen)
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                //OpenPanel.SetActive(false);
-                _animator.SetBool("open", true);
-
-                int rand = Random.Range(0, openDoor.Length);
-                AudioClip sound = openDoor[rand];
-                audioSource.PlayOneShot(sound);
-
-                isOpen = true;
-            }
-        }
-        else if (personalDoor && isPlayer && _isInsideTrigger && isOpen)
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                if (stayOpen)
-                    return;
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    //OpenPanel.SetActive(false);
-                    _animator.SetBool("open", false);
-
-                    Invoke("DoorShut", 1.5f);
-
-                    isOpen = false;
-                }
-            }
-        }
-        //regular door
-        else if (isPlayer && _isInsideTrigger && !isLocked && !isOpen)
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                //OpenPanel.SetActive(false);
-                _animator.SetBool("open", true);
-
-                int rand = Random.Range(0, openDoor.Length);
-                AudioClip sound = openDoor[rand];
-                audioSource.PlayOneShot(sound);
-
-                isOpen = true;
-            }
-        }
-        //if open close the door
-        else if (isPlayer && _isInsideTrigger && !isLocked && isOpen)
-        {
-            if (stayOpen)
-                return;
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                //OpenPanel.SetActive(false);
-                _animator.SetBool("open", false);
-
-                Invoke("DoorShut", 1.5f);
-
-                isOpen = false;
-            }
-        }
-        if (isPlayer && _isInsideTrigger && isLocked)
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                if (Player.keys.Contains(key))
-                {
-                    rand = Random.Range(0, unlockDoor.Length);
-                    sound = unlockDoor[rand];
-                    audioSource.PlayOneShot(sound);
-                    Log.AddEntry("Unlocked Door");
-                    Unlock();
-                }
-                else
-                {
-                    if(personalDoor)
-                    {
-                        return;
-
-                    }
-                    rand = Random.Range(0, lockedDoor.Length);
-                    sound = lockedDoor[rand];
-                    audioSource.PlayOneShot(sound);
-                    Log.AddEntry("The Door is Locked");
-                }
-            }
-        }
-
-        if (_isInsideTrigger && !isPlayer && !isLocked && !isOpen)
-        {
-            _animator.SetBool("open", true);
-            rand = Random.Range(0, openDoor.Length);
-            sound = openDoor[rand];
-            audioSource.PlayOneShot(sound);
-            isOpen = true;
-
-        }
+        
     }
     void DoorShut()
     {
