@@ -139,6 +139,11 @@ public class GameController : MonoBehaviour
 
     private IEnumerator InitializeGame()
     {
+        SaveSystem.Load();
+
+        while (SaveSystem.loading || Player.GetPossessionInProgress())
+            yield return null;
+
         soul.transform.position = playerSpawn.transform.position;
         //soul.transform.rotation = playerSpawn.transform.rotation;
 

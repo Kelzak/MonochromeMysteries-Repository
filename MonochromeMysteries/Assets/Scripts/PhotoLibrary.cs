@@ -19,9 +19,12 @@ public class PhotoLibrary : MonoBehaviour
 
     private List<PhotoInfo> photoInfo;
     private PhotoSlot[] photoSlots;
-    private uint photoCount = 0;
+    public uint photoCount = 0;
     private int photosPerPage = 3;
     private int pageNum = 0;
+
+    [Header("Save System")]
+    public static List<string> photoPaths;
 
     private GameObject selectedSlot;
     [HideInInspector]
@@ -64,11 +67,18 @@ public class PhotoLibrary : MonoBehaviour
         public PhotoInfo(Sprite image, params int[] cluesFeatured)
         {
             this.image = image;
+
+            if (cluesFeatured == null)
+                cluesFeatured = new int[0];
+
             this.cluesFeatured = cluesFeatured;
 
             labelText = detailsText = "";
+
+
             foreach(int x in cluesFeatured)
             {
+
                 if (labelText != "")
                     labelText += ", ";
                 labelText += ClueCatalogue._instance.clues[x].name;
@@ -87,6 +97,16 @@ public class PhotoLibrary : MonoBehaviour
             cluesFeatured = clues;
         }     
 
+    }
+    
+    public static void TriggerOnScrapbookChange()
+    {
+        _instance.OnScrapbookChange?.Invoke();
+    }
+
+    public static List<PhotoInfo> GetPhotoInfo()
+    {
+        return _instance.photoInfo;
     }
 
     /// <summary>
@@ -177,6 +197,7 @@ public class PhotoLibrary : MonoBehaviour
         _instance = this;
 
         photoInfo = new List<PhotoInfo>();
+        photoPaths = new List<string>();
 
         OnScrapbookChange += UpdateUI;
     }
@@ -275,6 +296,11 @@ public class PhotoLibrary : MonoBehaviour
         return photoInfo.Count;
     }
 
+    public static void AddToPhotoInfo(PhotoInfo photoInfoToAdd)
+    {
+        _instance.photoInfo.Add(photoInfoToAdd);
+    }
+
     /// <summary>
     /// Crops and turns the photo from the Photographer into a sprite to be put into an image and placed in scrapbook
     /// </summary>
@@ -297,6 +323,12 @@ public class PhotoLibrary : MonoBehaviour
         //Create Image
         Sprite newSprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), Vector2.zero, 100f);
         newSprite.name = string.Format("Photo-{0}", _instance.photoCount);
+
+        //Save image
+        string savePath = Path.Combine(Application.persistentDataPath, "_GameData", newSprite.name + ".png");
+        System.IO.File.WriteAllBytes(savePath, photo.EncodeToPNG());
+        photoPaths.Add(savePath);
+
         newSprite.texture.Apply();
 
         _instance.photoInfo.Add(new PhotoInfo(newSprite, clues));        
@@ -326,7 +358,13 @@ public class PhotoLibrary : MonoBehaviour
             _instance.photoInfo[indexToRemove].Deconstruct();
             //Remove from Scrapbook
             _instance.photoInfo.RemoveAt(indexToRemove);
+            //Remove photo file
+            System.IO.File.Delete(photoPaths[indexToRemove]);
+            photoPaths.RemoveAt(indexToRemove);
         }
+
+
+
 
         _instance.OnScrapbookChange?.Invoke();
     }
@@ -431,7 +469,6 @@ public class PhotoLibrary : MonoBehaviour
             }
         }
     }
-
     //private PhotoInfo FindPhotoFromObject(GameObject obj)
     //{
     //    for (int i = 0; i < photoInfo.Count; i++)

@@ -1153,9 +1153,9 @@ GameObject:
   - component: {fileID: 2965033133202097705}
   - component: {fileID: 2965033133202097704}
   - component: {fileID: 2965033133202097711}
-  - component: {fileID: 2965033133202097707}
   - component: {fileID: 2965033133202097708}
   - component: {fileID: 5110003429030710510}
+  - component: {fileID: 5910384819200926114}
   m_Layer: 0
   m_Name: TV
   m_TagString: Untagged
@@ -1243,19 +1243,6 @@ MonoBehaviour:
   tvStatic: {fileID: 2965033133233656144}
   howToPlay: {fileID: 0}
   staticAnim: {fileID: 0}
---- !u!65 &2965033133202097707
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2965033133202097706}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &2965033133202097708
 Animator:
   serializedVersion: 3
@@ -1371,6 +1358,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!65 &5910384819200926114
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2965033133202097706}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 325.31836, y: 266.9132, z: 205.36351}
+  m_Center: {x: -62.659172, y: 212.7605, z: 2.681755}
 --- !u!1 &2965033133233656144
 GameObject:
   m_ObjectHideFlags: 0

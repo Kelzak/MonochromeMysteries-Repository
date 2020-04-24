@@ -103,6 +103,11 @@ public class MainMenu : MonoBehaviour
         currentTV = set;
     }
 
+    public Television GetCurrentTV()
+    {
+        return currentTV;
+    }
+
     public static void UpdateTVRanges()
     {
         _instance.playerInTVRange = false;
@@ -131,6 +136,7 @@ public class MainMenu : MonoBehaviour
     /// <returns></returns>
     public IEnumerator TriggerTV()
     {
+
         tvTransitionInProgress = true;
         //Changes 'paused' to true if this pauses the game, false if the game was already paused and is now unpausing
         GameController.TogglePause();
@@ -155,6 +161,7 @@ public class MainMenu : MonoBehaviour
             currentTV.mainMenu.SetActive(false);
             onMainMenuTriggered?.Invoke(false);
         }
+
 
         //Transitioning into TV, store player transform so camera can be returned properly
         if (cam.GetComponentInParent<Player>())
@@ -182,9 +189,10 @@ public class MainMenu : MonoBehaviour
         cam.transform.parent = targetTransform;
         cam.transform.rotation = tempRotation;
 
+
         //Progress toward target transform's position and rotation
         Vector3 startPos = cam.transform.localPosition;
-        Vector3 targetPos = targetTransform.GetComponent<Player>() ? Vector3.zero + targetTransform.GetComponent<Player>().camOffset : Vector3.zero;
+        Vector3 targetPos = targetTransform.GetComponent<Player>() != null ? Vector3.zero + targetTransform.GetComponent<Player>().camOffset : Vector3.zero;
         Quaternion startRot = cam.transform.localRotation;
 
         float currentTime = 0;
@@ -209,6 +217,10 @@ public class MainMenu : MonoBehaviour
             currentTV.tvStatic.SetActive(false);
             currentTV.mainMenu.SetActive(true);
             currentMenu = currentTV.mainMenu;
+
+            while(SaveSystem.loading)
+                yield return null;
+            SaveSystem.Save(SaveSystem.currentSaveSlot);
         }
 
         Photographer photographer;

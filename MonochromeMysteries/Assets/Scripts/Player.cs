@@ -138,7 +138,7 @@ public class Player : MonoBehaviour
         camOffset = new Vector3(0, 0.25f, 0);
 
         if (mainPlayer == null)
-            mainPlayer = gameObject;
+            mainPlayer = GameObject.Find("Player");
 
         if (cam == null)
             cam = transform.Find("Main Camera").gameObject;
@@ -225,6 +225,11 @@ public class Player : MonoBehaviour
         {
             ppvToggle.Toggle(true);
         }
+    }
+
+    public static bool GetPossessionInProgress()
+    {
+        return possessionInProgress;
     }
 
     public void InteractWithSafe()
@@ -468,6 +473,10 @@ public class Player : MonoBehaviour
         return cam;
     }
 
+    public void ForcePossession(GameObject target)
+    {
+        StartCoroutine(Possess(target));
+    }
 
     //PRIVATE FUNCTIONS
     /// <summary>
@@ -582,7 +591,7 @@ public class Player : MonoBehaviour
 
     }
 
-    bool possessionInProgress = false;
+    static bool possessionInProgress = false;
     private RaycastHit hit;
 
 
@@ -612,6 +621,7 @@ public class Player : MonoBehaviour
             targetTransform = target.transform.Find("CamPoint");
         else
             targetTransform = target.transform;
+
 
 
         //Cam Shift & Alpha fade
@@ -832,7 +842,7 @@ public class Player : MonoBehaviour
 
         //Reactivate the Player, 
         mainPlayer.SetActive(true);
-        mainPlayer.GetComponent<Player>().possessionInProgress = true;
+        Player.possessionInProgress = true;
         mainPlayer.transform.position = exitPoint;
         Vector3 direction = (transform.position - exitPoint).normalized;
         direction.y = 0;
@@ -881,7 +891,7 @@ public class Player : MonoBehaviour
 
         //Transition complete, return control to player
         EnableControls(true);
-        mainPlayer.GetComponent<Player>().possessionInProgress = false;
+        Player.possessionInProgress = false;
 
         //If this is not the main player (Ghost) then fire any events related to leaving a host and get rid of player script
         if (gameObject != mainPlayer)
