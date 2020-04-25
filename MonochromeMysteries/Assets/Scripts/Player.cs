@@ -176,8 +176,8 @@ public class Player : MonoBehaviour
         DisplayCharacterInfo(); //Displays character portrait, name, and role
         InteractWithSafe();
         PickUp();
-        //readables.ReadLetter();
         Interact();
+        //readables.ReadLetter();
 
         //fix rat walking sounds
         if (GetComponent<Rat>() && !ratWalk)
@@ -429,7 +429,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = hunterImage;
             characterRole.text = "\"The Hunter\"";
-            characterRole.color = new Color32(235, 111, 255, 255); //red
+            characterRole.color = new Color32(220, 20, 60, 255); //red
             characterRoleForEnding = "Hunter";
             characterName.text = "Ahab Sergei";
             isRat = false;
