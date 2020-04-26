@@ -62,6 +62,7 @@ public class Player : MonoBehaviour
 
     //UI Images and Texts
     public GameObject HUD;
+    public GameObject characterPortrait;
     public Sprite ghostImage;
     public Sprite photographerImage;
     public Sprite ratImage;
@@ -129,6 +130,7 @@ public class Player : MonoBehaviour
     {
         characterRoleForEnding = " ";
         HUD = GameObject.Find("HUD");
+        characterPortrait = GameObject.Find("CharacterPortrait");
         characterRole = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterRole").GetComponent<TMP_Text>();
         characterName = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterName").GetComponent<TMP_Text>();
 
@@ -138,6 +140,7 @@ public class Player : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         MainMenu.onMainMenuTriggered += HideReticle;
+        MainMenu.onMainMenuTriggered += HidePortrait;
 
         camOffset = new Vector3(0, 0.25f, 0);
 
@@ -249,7 +252,7 @@ public class Player : MonoBehaviour
                 }   
             }
             //safes or tvs or music box
-            else if (hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box") && hit.distance < Player.reticleDist / 2 && !GetComponent<Rat>() && !StateChecker.isGhost)
+            else if ((hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box")) && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
             {
                 GameObject temp = hit.collider.gameObject;
                 reticle.color = Color.white;
@@ -274,7 +277,7 @@ public class Player : MonoBehaviour
                         displayText.text = "Press F to Drag";
                     }
                 }
-                else if (!GetComponent<Rat>())
+                else if (!GetComponent<Rat>() && !StateChecker.isGhost)
                 {
                     displayText.text = "Press F to Pickup";
                 }
@@ -1030,9 +1033,22 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void HidePortrait(bool shouldHide)
+    {
+        if (shouldHide)
+        {
+            characterPortrait.SetActive(false);
+        }
+        else
+        {
+            characterPortrait.SetActive(true);
+        }
+    }
+
     private void OnDisable()
     {
         MainMenu.onMainMenuTriggered -= HideReticle;
+        MainMenu.onMainMenuTriggered -= HidePortrait;
     }
 
 }

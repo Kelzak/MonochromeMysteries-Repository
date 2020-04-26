@@ -36,30 +36,33 @@ public class DoorScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        stayOpen = false;
         _animator = transform.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if(personalDoor)
-        {
+        //if(personalDoor)
+        //{
             if(other.tag == "Person" && other.gameObject.name.Equals(whoDoor))
             {
                 //Debug.Log("Yes person");
                 if (other.GetComponent<Player>())
                 {
+                    personalDoor = true;
                     _isInsideTrigger = true;
                     //OpenPanel.SetActive(true);
                     isPlayer = true;
                 }
                 else
                 {
+                    personalDoor = false;
                     _isInsideTrigger = true;
                     isPlayer = false;
                 }
             }
-        }
+       // }
         else if (other.tag == "Person")
         {
             if(other.GetComponent<Player>())
@@ -67,11 +70,15 @@ public class DoorScript : MonoBehaviour
                 _isInsideTrigger = true;
                 //OpenPanel.SetActive(true);
                 isPlayer = true;
+                personalDoor = false;
+
             }
             else
             {
                 _isInsideTrigger = true;
                 isPlayer = false;
+                personalDoor = false;
+
             }
         }
     }
@@ -87,7 +94,7 @@ public class DoorScript : MonoBehaviour
     {
         if(personalDoor)
         {
-
+            Open();
         }
         //regular open
         if(!isLocked && !isOpen)
