@@ -11,7 +11,7 @@ public class DoorScript : MonoBehaviour
 
     private bool _isInsideTrigger = false;
 
-    private bool isPlayer = false;
+    private bool isPlayer;
     public bool isLocked = false;
 
     public GameObject key;
@@ -41,29 +41,35 @@ public class DoorScript : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    void OnTriggerEnter(Collider other)
+    private void FixedUpdate()
     {
-        //if(personalDoor)
-        //{
-            if(other.tag == "Person" && other.gameObject.name.Equals(whoDoor))
+        Debug.Log(isPlayer);
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        Debug.Log("by door");
+        if (personalDoor)
+        {
+            Debug.Log("by manager door");
+
+            if (other.gameObject.name.Equals(whoDoor))
             {
-                //Debug.Log("Yes person");
-                if (other.GetComponent<Player>())
-                {
-                    personalDoor = true;
-                    _isInsideTrigger = true;
-                    //OpenPanel.SetActive(true);
-                    isPlayer = true;
-                }
-                else
-                {
-                    personalDoor = false;
-                    _isInsideTrigger = true;
-                    isPlayer = false;
-                }
+                Debug.Log("Should work");
+                //personalDoor = true;
+                _isInsideTrigger = true;
+                //OpenPanel.SetActive(true);
+                isPlayer = true;
             }
-       // }
-        else if (other.tag == "Person")
+            else
+            {
+                //personalDoor = false;
+                _isInsideTrigger = true;
+                // isPlayer = false;
+            }
+        }
+        /*
+        else //if (other.tag == "Person")
         {
             if(other.GetComponent<Player>())
             {
@@ -80,7 +86,7 @@ public class DoorScript : MonoBehaviour
                 personalDoor = false;
 
             }
-        }
+        }*/
     }
 
     private bool IsOpenPanelActive
@@ -92,23 +98,24 @@ public class DoorScript : MonoBehaviour
     }
     public void Activate()
     {
-        if(personalDoor)
+        if (personalDoor && isPlayer && !isOpen)
         {
+            Debug.Log("should open");
             Open();
         }
         //regular open
-        if(!isLocked && !isOpen)
+        else if (!isLocked && !isOpen)
         {
             Open();
         }
         //locked open
-        else if(isLocked && !isOpen && Player.keys.Contains(key))
+        else if (isLocked && !isOpen && Player.keys.Contains(key))
         {
             isLocked = false;
             Open();
         }
         //close door if able
-        else if(isOpen && !stayOpen)
+        else if (isOpen && !stayOpen)
         {
             _animator.SetBool("open", false);
 
@@ -117,14 +124,14 @@ public class DoorScript : MonoBehaviour
             isOpen = false;
         }
         //door locked
-        else if(isLocked && !isOpen)
+        else if (isLocked && !isOpen)
         {
             rand = Random.Range(0, lockedDoor.Length);
             sound = lockedDoor[rand];
             audioSource.PlayOneShot(sound);
             Log.AddEntry("The Door is Locked");
         }
-        
+
     }
     private void Open()
     {
@@ -140,7 +147,7 @@ public class DoorScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     void DoorShut()
     {
