@@ -46,7 +46,7 @@ public class Endings : MonoBehaviour
         Dialogue.AddLine(Dialogue.Character.Pete, "See, without any closure on your life, you’re gonna end up wandering around in this purgatory hell forever, and believe me that’s just enough time to drive any fella mad.");
         Dialogue.AddLine(Dialogue.Character.Pete, "There’s a lot of things that prohibit you from getting closure, and one of ‘ems your own emotions. I reckon you ain’t too happy about gettin’ whacked, huh?");
         Dialogue.AddLine(Dialogue.Character.Pete, "It just ain’t fair...and if you ask this old geezer, ain’t nothing wrong with a little vigilante justice.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "I brought you somethin’ that’ll help you out in that safe over yonder. You’ll be able to use the safe and it's contents the way you are now, since I made them myself. I hope it finds you your ticket out, and more importantly, a little peace.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I brought you somethin’ that’ll help you out in that safe over yonder. You’ll be able to use the safe and it's contents the way you are now, as a spirit, since I made them myself. I hope it finds you your ticket out, and more importantly, a little peace.");
         Dialogue.AddLine(Dialogue.Character.Pete, "I’ll let you get back to getting revenge on the bastard who put you in this mess. Bless your heart, son.");
     }
 

@@ -35,7 +35,7 @@ public class Tutorial : MonoBehaviour
         Dialogue.AddLine(Dialogue.Character.Pete, "Another perk of being newly dead is being able to possess living creatures, which will be a mighty powerful tool in solving your murder.");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "You see that rat over there? You can possess him by pressing [E] and depossess him by pressing [Q] to get into spaces tighter than my grandpappy’s trousers after Thanksgivin’ dinner.");
         objectives.Enqueue("Possess a rat (Press E to Possess)");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Creatures you possess can also pick up certain items with the F key, indicated by the words above 'em. Don’t be afraid to use your new abilities to get to where the evidence be hidin’.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "Creatures you possess can also pick up certain items with the F key, indicated by the words floatin' above 'em. Don’t be afraid to use your new abilities to get to where the evidence be hidin’.");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "If you’re gonna start solvin’ your murder, you’ll need to have a way to document evidence. Find a way next door to the Photographer’s room and bring him back here, would ya?");
         OnPhotographerEnter();
         objectives.Enqueue("Find the Photographer and bring him to the crime scene");
