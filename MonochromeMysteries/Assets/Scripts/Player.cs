@@ -1,6 +1,6 @@
 ﻿/* Name: Player.cs
  * Author: Zackary Seiple
- * Description: This script handles the player's ghost behaviours and their ability to posses 
+ * Description: This script handles the player's ghost behaviours and their ability to posses
  * Last Updated: 2/18/2020 (Zackary Seiple)
  * Changes: Added header
  */
@@ -62,6 +62,7 @@ public class Player : MonoBehaviour
 
     //UI Images and Texts
     public GameObject HUD;
+    public GameObject characterPortrait;
     public Sprite ghostImage;
     public Sprite photographerImage;
     public Sprite ratImage;
@@ -135,6 +136,7 @@ public class Player : MonoBehaviour
     {
         characterRoleForEnding = " ";
         HUD = GameObject.Find("HUD");
+        characterPortrait = GameObject.Find("CharacterPortrait");
         characterRole = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterRole").GetComponent<TMP_Text>();
         characterName = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterName").GetComponent<TMP_Text>();
 
@@ -143,7 +145,8 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        MainMenu.OnMainMenuTriggered += HideReticle;
+        MainMenu.onMainMenuTriggered += HideReticle;
+        MainMenu.onMainMenuTriggered += HidePortrait;
 
         camOffset = new Vector3(0, 0.25f, 0);
 
@@ -183,8 +186,8 @@ public class Player : MonoBehaviour
         DisplayCharacterInfo(); //Displays character portrait, name, and role
         InteractWithSafe();
         PickUp();
-        //readables.ReadLetter();
         Interact();
+        //readables.ReadLetter();
 
         //fix rat walking sounds
         if (GetComponent<Rat>() && !ratWalk)
@@ -256,7 +259,7 @@ public class Player : MonoBehaviour
                 }
             }
             //safes or tvs or music box
-            else if (hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box") && hit.distance < Player.reticleDist / 2 && !GetComponent<Rat>() && !StateChecker.isGhost)
+            else if ((hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box")) && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
             {
                 GameObject temp = hit.collider.gameObject;
                 reticle.color = Color.white;
@@ -281,7 +284,7 @@ public class Player : MonoBehaviour
                         displayText.text = "Press F to Drag";
                     }
                 }
-                else if (!GetComponent<Rat>())
+                else if (!GetComponent<Rat>() && !StateChecker.isGhost)
                 {
                     displayText.text = "Press F to Pickup";
                 }
@@ -441,7 +444,7 @@ public class Player : MonoBehaviour
             itemImage.transform.parent.gameObject.SetActive(false);
             characterImage.sprite = hunterImage;
             characterRole.text = "\"The Hunter\"";
-            characterRole.color = new Color32(235, 111, 255, 255); //red
+            characterRole.color = new Color32(220, 20, 60, 255); //red
             characterRoleForEnding = "Hunter";
             characterName.text = "Ahab Sergei";
             isRat = false;
@@ -692,7 +695,7 @@ public class Player : MonoBehaviour
         hasPossessedForTheFirstTime = true;
         //itemSpecificInstructions.gameObject.SetActive(true);
         possessionInProgress = true;
-        //No Target 
+        //No Target
         if (target == null)
             yield break;
 
@@ -999,7 +1002,7 @@ public class Player : MonoBehaviour
         float transitionTime = 0.5f;
         float currentTime = 0;
 
-        //Reactivate the Player, 
+        //Reactivate the Player,
         mainPlayer.SetActive(true);
         Player.possessionInProgress = true;
         mainPlayer.transform.position = exitPoint;
@@ -1158,9 +1161,22 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void HidePortrait(bool shouldHide)
+    {
+        if (shouldHide)
+        {
+            characterPortrait.SetActive(false);
+        }
+        else
+        {
+            characterPortrait.SetActive(true);
+        }
+    }
+
     private void OnDisable()
     {
-        MainMenu.OnMainMenuTriggered -= HideReticle;
+        MainMenu.onMainMenuTriggered -= HideReticle;
+        MainMenu.onMainMenuTriggered -= HidePortrait;
     }
 
 }

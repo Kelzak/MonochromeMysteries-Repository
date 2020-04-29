@@ -148,10 +148,11 @@ public class Read : MonoBehaviour
                 photographer.canTakePhoto = false;
             }
 
-            GameController.TogglePause();
+            //GameController.TogglePause();
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
             Player.EnableControls(false);
+            Time.timeScale = 0;
             Background.SetActive(true);
             StartCoroutine(ReadTime());
 
@@ -176,11 +177,12 @@ public class Read : MonoBehaviour
                 page.SetActive(false);
             }
 
-            Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             Player.EnableControls(true);
+            Time.timeScale = 1;
             Background.SetActive(false);
-            GameController.TogglePause();
+            //GameController.TogglePause();
             isOpen = false;
             audioSource.PlayOneShot(closeClip);
             readTime = false;
