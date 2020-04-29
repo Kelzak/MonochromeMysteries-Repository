@@ -68,7 +68,7 @@ public class Photographer : Person
         //if (Dialogue.leftClickPriority == true)
         //    return;
 
-        if (!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() < PhotoLibrary.MAX_PHOTOS)
+        if (!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() < PhotoLibrary.MAX_PHOTOS && Time.time > 5)
         {
             Player.EnableControls(false);
             StartCoroutine(CameraFlash());

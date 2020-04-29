@@ -71,6 +71,16 @@ public class Dialogue : MonoBehaviour
         if(instance.dialogueQueue.Count > 0)
         instance.dialogueQueue.Peek().TriggerHold(false);
     }
+    
+    public static void ForceStop()
+    {
+        if (instance.dialogueQueue != null)
+        {
+            instance.dialogueQueue.Clear();
+            instance.panel.SetActive(false);
+            instance.StopAllCoroutines();
+        }
+    }
 
     bool dialogueRunning = false;
     public bool textPrinting = false;
@@ -255,8 +265,22 @@ public class Dialogue : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
-        MainMenu.onMainMenuTriggered += HideDialogue;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(instance.transform.parent.gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(this.transform.parent.gameObject);
+            return;
+        }
+
+    }
+
+    private void OnEnable()
+    {
+        MainMenu.OnMainMenuTriggered += HideDialogue;
     }
 
     // Start is called before the first frame update
@@ -283,8 +307,21 @@ public class Dialogue : MonoBehaviour
         }
     }
 
+    public static void TriggerLoad()
+    {
+        instance.StartCoroutine(instance.Load());
+    }
+
+    private IEnumerator Load()
+    {
+        while (instance == null)
+            yield return null;
+
+        ForceStop();
+    }
+
     private void OnDisable()
     {
-        MainMenu.onMainMenuTriggered -= HideDialogue;
+        MainMenu.OnMainMenuTriggered -= HideDialogue;
     }
 }

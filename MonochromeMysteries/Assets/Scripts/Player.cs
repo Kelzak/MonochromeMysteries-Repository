@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
     public static bool isAtTheFirstSafe;
     public static bool isAtTheSecondSafe;
     public static bool isAtTheThirdSafe;
-    
+
     public bool hasPossessedForTheFirstTime;
 
     //UI Images and Texts
@@ -107,7 +107,7 @@ public class Player : MonoBehaviour
     public bool isLookingAtSafe2;
     public bool isLookingAtSafe3;
     public static string safeName;
-    
+
     //Ending Stuff
     public static bool hasKnife;
     public Endings endingManager;
@@ -119,11 +119,17 @@ public class Player : MonoBehaviour
 
     private bool ratWalk;
 
+    private void OnEnable()
+    {
+        ResetStaticVariables();
+    }
+
     private void Awake()
     {
         //ppvToggle.Toggle(true);
     }
 
+    bool initialized = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -137,7 +143,7 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        MainMenu.onMainMenuTriggered += HideReticle;
+        MainMenu.OnMainMenuTriggered += HideReticle;
 
         camOffset = new Vector3(0, 0.25f, 0);
 
@@ -149,6 +155,7 @@ public class Player : MonoBehaviour
         character = GetComponent<CharacterController>();
 
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
+        initialized = true;
     }
 
 
@@ -171,7 +178,7 @@ public class Player : MonoBehaviour
             audioSource.PlayOneShot(depossessClip);
             StartCoroutine(ExitPossession());
         }
-        
+
         GrayscaleToggle();
         DisplayCharacterInfo(); //Displays character portrait, name, and role
         InteractWithSafe();
@@ -215,7 +222,7 @@ public class Player : MonoBehaviour
             //reading objects
             if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
-                
+
                 GameObject temp = hit.collider.gameObject;
                 reticle.color = temp.GetComponent<Outline>().OutlineColor;
                 displayText.text = "Press F to Read";
@@ -226,7 +233,7 @@ public class Player : MonoBehaviour
                     temp.GetComponent<Read>().Open();
                 }
             }
-            
+
             //doors
             else if (hit.collider.gameObject.CompareTag("door") && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
@@ -246,7 +253,7 @@ public class Player : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
                 {
                     temp.GetComponentInParent<DoorScript>().Activate();
-                }   
+                }
             }
             //safes or tvs or music box
             else if (hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box") && hit.distance < Player.reticleDist / 2 && !GetComponent<Rat>() && !StateChecker.isGhost)
@@ -254,7 +261,7 @@ public class Player : MonoBehaviour
                 GameObject temp = hit.collider.gameObject;
                 reticle.color = Color.white;
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                displayText.text = "Press F to Use";   
+                displayText.text = "Press F to Use";
             }
             //pickup?
             else if (hit.collider.gameObject.CompareTag("pickup") || hit.collider.gameObject.CompareTag("letter") && hit.distance < Player.reticleDist && !StateChecker.isGhost)
@@ -265,7 +272,7 @@ public class Player : MonoBehaviour
 
                 if (GetComponent<Rat>() && hit.distance < Player.reticleDist / 4)
                 {
-                    if(Rat.hold)
+                    if (Rat.hold)
                     {
                         displayText.text = "Press F to Drop";
                     }
@@ -283,7 +290,7 @@ public class Player : MonoBehaviour
             {
                 displayText.text = "";
                 displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-                
+
             }
         }
     }
@@ -360,7 +367,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-   
+
 
 
     //Ray safeCheck = Camera.main.ViewportPointToRay(new Vector3(0, 1, 0));
@@ -385,7 +392,7 @@ public class Player : MonoBehaviour
             //itemName.text = "Camera";
             characterImage.sprite = photographerImage;
             characterRole.text = "\"The Photographer\"";
-            characterRole.color = new Color32(179,255,235,255); //grayish
+            characterRole.color = new Color32(179, 255, 235, 255); //grayish
             characterRoleForEnding = "Photographer";
             characterName.text = "Norman Adler";
             isRat = false;
@@ -525,7 +532,7 @@ public class Player : MonoBehaviour
                 //    reticle.color = new Color32(254, 224, 0, 100);
                 //}
 
-            //maybe?
+                //maybe?
                 //if (selection.gameObject.GetComponent<HoverText>())
                 //{
                 //    Debug.Log("hover text");
@@ -617,7 +624,7 @@ public class Player : MonoBehaviour
         Vector3 targetPos = cam.transform.position + gameObject.transform.forward * possess_Distance;
         //using targetDist temporarily to find raycast distance
         targetDist = Vector3.Distance(targetPos, cam.transform.position) / (Mathf.Cos((-cam.transform.rotation.eulerAngles.x) * Mathf.Deg2Rad));
-        
+
         //Scan area directly in front for targets
         RaycastHit[] hit = Physics.BoxCastAll(cam.transform.position, new Vector3(0.25f, 0.25f, 0.25f), cam.transform.forward, cam.transform.rotation, targetDist);
         targetDist = Mathf.Infinity;
@@ -625,13 +632,13 @@ public class Player : MonoBehaviour
         {
             //If a possessable target is found and its not the gameObject that this is on
             if (x.collider.gameObject.GetComponent<Possessable>() != null && x.collider.gameObject != gameObject)
-            {               
+            {
                 //Set target to first found possessable entity and then stop looking, and only one thing can be targeted
                 if (x.distance < targetDist)
                 {
                     target = x.collider.gameObject;
                     targetDist = x.distance;
-                    
+
                 }
             }
         }
@@ -759,6 +766,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
+        cam.transform.localRotation = Quaternion.identity;
         lookHorizontal = cam.transform.rotation.eulerAngles.y;
         lookVertical = cam.transform.rotation.eulerAngles.x;
 
@@ -806,6 +814,78 @@ public class Player : MonoBehaviour
 
 
 
+    }
+
+    public void InstantPossession(GameObject target)
+    {
+        possessionInProgress = true;
+
+        if (target == null || target == gameObject)
+        {
+            possessionInProgress = false;
+            return;
+        }
+
+        if (target.GetComponent<NavPerson>())
+        {
+            target.GetComponent<NavPerson>().enabled = false;
+            target.GetComponent<UnityEngine.AI.NavMeshAgent>().updatePosition = false;
+        }
+
+        Transform targetTransform;
+        if (target.transform.Find("CamPoint"))
+            targetTransform = target.transform.Find("CamPoint");
+        else
+            targetTransform = target.transform;
+
+        target.transform.rotation = gameObject.transform.rotation;
+        cam.transform.SetParent(targetTransform);
+        cam.transform.localPosition = Vector3.zero + target.GetComponent<Possessable>().GetCameraOffset();
+        //Get Rid of Effects of currently Possessed Objects
+        if (gameObject != mainPlayer)
+            gameObject.GetComponent<Possessable>().TriggerOnPossession(false);
+        //Start Effect of What is Being Possessed
+        target.GetComponent<Possessable>().TriggerOnPossession(true);
+
+        cam.transform.localRotation = Quaternion.identity;
+        lookHorizontal = cam.transform.rotation.eulerAngles.y;
+        lookVertical = cam.transform.rotation.eulerAngles.x;
+
+        //End Camera Shift & Alpha Fade
+
+        //Copy Player Script and all its public fields
+        System.Type type = this.GetType();
+        Component copy;
+        if (!target.GetComponent<Player>())
+            copy = target.AddComponent(type);
+        else
+            copy = target.GetComponent<Player>();
+        System.Reflection.FieldInfo[] fields = type.GetFields();
+        foreach (System.Reflection.FieldInfo field in fields)
+        {
+            field.SetValue(copy, field.GetValue(this));
+        }
+
+        //If it's the main player (Ghost) then make it "disappear"
+        if (gameObject == mainPlayer)
+            gameObject.SetActive(false);
+        //If it's not the main player, remove player script
+        else if (gameObject != mainPlayer)
+        {
+            //if(GetComponent<Rat>())
+
+
+            if (GetComponent<NavPerson>())
+                GetComponent<NavPerson>().enabled = true;
+            if (GetComponent<UnityEngine.AI.NavMeshAgent>())
+            {
+                GetComponent<UnityEngine.AI.NavMeshAgent>().Warp(gameObject.transform.position);
+                GetComponent<UnityEngine.AI.NavMeshAgent>().updatePosition = true;
+            }
+
+            Destroy(GetComponent<Player>());
+        }
+            possessionInProgress = false;
     }
 
     /// <summary>
@@ -1028,6 +1108,44 @@ public class Player : MonoBehaviour
 
     }
 
+    public void TriggerLoad(Data.PlayerData playerData)
+    {
+        gameObject.SetActive(true);
+        StartCoroutine(Load(playerData));
+    }
+
+    public IEnumerator Load(Data.PlayerData playerData)
+    {
+        while (!initialized)
+        {
+            Debug.Log("Player Load Waiting");
+            yield return null;
+        }
+
+        Debug.Log("player loading");
+
+        //Player player = (Player)GameObject.FindObjectOfType(typeof(Player));
+        //ResetStaticVariables();
+        //player.cam = Camera.main.gameObject;
+        //Data.PlayerData playerData = data.playerData;
+
+        //Find what player was possessing on save
+        GameObject target = GameObject.Find(playerData.playerName);
+        //Move the player
+        target.transform.position = transform.position = GameController._instance.playerSpawn.transform.position;
+        target.transform.rotation = transform.rotation = GameController._instance.playerSpawn.transform.rotation;
+        InstantPossession(target);
+        if (target.name != "Player")
+            gameObject.SetActive(false);
+        Debug.Log("Player Load Complete");
+    }
+
+    public void ResetStaticVariables()
+    {
+        EnableControls(true);
+        possessionInProgress = false;
+    }
+
     private void HideReticle(bool shouldHide)
     {
         if (shouldHide)
@@ -1042,7 +1160,7 @@ public class Player : MonoBehaviour
 
     private void OnDisable()
     {
-        MainMenu.onMainMenuTriggered -= HideReticle;
+        MainMenu.OnMainMenuTriggered -= HideReticle;
     }
 
 }

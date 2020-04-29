@@ -9,8 +9,16 @@ public class FlashLight : MonoBehaviour
     void Start()
     {
         light = GetComponent<Light>();
+    }
 
-        MainMenu.onMainMenuTriggered += HideLight;
+    private void OnEnable()
+    {
+        MainMenu.OnMainMenuTriggered += HideLight;
+    }
+
+    private void OnDisable()
+    {
+        MainMenu.OnMainMenuTriggered -= HideLight;
     }
 
     // Update is called once per frame

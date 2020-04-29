@@ -9,12 +9,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public static GameController _instance;
-    public static Canvas mainHUD;
-    public static Camera cam;
+    public static GameController _instance = null;
+    public Canvas mainHUD;
+    public Camera cam;
     public static GameObject soul;
     //Says whether ANY menu is active
     public static bool menuActive = false;
@@ -22,6 +24,11 @@ public class GameController : MonoBehaviour
 
     public bool paused = false;
 
+    [Header("Game Stats")]
+    public float playTime = 0;
+    public float lastSaveTime = 0;
+
+    [Header("Pause Menus")]
     public GameObject tabs;
     private GameObject pauseMenu;
     private GameObject[] pauseMenu_tabs;
@@ -29,13 +36,53 @@ public class GameController : MonoBehaviour
     public enum Menu { Scrapbook, LoadGame, Options };
     private Menu pauseMenu_activeMenu;
 
+    [Header("Load Game"), HideInInspector]
+    public static GameObject[] saveSlots;
+    private static GameObject[] saveSlots_delete;
+    private GameObject loadMenu_confirmation;
+    private TMP_Text loadMenu_confirmation_message;
+    private Button[] loadMenu_options;
+
     private AudioSource[] audioSources;
 
     // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        _instance = this;
+        SceneManager.sceneLoaded += Begin;
+    }
 
+    private void OnDisable()
+    {
+       SceneManager.sceneLoaded -= Begin;
+    }
+
+    private void Awake()
+    {
+        //_instance = this;
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(_instance.transform.parent.gameObject);
+        }
+        else if (_instance != this)
+        {
+            Destroy(this.transform.parent.gameObject);
+            return;
+        }
+
+    }
+
+    static bool initialLoad = false;
+    void Begin(Scene scene, LoadSceneMode loadSceneMode)
+    {
+
+        //if (initialLoad == false)
+        //{
+        //    initialLoad = true;
+        //    SaveSystem.Load(SaveSystem.currentSaveSlot);
+        //}
+
+        Debug.Log("Scene Loading");
         //Assign Menus
         mainHUD = GameObject.Find("HUD").GetComponent<Canvas>();
         pauseMenu = mainHUD.transform.Find("Menu").gameObject;
@@ -48,6 +95,26 @@ public class GameController : MonoBehaviour
         pauseMenu_menus[(int) Menu.LoadGame] = pauseMenu.transform.Find("LoadGame").gameObject;
         pauseMenu_menus[(int) Menu.Options] = pauseMenu.transform.Find("Options").gameObject;
 
+        //Load Menu
+        loadMenu_confirmation = pauseMenu_menus[(int)Menu.LoadGame].transform.Find("Confirmation").gameObject;
+        loadMenu_confirmation_message = loadMenu_confirmation.transform.Find("Message").GetComponent<TMP_Text>();
+        loadMenu_options = new Button[2];
+        loadMenu_options[0] = loadMenu_confirmation.transform.Find("Options").Find("Confirm").GetComponent<Button>();
+        loadMenu_options[1] = loadMenu_confirmation.transform.Find("Options").Find("Cancel").GetComponent<Button>();
+
+        saveSlots = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
+        saveSlots_delete = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
+        for(int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
+        {
+            int temp = i;
+            saveSlots[i - 1] = pauseMenu_menus[(int)Menu.LoadGame].transform.Find("SaveSlots").Find("Slot " + temp).gameObject;
+            saveSlots[i - 1].transform.GetComponent<Button>().onClick.AddListener(() => { if(!loadMenu_confirmation.activeSelf) StartCoroutine(LoadGame(temp)); });
+            saveSlots_delete[i - 1] = pauseMenu_menus[(int)Menu.LoadGame].transform.Find("SaveSlots").Find("Delete " + temp).gameObject;
+            saveSlots_delete[i - 1].GetComponent<Button>().onClick.AddListener(() => { SaveSystem.DeleteSave(temp); });
+            if(!SaveSystem.SaveExists(temp))
+                saveSlots_delete[i - 1].SetActive(false);
+        }
+
         //Add Listeners to tabs;
         pauseMenu_tabs[(int)Menu.Scrapbook].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Scrapbook); });
         pauseMenu_tabs[(int)Menu.LoadGame].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.LoadGame); });
@@ -57,13 +124,22 @@ public class GameController : MonoBehaviour
 
         cam = Camera.main;
         soul = GameObject.Find("Player");
-        //Initialize Game
-        StartCoroutine(InitializeGame());
+
         
         audioSources = this.GetComponents<AudioSource>();
+
+
+        if (initialLoad == false)
+        {
+            initialLoad = true;
+            SaveSystem.Load(SaveSystem.currentSaveSlot);
+        }
+
+
+        //Initialize Game
+        StartCoroutine(InitializeGame());
+
     }
-
-
 
     // Update is called once per frame
     /// <summary>
@@ -114,6 +190,29 @@ public class GameController : MonoBehaviour
         Application.Quit();
     }
 
+
+
+    public static void UpdateSaveSlotInfo(int saveSlot, string newDate, float newPlayTime)
+    {
+        _instance.playTime = newPlayTime;
+        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: " + newDate;
+
+        int hours, minutes , seconds;
+        newPlayTime -= (hours = (int)(newPlayTime / 3600)) * 3600;
+        newPlayTime -= (minutes = (int)(newPlayTime / 60)) * 60;
+        seconds = (int) newPlayTime;
+
+        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = string.Format("Playtime: {0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
+        saveSlots_delete[saveSlot - 1].SetActive(true);
+    }
+
+    public static void DeleteSaveSlotInfo(int saveSlot)
+    {
+        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: N/A";
+        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = "Playtime: --:--:--";
+        saveSlots_delete[saveSlot - 1].SetActive(false);
+    }
+
     /// <summary>
     /// Toggles the Game Pausing (Not the menu)
     /// </summary>
@@ -137,39 +236,91 @@ public class GameController : MonoBehaviour
         }
     }
 
+
+    bool waitForInput = false;
+    bool confirmationResponse = false;
+    public IEnumerator LoadGame(int saveSlot)
+    {
+        if(!SaveSystem.SaveExists(saveSlot))
+        {
+            Log.AddEntry("No Save Data in Slot " + saveSlot);
+            yield break;
+        }
+
+        waitForInput = true;
+        loadMenu_confirmation.SetActive(true);
+
+        //Setup confirmation pop-up window
+        loadMenu_confirmation_message.text = "Are you sure you'd like to load the game in Slot " + saveSlot + "?";
+        loadMenu_options[0].GetComponentInChildren<TMP_Text>().text = "Load Save Slot " + saveSlot;
+
+        UnityEngine.Events.UnityAction confirm = () => { waitForInput = false; confirmationResponse = true; };
+        UnityEngine.Events.UnityAction cancel = () => { waitForInput = false; confirmationResponse = false; };
+        loadMenu_options[0].onClick.AddListener(confirm);
+        loadMenu_options[1].onClick.AddListener(cancel);
+
+        while (waitForInput)
+            yield return null;
+
+        //Clear confirmation listeners
+        loadMenu_confirmation.SetActive(false);
+        loadMenu_options[0].onClick.RemoveListener(confirm);
+        loadMenu_options[1].onClick.RemoveListener(cancel);
+
+
+        if (confirmationResponse == true)
+        {
+            while (Player.GetPossessionInProgress())
+                yield return null;
+
+            SaveSystem.Load(saveSlot);
+            //SaveSystem.Save(saveSlot);
+            if (paused)
+                TogglePause();
+            pauseMenu.SetActive(false);
+            menuActive = false;
+            StartCoroutine(InitializeGame());
+        }
+        
+       
+    }
+
+
     private IEnumerator InitializeGame()
     {
-        SaveSystem.Load();
-
         while (SaveSystem.loading || Player.GetPossessionInProgress())
             yield return null;
 
         soul.transform.position = playerSpawn.transform.position;
-        //soul.transform.rotation = playerSpawn.transform.rotation;
+        soul.transform.rotation = playerSpawn.transform.rotation;
 
         while (MainMenu._instance.TVs.Length == 0)
         {
             yield return null;
         }
 
-        float shortestDist = Mathf.Infinity;
-        int shortestIndex = -1;
-        for(int i = 0; i < MainMenu._instance.TVs.Length; i++)
+        if (!SaveSystem.AnySaveExists())
         {
-            float temp;
-            if ((temp = Vector3.Distance(MainMenu._instance.TVs[i].transform.Find("CamPoint").position, playerSpawn.transform.position)) < shortestDist)
+            float shortestDist = Mathf.Infinity;
+            int shortestIndex = -1;
+            for (int i = 0; i < MainMenu._instance.TVs.Length; i++)
             {
-                shortestDist = temp;
-                shortestIndex = i;
+                float temp;
+                if ((temp = Vector3.Distance(MainMenu._instance.TVs[i].transform.Find("CamPoint").position, playerSpawn.transform.position)) < shortestDist)
+                {
+                    shortestDist = temp;
+                    shortestIndex = i;
+                }
             }
-        }
-        Television startTV = MainMenu._instance.TVs[shortestIndex];
-        MainMenu._instance.SetCurrentTV(startTV);
+            Television startTV = MainMenu._instance.TVs[shortestIndex];
+            MainMenu._instance.SetCurrentTV(startTV);
 
-        //Vector3 target = transform.forward;
-        //target.z += soul.GetComponent<MeshRenderer>().bounds.size.z * 400;
-        
-        soul.transform.rotation = startTV.transform.Find("CamPoint").localRotation;
+
+            //Vector3 target = transform.forward;
+            //target.z += soul.GetComponent<MeshRenderer>().bounds.size.z * 400;
+
+            soul.transform.rotation = startTV.transform.Find("CamPoint").localRotation;
+        }
 
         yield return new WaitForEndOfFrame();
 

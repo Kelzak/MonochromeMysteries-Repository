@@ -6,6 +6,7 @@ using TMPro;
 public class Tutorial : MonoBehaviour
 {
     public static Tutorial instance;
+    public bool isCompleted = false;
 
     public delegate void TutorialEvent();
 
@@ -25,6 +26,12 @@ public class Tutorial : MonoBehaviour
 
     private IEnumerator DialogueScript()
     {
+        if (isCompleted)
+        {
+            TriggerTutorialEnd();
+            yield break;
+        }
+
         yield return new WaitForSeconds(5f);
         Dialogue.AddLine(Dialogue.Character.Pete, "Hey you, you’re finally awake. It’s about time. I know you’re new to the whole ‘trapped soul’ gig but you’ve been dead for hours." ,
                          "Just look at your body (by moving your mouse) partner, it's been beaten to a bloody pulp!");
@@ -50,7 +57,7 @@ public class Tutorial : MonoBehaviour
     Collider[] hit;
     private IEnumerator WaitForPhotographerEnter()
     {
-        while (!photographerEntered)
+        while (!photographerEntered && !isCompleted)
         {
             hit = Physics.OverlapBox(new Vector3(77.57f, 13.64f, -72.79f), new Vector3(3.65f / 2, 5.92f / 2, 2.41f / 2), Quaternion.identity);
             foreach (Collider x in hit)
@@ -66,12 +73,20 @@ public class Tutorial : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(instance.transform.parent.gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(this.transform.parent.gameObject);
+            return;
+        }
     }
 
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
         onFirstMovement += TriggerFirstMovement;
         onFirstRatPossession += TriggerFirstRatPossession;
@@ -79,8 +94,30 @@ public class Tutorial : MonoBehaviour
         onFirstPhoto += TriggerFirstPhoto;
         onFirstCloseScrapbook += TriggerFirstCloseScrapbook;
 
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += Begin;
+    }
+
+    private void OnDisable()
+    {
+        onFirstMovement -= TriggerFirstMovement;
+        onFirstRatPossession -= TriggerFirstRatPossession;
+        onPhotographerEnter -= TriggerPhotographerEnter;
+        onFirstPhoto -= TriggerFirstPhoto;
+        onFirstCloseScrapbook -= TriggerFirstCloseScrapbook;
+
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= Begin;
+    }
+
+    // Start is called before the first frame update
+    void Begin(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
+    {
+        Begin();
+    }
+
+    void Begin()
+    {
         objectives = new Queue<string>();
-        objectiveText = GameController.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
+        objectiveText = GameController._instance.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
 
         StartCoroutine(DialogueScript());
         StartCoroutine(WaitForPhotographerEnter());
@@ -237,17 +274,31 @@ public class Tutorial : MonoBehaviour
             yield return null;
         }
 
+       
+
         //INSERT CODE TO OCCUR AFTER TUTORIAL END HERE
         foreach(GameObject wall in invisibleWalls)
         {
             Destroy(wall);
         }
 
-        objectives.Enqueue("Solve your murder");
-        UpdateObjective();
-        ShowObjective(true);
-        yield return new WaitForSeconds(7f);
-        ShowObjective(false);
-        //Debug.Log("TutorialEnd");
+        if (!isCompleted)
+        {
+            objectives.Enqueue("Solve your murder");
+            UpdateObjective();
+            ShowObjective(true);
+            yield return new WaitForSeconds(7f);
+            ShowObjective(false);
+            //Debug.Log("TutorialEnd");
+        }
+
+        isCompleted = true;
+    }
+
+    public static void Load(Data.TutorialData tutorialData)
+    { 
+        instance.isCompleted = tutorialData.tutorialCompleted;
+
+        instance.Begin();
     }
 }

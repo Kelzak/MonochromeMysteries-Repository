@@ -17,14 +17,14 @@ public class PhotoLibrary : MonoBehaviour
     public static PhotoLibrary _instance;
     public const int MAX_PHOTOS = 99;
 
-    private List<PhotoInfo> photoInfo;
+    public List<PhotoInfo> photoInfo;
     private PhotoSlot[] photoSlots;
     public uint photoCount = 0;
     private int photosPerPage = 3;
     private int pageNum = 0;
 
     [Header("Save System")]
-    public static List<string> photoPaths;
+    public List<string> photoPaths;
 
     private GameObject selectedSlot;
     [HideInInspector]
@@ -61,12 +61,14 @@ public class PhotoLibrary : MonoBehaviour
 
         [Header("Photo Elements")]
         public Sprite image;
+        public string image_path;
         public int[] cluesFeatured;
         public string labelText, detailsText;
 
-        public PhotoInfo(Sprite image, params int[] cluesFeatured)
+        public PhotoInfo(Sprite image, string image_path, params int[] cluesFeatured)
         {
             this.image = image;
+            this.image_path = image_path;
 
             if (cluesFeatured == null)
                 cluesFeatured = new int[0];
@@ -81,9 +83,11 @@ public class PhotoLibrary : MonoBehaviour
 
                 if (labelText != "")
                     labelText += ", ";
+
                 labelText += ClueCatalogue._instance.clues[x].name;
                 detailsText += ClueCatalogue._instance.clues[x].name + ":\n";
                 detailsText += ClueCatalogue._instance.clues[x].description + "\n\n";
+
             }
         }
 
@@ -170,10 +174,10 @@ public class PhotoLibrary : MonoBehaviour
             float shiftValue = subMenu.sizeDelta.x + photoSlot.GetComponentInParent<GridLayoutGroup>().cellSize.x / 2;
             //Debug.Log(subMenu_Active);
             if (!subMenu_Active)
-                endPos.x += shiftValue * GameController.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
+                endPos.x += shiftValue * GameController._instance.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
             else
             {
-                startPos.x += shiftValue * GameController.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
+                startPos.x += shiftValue * GameController._instance.mainHUD.GetComponent<CanvasScaler>().scaleFactor;
             }
 
             subMenu_Active = !subMenu_Active;
@@ -194,16 +198,38 @@ public class PhotoLibrary : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        _instance = this;
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(_instance.transform.parent.gameObject);
+        }
+        else if (_instance != this)
+        {
+            Destroy(this.transform.parent.gameObject);
+            return;
+        }
 
         photoInfo = new List<PhotoInfo>();
         photoPaths = new List<string>();
 
+    }
+
+    private void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += Begin;
         OnScrapbookChange += UpdateUI;
     }
 
-    private void Start()
+    private void OnDisable()
     {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= Begin;
+        OnScrapbookChange -= UpdateUI;
+    }
+
+    bool initialized = false;
+    private void Begin(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
+    {
+
         noPhotosText = photoCollectionMenu.transform.Find("NoPhotosText").gameObject;
         examinePhotoMenu = photoCollectionMenu.transform.Find("ExamineMenu").gameObject;
         photoGrid = photoCollectionMenu.transform.Find("Grid").gameObject;
@@ -225,6 +251,8 @@ public class PhotoLibrary : MonoBehaviour
         }
 
         OnScrapbookChange?.Invoke();
+
+        initialized = true;
     }
 
     private void Update()
@@ -327,11 +355,11 @@ public class PhotoLibrary : MonoBehaviour
         //Save image
         string savePath = Path.Combine(Application.persistentDataPath, "_GameData", newSprite.name + ".png");
         System.IO.File.WriteAllBytes(savePath, photo.EncodeToPNG());
-        photoPaths.Add(savePath);
+        _instance.photoPaths.Add(savePath);
 
         newSprite.texture.Apply();
 
-        _instance.photoInfo.Add(new PhotoInfo(newSprite, clues));        
+        _instance.photoInfo.Add(new PhotoInfo(newSprite, savePath, clues));        
 
         _instance.photoCount++;
 
@@ -359,7 +387,7 @@ public class PhotoLibrary : MonoBehaviour
             //Remove from Scrapbook
             _instance.photoInfo.RemoveAt(indexToRemove);
             //Remove photo file
-            System.IO.File.Delete(photoPaths[indexToRemove]);
+            //System.IO.File.Delete(photoPaths[indexToRemove]);
             photoPaths.RemoveAt(indexToRemove);
         }
 
@@ -469,19 +497,38 @@ public class PhotoLibrary : MonoBehaviour
             }
         }
     }
-    //private PhotoInfo FindPhotoFromObject(GameObject obj)
-    //{
-    //    for (int i = 0; i < photoInfo.Count; i++)
-    //    {
-    //        if (photoInfo[i].photoSlot == obj)
-    //            return photoInfo[i];
-    //    }
 
-    //    return null;
-    //}
-
-    private void OnDisable()
+    public static void TriggerLoad(Data.PhotoLibraryData libraryData)
     {
-        OnScrapbookChange -= UpdateUI;
+        _instance.StartCoroutine(_instance.Load(libraryData));
     }
+
+    public IEnumerator Load(Data.PhotoLibraryData libraryData)
+    {
+        while (!_instance.initialized)
+            yield return null;
+
+        _instance.photoCount = libraryData.photoCount;
+        _instance.photoPaths.Clear();
+        _instance.photoInfo.Clear();
+        string imagePath;
+        for (int i = 0; i < libraryData.photoImgPaths.Length; i++)
+        {
+            imagePath = libraryData.photoImgPaths[i];
+            _instance.photoPaths.Add(imagePath);
+
+
+            Texture2D photo;
+            byte[] bytes = System.IO.File.ReadAllBytes(imagePath);
+            photo = new Texture2D(160 * 2, 150 * 2);
+            photo.LoadImage(bytes);
+            Sprite newSprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), Vector2.zero, 100f);
+            newSprite.texture.Apply();
+            AddToPhotoInfo(new PhotoInfo(newSprite, imagePath, libraryData.cluesFeatured[i]));
+        }
+
+        TriggerOnScrapbookChange();
+
+    }
+
 }

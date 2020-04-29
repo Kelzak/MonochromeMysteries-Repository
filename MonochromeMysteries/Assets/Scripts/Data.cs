@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public static class Data
 {
@@ -13,7 +15,7 @@ public static class Data
 
         public SaveData()
         {
-            existingSave = SaveSystem.existingSaveData;
+            existingSave = SaveSystem.AnySaveExists();
             mostRecentSaveSlot = SaveSystem.currentSaveSlot;
         }
     }
@@ -25,15 +27,35 @@ public static class Data
     [System.Serializable]
     public class GameData
     {
+        public Stats gameStats;
         public PlayerData playerData;
         public MainMenuData mainMenuData;
         public PhotoLibraryData libraryData;
+        public TutorialData tutorialData;
 
-        public GameData(Player player, MainMenu menu)
+        public GameData(Player player, MainMenu menu, FileStream stream)
         {
+            gameStats = new Stats();
             playerData = new PlayerData(player);
             mainMenuData = new MainMenuData(menu);
-           libraryData = new PhotoLibraryData();
+            libraryData = new PhotoLibraryData(stream);
+            tutorialData = new TutorialData();
+
+        }
+    }
+
+    //GAME STATE DATA CLASSES
+    [System.Serializable]
+    public class Stats
+    {
+        public float playTime;
+        public string date;
+
+        public Stats()
+        {
+            date = System.DateTime.Now.ToShortDateString();
+            playTime = GameController._instance.playTime + Time.time - GameController._instance.lastSaveTime;
+            GameController._instance.lastSaveTime = Time.time;
         }
     }
 
@@ -58,7 +80,7 @@ public static class Data
         {
             //Position of TV
             currentTV_pos = new float[3];
-            Television tempTV = menu.GetCurrentTV();
+            Television tempTV = menu.TVs[MainMenu.GetLastTVIndex()];
             currentTV_pos[0] = tempTV.transform.position.x;
             currentTV_pos[1] = tempTV.transform.position.y;
             currentTV_pos[2] = tempTV.transform.position.z;
@@ -74,24 +96,73 @@ public static class Data
         public string[] detailTexts;
         public uint photoCount;
 
-        public PhotoLibraryData()
+        public PhotoLibraryData(FileStream stream)
         {
-            //Get image paths
-            photoImgPaths = PhotoLibrary.photoPaths.ToArray();
+            List<PhotoLibrary.PhotoInfo> photoInfo = PhotoLibrary.GetPhotoInfo();
+            photoImgPaths = PhotoLibrary._instance.photoPaths.ToArray();
             photoCount = PhotoLibrary._instance.photoCount;
+            //Get image paths, make sure that photos no longer in player's scrapbook are deleted on save
+            if (SaveSystem.SaveExists(SaveSystem.currentSaveSlot) && stream.Length != 0)
+            {
+                List<string> savedPaths;
+                BinaryFormatter formatter = new BinaryFormatter();
+                PhotoLibraryData data = (formatter.Deserialize(stream) as GameData).libraryData;
+                savedPaths = new List<string>(data.photoImgPaths);
 
-            List<PhotoLibrary.PhotoInfo> tempInfo = PhotoLibrary.GetPhotoInfo();
+                //For each path in the running game state
+                for(int i = 0; i < photoInfo.Count; i++)
+                {
+                    //If a path in the game is not in the save, new photo has been added (Save path to state save)
+                    if (!savedPaths.Contains(photoInfo[i].image_path))
+                    {
+                        savedPaths.Add(photoInfo[i].image_path);
+                    }
+                }
+
+                int[] indexesToRemove = new int[savedPaths.Count];
+                for(int i = 0; i < savedPaths.Count; i++)
+                {
+                    //If a path in the save contains a path that is no longer in the game state (Photo Deleted in game, delete at path)
+                    bool found = false;
+                    for(int j = 0; j < photoInfo.Count; j++)
+                    {
+                        if(savedPaths[i] == photoInfo[j].image_path)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        File.Delete(savedPaths[i]);
+                        //Mark this index to be deleted after for loop ends
+                        indexesToRemove[i] = 1;
+                    }
+                }
+
+                //Remove indexes in save data no longer needed
+                for(int i = 0; i < indexesToRemove.Length; i++)
+                {
+                    if (indexesToRemove[i] == 1)
+                        savedPaths.RemoveAt(i);
+                }
+
+                photoImgPaths = savedPaths.ToArray();
+            }
+
+            
 
             //Set Clues Featured,Label Texts, and detail texts for photos
-            cluesFeatured = new int[tempInfo.Count][];
-            for(int i = 0; i < tempInfo.Count; i++)
+            cluesFeatured = new int[photoInfo.Count][];
+            for(int i = 0; i < photoInfo.Count; i++)
             {
-                cluesFeatured[i] = new int[tempInfo[i].cluesFeatured.Length];
+                cluesFeatured[i] = new int[photoInfo[i].cluesFeatured.Length];
 
                 //Set Clues Featured
                 for (int j = 0; j < cluesFeatured[i].Length; j++)
                 {
-                    cluesFeatured[i][j] = tempInfo[i].cluesFeatured[j];
+                    cluesFeatured[i][j] = photoInfo[i].cluesFeatured[j];
                 }
 
             }
@@ -103,5 +174,10 @@ public static class Data
     public class TutorialData
     {
         public bool tutorialCompleted;
+
+        public TutorialData()
+        {
+            this.tutorialCompleted = Tutorial.instance.isCompleted;
+        }
     }
 }

@@ -97,7 +97,7 @@ public class Log : MonoBehaviour
         //Move Log Entry in direction over time
         while (currentTime < transitionTime)
         {
-            currentTime += Time.deltaTime;
+            currentTime += Time.unscaledDeltaTime;
             for (int i = 0; i < entries.Count; i++)
             {
                 entries.ToArray()[i].@object.transform.position = Vector3.Lerp(startPosition[i], startPosition[i] + (direction * shiftDist), 
@@ -134,7 +134,7 @@ public class Log : MonoBehaviour
         float currentTime = 0, transitionTime = 0.25f;
         while (currentTime < transitionTime)
         {
-            currentTime += Time.deltaTime;
+            currentTime += Time.unscaledDeltaTime;
             if (toRemove == null || textComp == null)
             {
                 yield break;

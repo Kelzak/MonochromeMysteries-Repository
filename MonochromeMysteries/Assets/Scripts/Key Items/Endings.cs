@@ -16,7 +16,7 @@ public class Endings : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        personDecidedText = GameController.mainHUD.transform.Find("KnifeConfirmationPanel").Find("PersonToKill").GetComponent<TMP_Text>();
+        personDecidedText = GameController._instance.mainHUD.transform.Find("KnifeConfirmationPanel").Find("PersonToKill").GetComponent<TMP_Text>();
     }
 
     // Update is called once per frame
