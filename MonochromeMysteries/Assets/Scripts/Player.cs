@@ -119,6 +119,8 @@ public class Player : MonoBehaviour
     private float fadeTime = 3f;
     private bool hideText;
 
+    public AudioSource glowSource;
+
     private bool ratWalk;
     public GameObject photographersCam;
 
@@ -222,6 +224,7 @@ public class Player : MonoBehaviour
                 {
                     if(hit.distance < Player.reticleDist / 8f)
                     {
+                        glowSource.volume = Mathf.Lerp(glowSource.volume, .15f, fadeTime * Time.deltaTime);
                         GameObject temp = hit.collider.gameObject;
                         Outline outline = temp.GetComponent<Outline>();
                         outline.enabled = true;
@@ -230,6 +233,7 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
+                    glowSource.volume = Mathf.Lerp(glowSource.volume, .15f, fadeTime * Time.deltaTime);
                     GameObject temp = hit.collider.gameObject;
                     Outline outline = temp.GetComponent<Outline>();
                     outline.enabled = true;
@@ -239,6 +243,8 @@ public class Player : MonoBehaviour
             }
             else
             {
+                //glowSource.enabled = false;
+                glowSource.volume = Mathf.Lerp(glowSource.volume, 0f, fadeTime * Time.deltaTime);
                 reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
             }
 
@@ -364,7 +370,7 @@ public class Player : MonoBehaviour
             {
                 //displayText.text = "";
                 displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-                
+
             }
         }
     }
