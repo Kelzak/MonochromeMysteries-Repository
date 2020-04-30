@@ -48,7 +48,7 @@ public class DoorScript : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        Debug.Log("by door");
+        //Debug.Log("by door");
         if (personalDoor)
         {
             Debug.Log("by manager door");
@@ -129,7 +129,26 @@ public class DoorScript : MonoBehaviour
             rand = Random.Range(0, lockedDoor.Length);
             sound = lockedDoor[rand];
             audioSource.PlayOneShot(sound);
-            Log.AddEntry("The Door is Locked");
+            if (key != null)
+            {
+                Log.AddEntry("The Door needs a Key");
+            }
+            else if (personalDoor)
+            {
+                if(whoDoor.Equals("Mechanic"))
+                {
+                    Log.AddEntry("The Door needs Repairs");
+                }
+                else
+                {
+                    Log.AddEntry("The Door needs the " + whoDoor);
+                }
+            }
+            else
+            {
+                Log.AddEntry("The Door is Locked");
+            }
+
         }
 
     }

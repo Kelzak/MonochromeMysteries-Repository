@@ -256,9 +256,12 @@ GameObject:
   - component: {fileID: 5589904573324271529}
   - component: {fileID: 5589904573324271528}
   - component: {fileID: 7168793217853607293}
+  - component: {fileID: 782500538403194520}
+  - component: {fileID: 8051300934233183381}
+  - component: {fileID: 6061222076338260472}
   m_Layer: 0
   m_Name: Rat Trap
-  m_TagString: Untagged
+  m_TagString: ratTrap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -288,11 +291,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5589904573324271535}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10, y: 5, z: 5}
-  m_Center: {x: 0, y: 2.5, z: 0}
+  m_Size: {x: 1, y: 1, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5589904573324271528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,9 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d799baed19542c54798c54b80cdc42d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenPanel: {fileID: 0}
-  disableTrap:
-  - {fileID: 8300000, guid: 50e9f7bc208c22e4b92c82f7c64d84f4, type: 3}
+  disableTrap: {fileID: 8300000, guid: 50e9f7bc208c22e4b92c82f7c64d84f4, type: 3}
 --- !u!82 &7168793217853607293
 AudioSource:
   m_ObjectHideFlags: 0
@@ -329,7 +330,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 7
+  MaxDistance: 15
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -404,6 +405,57 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &782500538403194520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5589904573324271535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!114 &8051300934233183381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5589904573324271535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef300d362a5f68a48a573a3c5119effa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateChecker: {fileID: 0}
+  playerDistGlow: 0
+  itemName: 
+  isPickup: 0
+  glowOverride: 0
+--- !u!208 &6061222076338260472
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5589904573324271535}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &5589904573461741793
 GameObject:
   m_ObjectHideFlags: 0
@@ -730,7 +782,7 @@ GameObject:
   - component: {fileID: 5589904574008865896}
   - component: {fileID: 5589904574008865903}
   m_Layer: 0
-  m_Name: Hitbox
+  m_Name: model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

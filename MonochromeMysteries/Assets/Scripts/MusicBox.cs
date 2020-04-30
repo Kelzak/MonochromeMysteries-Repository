@@ -23,7 +23,7 @@ public class MusicBox : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                Skip();
+                //Skip();
             }
         }
     }
@@ -37,7 +37,7 @@ public class MusicBox : MonoBehaviour
         Invoke("Skip", MusicSource.clip.length);
     }
 
-    void Skip()
+    public void Skip()
     {
         for (int i = 0; i < music.Length; i++)
         {
