@@ -116,9 +116,11 @@ public class Player : MonoBehaviour
     //Reading letters stuff
     public Readables readables;
     public TMP_Text displayText;
-    private float fadeTime = 1f;
+    private float fadeTime = 3f;
+    private bool hideText;
 
     private bool ratWalk;
+    public GameObject photographersCam;
 
     private void Awake()
     {
@@ -195,6 +197,17 @@ public class Player : MonoBehaviour
             ratWalk = false;
             InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
         }
+
+        //photohraphers cam disable on possession
+        if(GetComponent<Photographer>())
+        {
+            photographersCam.GetComponent<Renderer>().enabled = false;
+        }
+        else
+        {
+            photographersCam.GetComponent<Renderer>().enabled = true;
+
+        }
     }
 
     void Interact()
@@ -205,22 +218,41 @@ public class Player : MonoBehaviour
             //glowing objects
             if (hit.collider.gameObject.GetComponent<Outline>() && hit.distance < Player.reticleDist)
             {
-                GameObject temp = hit.collider.gameObject;
-                Outline outline = temp.GetComponent<Outline>();
-                outline.enabled = true;
-                reticle.color = temp.GetComponent<Outline>().OutlineColor;
+                if(GetComponent<Rat>() && hit.collider.gameObject.CompareTag("pickup") || hit.collider.gameObject.CompareTag("letter"))
+                {
+                    if(hit.distance < Player.reticleDist / 8f)
+                    {
+                        GameObject temp = hit.collider.gameObject;
+                        Outline outline = temp.GetComponent<Outline>();
+                        outline.enabled = true;
+                        reticle.color = Color.Lerp(reticle.color, temp.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
+                    }
+                }
+                else
+                {
+                    GameObject temp = hit.collider.gameObject;
+                    Outline outline = temp.GetComponent<Outline>();
+                    outline.enabled = true;
+                    reticle.color = Color.Lerp(reticle.color, temp.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
+                }
+                
             }
             else
             {
-                reticle.color = new Color32(0, 255, 255, 100);
+                reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
             }
 
+            //possessable
+            if (hit.collider.gameObject.GetComponent<Character>() || hit.collider.gameObject.GetComponent<Rat>() || hit.collider.gameObject.GetComponent<Photographer>() && hit.distance < Player.reticleDist)
+            {
+                displayText.text = "Press E to Possess";
+                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+            }
             //reading objects
-            if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
+            else if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
                 
                 GameObject temp = hit.collider.gameObject;
-                reticle.color = temp.GetComponent<Outline>().OutlineColor;
                 displayText.text = "Press F to Read";
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
@@ -228,20 +260,22 @@ public class Player : MonoBehaviour
                 {
                     temp.GetComponent<Read>().Open();
                 }
-            }
-            
+            }           
             //doors
             else if (hit.collider.gameObject.CompareTag("door") && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
                 GameObject temp = hit.collider.gameObject;
-                reticle.color = Color.white;
-                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
                 if (temp.GetComponentInParent<DoorScript>().isOpen)
                 {
+                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
                     displayText.text = "Press F to Close";
                 }
                 else
                 {
+                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
                     displayText.text = "Press F to Open";
 
                 }
@@ -251,40 +285,84 @@ public class Player : MonoBehaviour
                     temp.GetComponentInParent<DoorScript>().Activate();
                 }   
             }
-            //safes or tvs or music box
-            else if ((hit.collider.gameObject.CompareTag("safe") || hit.collider.gameObject.CompareTag("TV") || hit.collider.gameObject.CompareTag("music box")) && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
+            // music box
+            else if ((hit.collider.gameObject.CompareTag("music box")) && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
             {
                 GameObject temp = hit.collider.gameObject;
-                reticle.color = Color.white;
+                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                displayText.text = "Press F to Use";   
+                displayText.text = "Press F to Use";
+                if(Input.GetKeyDown(KeyCode.F))
+                {
+                    temp.GetComponent<MusicBox>().Skip();
+                }
+            }
+            //safes
+            else if ((hit.collider.gameObject.CompareTag("safe") && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost)))
+            {
+                GameObject temp = hit.collider.gameObject;
+                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                displayText.text = "Press F to Use";
+            }
+            //tvs
+            else if ((hit.collider.gameObject.CompareTag("TV") && hit.distance < Player.reticleDist / 2))
+            {
+                if(!hideText)
+                {
+                    GameObject temp = hit.collider.gameObject;
+                    reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                    displayText.text = "Press F to Use";
+                }
+                
             }
             //pickup?
             else if (hit.collider.gameObject.CompareTag("pickup") || hit.collider.gameObject.CompareTag("letter") && hit.distance < Player.reticleDist && !StateChecker.isGhost)
             {
                 GameObject temp = hit.collider.gameObject;
-                reticle.color = temp.GetComponent<Outline>().OutlineColor;
-                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
-                if (GetComponent<Rat>() && hit.distance < Player.reticleDist / 4)
+                if (GetComponent<Rat>() && hit.distance < Player.reticleDist / 8f)
                 {
                     if(Rat.hold)
                     {
+                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
                         displayText.text = "Press F to Drop";
                     }
                     else
                     {
+                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
                         displayText.text = "Press F to Drag";
                     }
                 }
                 else if (!GetComponent<Rat>() && !StateChecker.isGhost)
                 {
+                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
                     displayText.text = "Press F to Pickup";
                 }
             }
+            //rat trap
+            else if (hit.collider.gameObject.CompareTag("ratTrap") && hit.distance < Player.reticleDist && !StateChecker.isGhost && GetComponent<Character>().gameObject.name.Equals("Exterminator"))
+            {
+                GameObject temp = hit.collider.gameObject;
+                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+                displayText.text = "Press F to Disable";
+
+                if(Input.GetKeyDown(KeyCode.F))
+                {
+                    temp.GetComponent<RatTrap>().Activate();
+                }
+
+                
+            }
+            //default
             else
             {
-                displayText.text = "";
+                //displayText.text = "";
                 displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
                 
             }
@@ -1025,10 +1103,12 @@ public class Player : MonoBehaviour
     {
         if (shouldHide)
         {
+            hideText = true;
             reticle.gameObject.SetActive(false);
         }
         else
         {
+            hideText = false;
             reticle.gameObject.SetActive(true);
         }
     }

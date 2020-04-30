@@ -54,15 +54,23 @@ public class Rat : Possessable
         }
         if (hold)
         {
-            target.transform.SetParent(pickupDestination);
+            try
+            {
+                target.transform.SetParent(pickupDestination);
+                //target.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
+                //Debug.Log("Rat should be picking up key or knife");
+                target.transform.position = pickupDestination.position;
+                target.transform.rotation = pickupDestination.rotation;
+                target.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                target.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                hasKey = true;
+            }
+            catch (System.Exception)
+            {
 
-            //target.gameObject.GetComponentInChildren<HoverText>().UIstop = true;
-            //Debug.Log("Rat should be picking up key or knife");
-            target.transform.position = pickupDestination.position;
-            target.transform.rotation = pickupDestination.rotation;
-            target.gameObject.GetComponent<Rigidbody>().useGravity = false;
-            target.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-            hasKey = true;
+                //throw;
+            }
+
         }
         else
         {

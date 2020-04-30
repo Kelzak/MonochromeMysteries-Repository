@@ -165,8 +165,8 @@ MonoBehaviour:
   verticalClamp: 60
   pickupDestination: {fileID: 3341057057285768617}
   hasKey: 0
-  squeakInterval: 20
-  squeakVolume: 0.25
+  squeakInterval: 30
+  squeakVolume: 0.1
   stepsSource: {fileID: 3341057057106122542}
   squeakSource: {fileID: 6116610002201844464}
   squeaks:
@@ -174,6 +174,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9e2a5b5e3ffc8254e9b2f5987cd76864, type: 3}
   - {fileID: 8300000, guid: 01e91d84b273d854b9d852ef2fe05dbe, type: 3}
   obtainClip: {fileID: 8300000, guid: 8899e86f1b4512a4b9dc70bcdb543fc2, type: 3}
+  displayText: {fileID: 0}
 --- !u!143 &8798810534219446739
 CharacterController:
   m_ObjectHideFlags: 0

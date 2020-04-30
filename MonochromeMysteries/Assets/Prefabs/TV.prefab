@@ -1156,6 +1156,7 @@ GameObject:
   - component: {fileID: 2965033133202097707}
   - component: {fileID: 2965033133202097708}
   - component: {fileID: 5110003429030710510}
+  - component: {fileID: 9182193094825985061}
   m_Layer: 0
   m_Name: TV
   m_TagString: TV
@@ -1371,6 +1372,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!64 &9182193094825985061
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2965033133202097706}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 16aa460f6d417634ea36921c7039961e, type: 3}
 --- !u!1 &2965033133233656144
 GameObject:
   m_ObjectHideFlags: 0
