@@ -337,6 +337,7 @@ MonoBehaviour:
   personStops: 1
   canSeeGhost: 0
   stepSources: {fileID: 0}
+  mumbleSource: {fileID: 0}
   isFemale: 0
   walkSoundInterval: 0.3
   maleSteps:
@@ -344,6 +345,8 @@ MonoBehaviour:
   femaleSteps: []
   indoorSteps:
   - {fileID: 8300000, guid: 27a7e70f6373639488dd40c05cf90f10, type: 3}
+  possessClip: {fileID: 8300000, guid: 9e2a5b5e3ffc8254e9b2f5987cd76864, type: 3}
+  depossessClip: {fileID: 8300000, guid: a58545a7a42f35a43b52bfda63c8aed2, type: 3}
   stepVolume: 1
   waitAfterPossessTime: 10
 --- !u!82 &6116610002201844464

@@ -43,12 +43,12 @@ public class DoorScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log(isPlayer);
+        //Debug.Log(isPlayer);
     }
 
     void OnTriggerStay(Collider other)
     {
-        Debug.Log("by door");
+        //Debug.Log("by door");
         if (personalDoor)
         {
             Debug.Log("by manager door");

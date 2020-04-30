@@ -149,7 +149,7 @@ public class Outline : MonoBehaviour {
 
       materials.Remove(outlineMaskMaterial);
       materials.Remove(outlineFillMaterial);
-
+        
       renderer.materials = materials.ToArray();
     }
   }
