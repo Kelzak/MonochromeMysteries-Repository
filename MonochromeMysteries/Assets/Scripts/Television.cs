@@ -2,19 +2,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Television : MonoBehaviour
 {
     public GameObject screen;
-    public GameObject mainMenu, tvStatic, howToPlay;
+    public GameObject mainMenu, tvStatic, howToPlay, saveSelect;
     public Animation staticAnim;
 
+    //Main Menu
     public enum ButtonName { NewGame, Continue, Resume, Options, Quit };
     private Button[] buttons;
 
+    //Save Select
+    private GameObject[] saveSelect_slots;
+    private GameObject[] saveSelect_delete;
+    private GameObject saveSelect_confirmation;
+    private TMP_Text saveSelect_confirmation_message;
+    private Button[] saveSelect_confirmation_options;
+
+    //TV
     private MeshRenderer mesh;
     private Vector3 boxCenter;
     private Collider[] hit;
+
+    private void OnEnable()
+    {
+        SaveSystem.OnUpdatedSaveStats += UpdateSaveSlotInfo;
+        SaveSystem.OnDeleteSave += DeleteSaveSlotInfo;
+    }
+
+    private void OnDisable()
+    {
+        SaveSystem.OnUpdatedSaveStats -= UpdateSaveSlotInfo;
+        SaveSystem.OnDeleteSave -= DeleteSaveSlotInfo;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +45,8 @@ public class Television : MonoBehaviour
         mainMenu = screen.transform.Find("MainMenu").gameObject;
         howToPlay = screen.transform.Find("How To Play").gameObject;
         tvStatic = screen.transform.Find("Static").gameObject;
-
+        saveSelect = screen.transform.Find("SaveSelect").gameObject;
+        
         Transform menuOptions = transform.Find("Screen").Find("MainMenu").Find("MenuOptions");
         buttons = new Button[] { menuOptions.Find("New Game").GetComponent<Button>(), //0
                                      menuOptions.Find("Continue").GetComponent<Button>(), //1
@@ -33,7 +56,7 @@ public class Television : MonoBehaviour
                                      menuOptions.Find("Quit").GetComponent<Button>() }; //5
 
         //Add Listeners
-        buttons[0].onClick.AddListener(() => MainMenu.TriggerMainMenu());
+        buttons[0].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("SaveSelect"));
         buttons[0].onClick.AddListener(() => MainMenu.ChangeFromInitialOptions());
         buttons[1].onClick.AddListener(() => MainMenu.TriggerMainMenu());
         buttons[1].onClick.AddListener(() => MainMenu.ChangeFromInitialOptions());
@@ -41,6 +64,52 @@ public class Television : MonoBehaviour
         buttons[3].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("How To Play"));
         buttons[4].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("MainMenu"));
         buttons[5].onClick.AddListener(() => GameController.QuitGame());
+
+        //Save Select Screen
+        saveSelect_confirmation = saveSelect.transform.Find("Confirmation").gameObject;
+        saveSelect_confirmation_message = saveSelect_confirmation.transform.Find("Message").GetComponent<TMP_Text>();
+        saveSelect_confirmation_options = new Button[2];
+        saveSelect_confirmation_options[0] = saveSelect_confirmation.transform.Find("Options").Find("Confirm").GetComponent<Button>();
+        saveSelect_confirmation_options[1] = saveSelect_confirmation.transform.Find("Options").Find("Cancel").GetComponent<Button>();
+
+        saveSelect.transform.Find("Back").GetComponent<Button>().onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("MainMenu"));
+
+        Transform saveSelectSlots = saveSelect.transform.Find("SaveSlots");
+        saveSelect_slots = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
+        saveSelect_delete = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
+        //For each Save Slot Element on Save Select Screen
+        for(int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
+        {
+            int temp = i;
+            //Set up Listener for Save Slot
+            saveSelect_slots[temp - 1] = saveSelectSlots.Find(string.Format("Slot {0}", temp)).gameObject;
+            saveSelect_slots[temp - 1].GetComponent<Button>().onClick.AddListener(() => 
+            {
+                Debug.Log("Function 1 Running");
+                string message = SaveSystem.SaveExists(temp) ?
+                    string.Format("Are you sure you want to override existing data in Slot {0}?", temp) : //Confirm overwrite of Save Slot
+                    string.Format("Would you like to start a new game in Slot {0}?", temp); //Create new save game
+
+                if (!saveSelect_confirmation.activeSelf)
+                    StartCoroutine(Confirmation(temp
+                                   ,message
+                                   ,() => { SaveSystem.NewGame(temp); }));
+
+            });
+
+            //Set Up Listener for Delete button
+            saveSelect_delete[temp - 1] = saveSelectSlots.Find(string.Format("Delete {0}", temp)).gameObject;
+            saveSelect_delete[temp - 1].GetComponent<Button>().onClick.AddListener(() => 
+            {
+                if (!saveSelect_confirmation.activeSelf)
+                    StartCoroutine(Confirmation(temp
+                                   ,string.Format("Are you sure you want to delete ALL save data in Slot {0}?", temp)
+                                   ,() => { SaveSystem.DeleteSave(temp); }));
+            });
+
+            if (!SaveSystem.SaveExists(temp))
+                saveSelect_delete[temp - 1].SetActive(false);
+        }
 
         //Set the right buttons at start
         SwapButtons(true, ButtonName.NewGame, ButtonName.Options, ButtonName.Quit);
@@ -80,5 +149,70 @@ public class Television : MonoBehaviour
         return found;
     }
 
-   
+    private void UpdateSaveSlotInfo(int saveSlot, string newDate, float newPlayTime)
+    {
+        if (saveSelect_slots == null)
+        {
+            saveSelect_slots = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
+            saveSelect_delete = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
+        }
+
+        if (saveSelect_slots[saveSlot - 1] == null)
+        {
+            saveSelect_slots[saveSlot - 1] = screen.transform.Find("SaveSelect").Find("SaveSlots").Find("Slot " + saveSlot).gameObject;
+            saveSelect_delete[saveSlot - 1] = saveSelect_slots[saveSlot - 1].transform.parent.Find("Delete " + saveSlot).gameObject;
+        }
+
+        saveSelect_slots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: " + newDate;
+
+        int hours, minutes, seconds;
+        newPlayTime -= (hours = (int)(newPlayTime / 3600)) * 3600;
+        newPlayTime -= (minutes = (int)(newPlayTime / 60)) * 60;
+        seconds = (int)newPlayTime;
+
+        saveSelect_slots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = string.Format("Playtime: {0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
+        saveSelect_delete[saveSlot - 1].SetActive(true);
+    }
+
+    private void DeleteSaveSlotInfo(int saveSlot)
+    {
+        saveSelect_slots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: N/A";
+        saveSelect_slots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = "Playtime: --:--:--";
+        saveSelect_delete[saveSlot - 1].SetActive(false);
+    }
+
+    public IEnumerator Confirmation(int saveSlot, string message, UnityEngine.Events.UnityAction action)
+    {
+        bool waitForResponse = false, confirmationResponse = false;
+
+        Debug.Log("Confirmation Running");
+
+        saveSelect_confirmation.SetActive(true);
+        saveSelect_confirmation_message.text = message;
+
+        saveSelect_confirmation_options[0].GetComponentInChildren<TMP_Text>().text = "Yes";
+        UnityEngine.Events.UnityAction confirm = () => { waitForResponse = false; confirmationResponse = true; };
+        saveSelect_confirmation_options[0].onClick.AddListener(confirm);
+
+        saveSelect_confirmation_options[1].GetComponentInChildren<TMP_Text>().text = "No";
+        UnityEngine.Events.UnityAction cancel = () => { waitForResponse = false; confirmationResponse = false; };
+        saveSelect_confirmation_options[1].onClick.AddListener(cancel);
+
+        waitForResponse = true;
+        while (waitForResponse)
+            yield return null;
+
+        saveSelect_confirmation.SetActive(false);
+        saveSelect_confirmation_options[0].onClick.RemoveListener(confirm);
+        saveSelect_confirmation_options[1].onClick.RemoveListener(cancel);
+
+        if(confirmationResponse == true)
+        {
+            action.Invoke();
+        }
+            
+    }
+
 }
+
+

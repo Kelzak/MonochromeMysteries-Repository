@@ -13,6 +13,12 @@ public static class SaveSystem
     public static bool existingSaveData = false;
     public static bool loading = false;
 
+    public delegate void SaveSlotUpdate(int saveSlot, string date, float playTime);
+    public static event SaveSlotUpdate OnUpdatedSaveStats;
+
+    public delegate void SaveSlotDelete(int saveSlot);
+    public static event SaveSlotDelete OnDeleteSave;
+
     private static string saveDataPath = Path.Combine(Application.persistentDataPath, "_GameData");
     private static string fileExtension = ".david";
 
@@ -65,7 +71,8 @@ public static class SaveSystem
 
 
         //Update Save Slot to reflect save info
-        GameController.UpdateSaveSlotInfo(saveSlot, gameData.gameStats.date, gameData.gameStats.playTime);
+        OnUpdatedSaveStats?.Invoke(saveSlot, gameData.gameStats.date, gameData.gameStats.playTime);
+        //GameController.UpdateSaveSlotInfo(saveSlot, gameData.gameStats.date, gameData.gameStats.playTime);
 
         loading = false;
         Log.AddEntry("Save Completed");
@@ -118,6 +125,7 @@ public static class SaveSystem
             {
                 if (stream.Length == 0)
                 {
+                    loading = false;
                     return;
                 }
                 formatter = new BinaryFormatter();
@@ -161,7 +169,8 @@ public static class SaveSystem
                 using (var stream = new FileStream(path, FileMode.Open))
                 {
                     data = formatter.Deserialize(stream) as Data.GameData;
-                    GameController.UpdateSaveSlotInfo(temp, data.gameStats.date, data.gameStats.playTime);
+                    OnUpdatedSaveStats?.Invoke(temp, data.gameStats.date, data.gameStats.playTime);
+                    //GameController.UpdateSaveSlotInfo(temp, data.gameStats.date, data.gameStats.playTime);
 
                 }
 
@@ -188,7 +197,7 @@ public static class SaveSystem
             }
 
             File.Delete(path);
-            GameController.DeleteSaveSlotInfo(saveSlot);
+            OnDeleteSave?.Invoke(saveSlot);
 
             if(saveSlot == currentSaveSlot)
             {
@@ -200,6 +209,14 @@ public static class SaveSystem
         {
             Debug.Log("Can't Delete Save Slot, No Save Data for Slot " + saveSlot + " Found.");
         }
+    }
+
+    public static void NewGame(int saveSlot)
+    {
+        currentSaveSlot = saveSlot;
+        Save(saveSlot);
+        Load(saveSlot);
+        MainMenu.TriggerMainMenu();
     }
 
     public static bool SaveExists(int saveSlot)

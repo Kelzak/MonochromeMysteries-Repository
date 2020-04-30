@@ -74,16 +74,9 @@ public class Tutorial : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(instance.transform.parent.gameObject);
-        }
-        else if (instance != this)
-        {
-            Destroy(this.transform.parent.gameObject);
-            return;
-        }
+        instance = this;
+        //DontDestroyOnLoad(instance.transform.parent.gameObject);
+
     }
 
 

@@ -49,40 +49,37 @@ public class GameController : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += Begin;
+
+        SaveSystem.OnUpdatedSaveStats += UpdateSaveSlotInfo;
+        SaveSystem.OnDeleteSave += DeleteSaveSlotInfo;
     }
 
     private void OnDisable()
     {
        SceneManager.sceneLoaded -= Begin;
+
+       SaveSystem.OnUpdatedSaveStats -= UpdateSaveSlotInfo;
+       SaveSystem.OnDeleteSave -= DeleteSaveSlotInfo;
     }
 
     private void Awake()
     {
         //_instance = this;
-        if (_instance == null)
-        {
             _instance = this;
-            DontDestroyOnLoad(_instance.transform.parent.gameObject);
-        }
-        else if (_instance != this)
-        {
-            Destroy(this.transform.parent.gameObject);
-            return;
-        }
+            //DontDestroyOnLoad(_instance.transform.parent.gameObject);
+
 
     }
 
     static bool initialLoad = false;
     void Begin(Scene scene, LoadSceneMode loadSceneMode)
     {
-
+        menuActive = false;
         //if (initialLoad == false)
         //{
         //    initialLoad = true;
         //    SaveSystem.Load(SaveSystem.currentSaveSlot);
         //}
-
-        Debug.Log("Scene Loading");
         //Assign Menus
         mainHUD = GameObject.Find("HUD").GetComponent<Canvas>();
         pauseMenu = mainHUD.transform.Find("Menu").gameObject;
@@ -192,7 +189,7 @@ public class GameController : MonoBehaviour
 
 
 
-    public static void UpdateSaveSlotInfo(int saveSlot, string newDate, float newPlayTime)
+    private static void UpdateSaveSlotInfo(int saveSlot, string newDate, float newPlayTime)
     {
         _instance.playTime = newPlayTime;
         saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: " + newDate;
@@ -206,7 +203,7 @@ public class GameController : MonoBehaviour
         saveSlots_delete[saveSlot - 1].SetActive(true);
     }
 
-    public static void DeleteSaveSlotInfo(int saveSlot)
+    private static void DeleteSaveSlotInfo(int saveSlot)
     {
         saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: N/A";
         saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = "Playtime: --:--:--";
@@ -285,22 +282,21 @@ public class GameController : MonoBehaviour
        
     }
 
-
+    public static bool playerInPlace = false;
     private IEnumerator InitializeGame()
     {
         while (SaveSystem.loading || Player.GetPossessionInProgress())
             yield return null;
 
-        soul.transform.position = playerSpawn.transform.position;
-        soul.transform.rotation = playerSpawn.transform.rotation;
 
         while (MainMenu._instance.TVs.Length == 0)
         {
             yield return null;
         }
 
-        if (!SaveSystem.AnySaveExists())
+        if (!SaveSystem.SaveExists(SaveSystem.currentSaveSlot) || MainMenu._instance.GetCurrentTV() == null)
         {
+            Debug.Log("Running initial tv settup");
             float shortestDist = Mathf.Infinity;
             int shortestIndex = -1;
             for (int i = 0; i < MainMenu._instance.TVs.Length; i++)
@@ -315,12 +311,16 @@ public class GameController : MonoBehaviour
             Television startTV = MainMenu._instance.TVs[shortestIndex];
             MainMenu._instance.SetCurrentTV(startTV);
 
-
             //Vector3 target = transform.forward;
-            //target.z += soul.GetComponent<MeshRenderer>().bounds.size.z * 400;
 
-            soul.transform.rotation = startTV.transform.Find("CamPoint").localRotation;
+
         }
+
+
+        soul.transform.position = MainMenu._instance.GetCurrentTV().transform.Find("CamPoint").position;
+        soul.transform.rotation = MainMenu._instance.GetCurrentTV().transform.Find("CamPoint").rotation;
+        Debug.Log(MainMenu._instance.GetCurrentTV().transform.parent.name);
+        playerInPlace = true;
 
         yield return new WaitForEndOfFrame();
 

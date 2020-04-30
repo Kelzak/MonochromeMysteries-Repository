@@ -39,21 +39,19 @@ public class MainMenu : MonoBehaviour
 
     private void Awake()
     {
-        if (_instance == null)
-        {
             _instance = this;
-            DontDestroyOnLoad(_instance.transform.parent.gameObject);
-        }
-        else if (_instance != this)
-        {
-            Destroy(this.transform.parent.gameObject);
-            return;
-        }
+            //DontDestroyOnLoad(_instance.transform.parent.gameObject);
+
     }
 
     bool initialized = false;
     // Start is called before the first frame update
     void Begin(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        Begin();
+    }
+
+    void Begin()
     {
         active = false;
         cam = Camera.main;
@@ -114,6 +112,7 @@ public class MainMenu : MonoBehaviour
         else
         {
             Debug.Log("tvTransitition: " + !MainMenu._instance.tvTransitionInProgress + " | In Range: " + IsInRange() + " | Etc: " + (!GameController.menuActive || MainMenu.active));
+
         }
     }
 
@@ -203,6 +202,8 @@ public class MainMenu : MonoBehaviour
         {
             currentTV.tvStatic.SetActive(true);
             currentTV.mainMenu.SetActive(false);
+            currentTV.saveSelect.SetActive(false);
+            currentTV.howToPlay.SetActive(false);
             OnMainMenuTriggered?.Invoke(false);
         }
 
@@ -283,6 +284,12 @@ public class MainMenu : MonoBehaviour
         menuTransitionInProgress = true;
         if(currentMenu != null)
             currentMenu.SetActive(false);
+
+        while (currentTV == null)
+        {
+            yield return null;
+        }
+
         currentTV.tvStatic.SetActive(true);
 
         yield return new WaitForSecondsRealtime(menuTransitionTime);
@@ -322,4 +329,8 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    private Television GetDefaultTV()
+    {
+        return null;
+    }
 }

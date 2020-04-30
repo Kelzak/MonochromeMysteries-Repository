@@ -122,12 +122,19 @@ public class Player : MonoBehaviour
 
     private void OnEnable()
     {
-        ResetStaticVariables();
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += Begin;
+        MainMenu.OnMainMenuTriggered += HideReticle;
+        MainMenu.OnMainMenuTriggered += HidePortrait;
     }
 
     private void Awake()
     {
         //ppvToggle.Toggle(true);
+    }
+
+    private void Begin(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
+    {
+        ResetStaticVariables();
     }
 
     bool initialized = false;
@@ -145,8 +152,8 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        MainMenu.onMainMenuTriggered += HideReticle;
-        MainMenu.onMainMenuTriggered += HidePortrait;
+        MainMenu.OnMainMenuTriggered += HideReticle;
+        MainMenu.OnMainMenuTriggered += HidePortrait;
 
         camOffset = new Vector3(0, 0.25f, 0);
 
@@ -1147,6 +1154,9 @@ public class Player : MonoBehaviour
     {
         EnableControls(true);
         possessionInProgress = false;
+
+        if (GameController._instance.paused)
+            GameController.TogglePause();
     }
 
     private void HideReticle(bool shouldHide)
@@ -1175,8 +1185,9 @@ public class Player : MonoBehaviour
 
     private void OnDisable()
     {
-        MainMenu.onMainMenuTriggered -= HideReticle;
-        MainMenu.onMainMenuTriggered -= HidePortrait;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= Begin;
+        MainMenu.OnMainMenuTriggered -= HideReticle;
+        MainMenu.OnMainMenuTriggered -= HidePortrait;
     }
 
 }

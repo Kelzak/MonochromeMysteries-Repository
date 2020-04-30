@@ -43,7 +43,7 @@ public class DoorScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log(isPlayer);
+
     }
 
     void OnTriggerStay(Collider other)

@@ -265,16 +265,9 @@ public class Dialogue : MonoBehaviour
 
     void Awake()
     {
-        if (instance == null)
-        {
             instance = this;
-            DontDestroyOnLoad(instance.transform.parent.gameObject);
-        }
-        else if (instance != this)
-        {
-            Destroy(this.transform.parent.gameObject);
-            return;
-        }
+            //DontDestroyOnLoad(instance.transform.parent.gameObject);
+
 
     }
 

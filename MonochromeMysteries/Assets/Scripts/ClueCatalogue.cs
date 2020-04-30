@@ -34,16 +34,10 @@ public class ClueCatalogue : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        if (_instance == null)
-        {
+
             _instance = this;
-            DontDestroyOnLoad(_instance.transform.parent.gameObject);
-        }
-        else if (_instance != this)
-        {
-            Destroy(this.transform.parent.gameObject);
-            return;
-        }
+            //DontDestroyOnLoad(_instance.transform.parent.gameObject);
+
 
     }
 
