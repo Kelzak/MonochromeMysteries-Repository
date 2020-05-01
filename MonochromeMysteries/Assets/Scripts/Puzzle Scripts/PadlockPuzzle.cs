@@ -70,6 +70,7 @@ public class PadlockPuzzle : MonoBehaviour
         {
             ShowKeypad();
         }*/
+        
     }
 
     private void OnMouseDown()
