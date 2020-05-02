@@ -141,16 +141,11 @@ public class Read : MonoBehaviour
             isOpen = true;
             index = 0;
             toRead[index].SetActive(true);
-
-            if (player.GetComponent<Photographer>())
-            {
-                photographer.CameraLensActive = false;
-                photographer.canTakePhoto = false;
-            }
-
+            photographer.CameraLensActive = false;
+            photographer.canTakePhoto = false;
             //GameController.TogglePause();
             Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
+            Cursor.visible = false;
             Player.EnableControls(false);
             Time.timeScale = 0;
             Background.SetActive(true);
@@ -166,17 +161,12 @@ public class Read : MonoBehaviour
     {
         if(readTime)
         {
-            if (player.GetComponent<Photographer>())
-            {
-                photographer.CameraLensActive = true;
-                photographer.canTakePhoto = true;
-            }
-
             foreach (GameObject page in toRead)
             {
                 page.SetActive(false);
             }
-
+            photographer.CameraLensActive = true;
+            photographer.canTakePhoto = true;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Player.EnableControls(true);

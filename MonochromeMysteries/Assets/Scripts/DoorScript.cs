@@ -57,15 +57,15 @@ public class DoorScript : MonoBehaviour
             {
                 Debug.Log("Should work");
                 //personalDoor = true;
-                _isInsideTrigger = true;
+                //_isInsideTrigger = true;
                 //OpenPanel.SetActive(true);
                 isPlayer = true;
             }
             else
             {
                 //personalDoor = false;
-                _isInsideTrigger = true;
-                // isPlayer = false;
+                //_isInsideTrigger = true;
+                 isPlayer = false;
             }
         }
         /*

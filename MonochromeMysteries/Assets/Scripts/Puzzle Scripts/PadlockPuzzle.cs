@@ -70,7 +70,13 @@ public class PadlockPuzzle : MonoBehaviour
         {
             ShowKeypad();
         }*/
-        
+
+        if (Input.GetKeyDown(KeyCode.Escape) && (inputField.gameObject.activeSelf || symbolInputField.gameObject.activeSelf))
+        {
+            HideKeypadAndReset();
+        }
+
+
     }
 
     private void OnMouseDown()
