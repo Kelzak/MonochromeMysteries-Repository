@@ -169,8 +169,7 @@ public class PadlockPuzzle : MonoBehaviour
         if(photographer.GetComponent<Player>())
         {
             photographer.CameraLensActive = true;
-            photographer.canTakePhoto = false;
-               
+            //photographer.canTakePhoto = false;
         }
         keypadisUp = false;
         GameController.TogglePause();
@@ -181,7 +180,6 @@ public class PadlockPuzzle : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         photographer.CameraLensActive = true;
-        photographer.canTakePhoto = true;
         inputField.text = "";
         inputField.placeholder.GetComponent<Text>().text = "Enter password...";
         symbolInputField.text = "";
