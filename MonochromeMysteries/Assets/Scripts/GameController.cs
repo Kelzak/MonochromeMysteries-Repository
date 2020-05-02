@@ -22,6 +22,9 @@ public class GameController : MonoBehaviour
     public static bool menuActive = false;
     public GameObject playerSpawn;
 
+    public PadlockPuzzle padlocks;
+
+
     public bool paused = false;
 
     [Header("Game Stats")]
@@ -45,6 +48,7 @@ public class GameController : MonoBehaviour
 
     private AudioSource[] audioSources;
 
+
     // Start is called before the first frame update
     private void OnEnable()
     {
@@ -66,8 +70,7 @@ public class GameController : MonoBehaviour
     {
         //_instance = this;
             _instance = this;
-            //DontDestroyOnLoad(_instance.transform.parent.gameObject);
-
+        //DontDestroyOnLoad(_instance.transform.parent.gameObject);
 
     }
 
@@ -145,7 +148,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         //Open/Close Menu
-        if( (Input.GetKeyDown(KeyCode.Tab) && !Readables.isReadingLetter && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Escape) && menuActive && pauseMenu.activeSelf == true))
+        if( (Input.GetKeyDown(KeyCode.Tab) && !Readables.isReadingLetter && !padlocks.keypadisUp && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Escape) && menuActive && pauseMenu.activeSelf == true))
         {
             TogglePause();
             pauseMenu.SetActive(paused);

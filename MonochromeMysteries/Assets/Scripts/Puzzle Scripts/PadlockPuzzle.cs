@@ -47,6 +47,7 @@ public class PadlockPuzzle : MonoBehaviour
 
     SafeAnim safeAnim;
 
+    public bool keypadisUp;
 
     //public int totalInputs = 0;
 
@@ -75,7 +76,6 @@ public class PadlockPuzzle : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape) && (keypadPanel.activeSelf || symbolPanel.activeSelf))
         {
-            Debug.Log("wrecked");
             HideKeypadAndReset();
         }
 
@@ -145,6 +145,7 @@ public class PadlockPuzzle : MonoBehaviour
         {
             keypadPanel.SetActive(true);
         }
+        keypadisUp = true;
         GameController.TogglePause();
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
@@ -171,6 +172,7 @@ public class PadlockPuzzle : MonoBehaviour
             photographer.canTakePhoto = false;
                
         }
+        keypadisUp = false;
         GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
