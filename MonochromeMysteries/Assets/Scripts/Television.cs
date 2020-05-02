@@ -11,7 +11,7 @@ public class Television : MonoBehaviour
     public Animation staticAnim;
 
     //Main Menu
-    public enum ButtonName { NewGame, Continue, Resume, HowToPlay, Quit };
+    public enum ButtonName { NewGame, Continue, Resume, HowToPlay, Quit, LoadGame };
     private Button[] buttons;
 
     //Save Select
@@ -29,12 +29,14 @@ public class Television : MonoBehaviour
     private void OnEnable()
     {
         SaveSystem.OnUpdatedSaveStats += UpdateSaveSlotInfo;
+        SaveSystem.OnDeleteSave += UpdateOptions;
         SaveSystem.OnDeleteSave += DeleteSaveSlotInfo;
     }
 
     private void OnDisable()
     {
         SaveSystem.OnUpdatedSaveStats -= UpdateSaveSlotInfo;
+        SaveSystem.OnDeleteSave -= UpdateOptions;
         SaveSystem.OnDeleteSave -= DeleteSaveSlotInfo;
     }
 
@@ -53,17 +55,20 @@ public class Television : MonoBehaviour
                                      menuOptions.Find("Resume").GetComponent<Button>(), //2
                                      menuOptions.Find("How To Play").GetComponent<Button>(), //3
                                      howToPlay.transform.Find("Back").GetComponent<Button>(), //4
-                                     menuOptions.Find("Quit").GetComponent<Button>() }; //5
+                                     menuOptions.Find("Quit").GetComponent<Button>(), //5
+                                     menuOptions.Find("Load Game").GetComponent<Button>() }; //6
 
         //Add Listeners
         buttons[0].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("SaveSelect"));
-        buttons[0].onClick.AddListener(() => MainMenu.ChangeFromInitialOptions());
+        buttons[0].onClick.AddListener(PrepareForNewGame);
         buttons[1].onClick.AddListener(() => MainMenu.TriggerMainMenu());
         buttons[1].onClick.AddListener(() => MainMenu.ChangeFromInitialOptions());
         buttons[2].onClick.AddListener(() => MainMenu.TriggerMainMenu());
         buttons[3].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("How To Play"));
         buttons[4].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("MainMenu"));
         buttons[5].onClick.AddListener(() => GameController.QuitGame());
+        buttons[6].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("SaveSelect"));
+        buttons[6].onClick.AddListener(PrepareForLoadGame);
 
         //Save Select Screen
         saveSelect_confirmation = saveSelect.transform.Find("Confirmation").gameObject;
@@ -73,29 +78,30 @@ public class Television : MonoBehaviour
         saveSelect_confirmation_options[1] = saveSelect_confirmation.transform.Find("Options").Find("Cancel").GetComponent<Button>();
 
         saveSelect.transform.Find("Back").GetComponent<Button>().onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("MainMenu"));
+        saveSelect.transform.Find("Back").GetComponent<Button>().onClick.AddListener(ResetSaveSelect);
 
         Transform saveSelectSlots = saveSelect.transform.Find("SaveSlots");
         saveSelect_slots = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
         saveSelect_delete = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
+
         //For each Save Slot Element on Save Select Screen
-        for(int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
+        for (int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
         {
             int temp = i;
             //Set up Listener for Save Slot
             saveSelect_slots[temp - 1] = saveSelectSlots.Find(string.Format("Slot {0}", temp)).gameObject;
-            saveSelect_slots[temp - 1].GetComponent<Button>().onClick.AddListener(() => 
-            {
-                Debug.Log("Function 1 Running");
-                string message = SaveSystem.SaveExists(temp) ?
-                    string.Format("Are you sure you want to override existing data in Slot {0}?", temp) : //Confirm overwrite of Save Slot
-                    string.Format("Would you like to start a new game in Slot {0}?", temp); //Create new save game
+            //saveSelect_slots[temp - 1].GetComponent<Button>().onClick.AddListener(() => 
+            //{
+            //    string message = SaveSystem.SaveExists(temp) ?
+            //        string.Format("Are you sure you want to override existing data in Slot {0}?", temp) : //Confirm overwrite of Save Slot
+            //        string.Format("Would you like to start a new game in Slot {0}?", temp); //Create new save game
 
-                if (!saveSelect_confirmation.activeSelf)
-                    StartCoroutine(Confirmation(temp
-                                   ,message
-                                   ,() => { SaveSystem.NewGame(temp); }));
+            //    if (!saveSelect_confirmation.activeSelf)
+            //        StartCoroutine(Confirmation(temp
+            //                       ,message
+            //                       ,() => { SaveSystem.NewGame(temp); }));
 
-            });
+            //});
 
             //Set Up Listener for Delete button
             saveSelect_delete[temp - 1] = saveSelectSlots.Find(string.Format("Delete {0}", temp)).gameObject;
@@ -114,6 +120,9 @@ public class Television : MonoBehaviour
         //Set the right buttons at start
         SwapButtons(true, ButtonName.NewGame, ButtonName.HowToPlay, ButtonName.Quit);
         SwapButtons(false, ButtonName.Resume, ButtonName.Continue);
+        if (SaveSystem.SaveExists(SaveSystem.currentSaveSlot))
+            SwapButtons(true, ButtonName.Continue);
+        
 
         mainMenu.SetActive(false);
         howToPlay.SetActive(false);
@@ -211,6 +220,71 @@ public class Television : MonoBehaviour
             action.Invoke();
         }
             
+    }
+
+
+    //OPTION CONTROLS
+    void UpdateOptions(int saveSlot)
+    {
+        if(!SaveSystem.SaveExists(SaveSystem.currentSaveSlot))
+        {
+            SwapButtons(false, ButtonName.Resume, ButtonName.Continue);
+        }
+        else
+        {
+            SwapButtons(true, ButtonName.Continue);
+        }
+
+    }
+
+    private void PrepareForNewGame()
+    {
+        for (int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
+        {
+            int temp = i;
+            saveSelect_slots[temp - 1].GetComponent<Button>().onClick.AddListener(() =>
+            {
+                string newGame_message = SaveSystem.SaveExists(temp) ?
+                    string.Format("Are you sure you want to override existing data in Slot {0}?", temp) : //Confirm overwrite of Save Slot
+                    string.Format("Would you like to start a new game in Slot {0}?", temp); //Create new save game
+
+                if (!saveSelect_confirmation.activeSelf)
+                    StartCoroutine(Confirmation(temp
+                                   , newGame_message
+                                   , () => { SaveSystem.NewGame(temp); MainMenu.ChangeFromInitialOptions(); }));
+            });
+        }
+    }
+
+    private void PrepareForLoadGame()
+    {
+        for (int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
+        {
+            int temp = i;
+            //LoadGame Action
+            saveSelect_slots[temp - 1].GetComponent<Button>().onClick.AddListener(() =>
+            {
+                string message = SaveSystem.SaveExists(temp) ?
+                    string.Format("Are you sure you want to load game in Slot {0}?", temp) : //Confirm overwrite of Save Slot
+                    null; //Create new save game
+
+                if (!saveSelect_confirmation.activeSelf && message != null)
+                    StartCoroutine(Confirmation(temp
+                                   , message
+                                   , () => { SaveSystem.Load(temp); }));
+                else
+                    Log.AddEntry(string.Format("No Save Data Found in Slot {0}", temp));
+            });
+        }
+    }
+
+    private void ResetSaveSelect()
+    {
+        for(int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
+        {
+            int temp = i;
+            saveSelect_slots[temp - 1].GetComponent<Button>().onClick.RemoveAllListeners();
+        }
     }
 
 }

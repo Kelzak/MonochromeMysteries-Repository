@@ -1242,9 +1242,6 @@ public class Player : MonoBehaviour
     {
         EnableControls(true);
         possessionInProgress = false;
-
-        if (GameController._instance.paused)
-            GameController.TogglePause();
     }
 
     private void HideReticle(bool shouldHide)

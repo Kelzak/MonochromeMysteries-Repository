@@ -70,7 +70,7 @@ public class GameController : MonoBehaviour
     {
         //_instance = this;
             _instance = this;
-        //DontDestroyOnLoad(_instance.transform.parent.gameObject);
+        DontDestroyOnLoad(_instance.transform.parent.gameObject);
 
     }
 

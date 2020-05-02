@@ -132,7 +132,7 @@ public class MainMenu : MonoBehaviour
         foreach(Television instance in _instance.TVs)
         {
             //Turn new game button off and resume on
-            instance.SwapButtons(false, Television.ButtonName.NewGame, Television.ButtonName.Continue);
+            instance.SwapButtons(false, Television.ButtonName.Continue);
             instance.SwapButtons(true, Television.ButtonName.Resume);
         }
     }
