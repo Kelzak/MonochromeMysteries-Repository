@@ -35,6 +35,8 @@ public class PadlockPuzzle : MonoBehaviour
     public bool safe3Open;
     [HideInInspector]
     public bool safe4Open;
+
+    public bool safeIsOpen = false;
    
     public GameObject keypadPanel;
     public GameObject symbolPanel;
@@ -71,8 +73,9 @@ public class PadlockPuzzle : MonoBehaviour
             ShowKeypad();
         }*/
 
-        if (Input.GetKeyDown(KeyCode.Escape) && (inputField.gameObject.activeSelf || symbolInputField.gameObject.activeSelf))
+        if (Input.GetKeyDown(KeyCode.Escape) && (keypadPanel.activeSelf || symbolPanel.activeSelf))
         {
+            Debug.Log("wrecked");
             HideKeypadAndReset();
         }
 
@@ -175,6 +178,8 @@ public class PadlockPuzzle : MonoBehaviour
         Player.canLook = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        photographer.CameraLensActive = true;
+        photographer.canTakePhoto = true;
         inputField.text = "";
         inputField.placeholder.GetComponent<Text>().text = "Enter password...";
         symbolInputField.text = "";
@@ -200,6 +205,7 @@ public class PadlockPuzzle : MonoBehaviour
             safeAnim = safe1.transform.Find("Hinge").GetComponent<SafeAnim>();
             safeAnim.OpenSafe(safe1);
             safe1Open = true;
+            safeIsOpen = true;
             //safe1.SetActive(false);
         }
         else if (Player.safeName == safe2.name && symbolInputField.text == correctCode2)
@@ -210,6 +216,7 @@ public class PadlockPuzzle : MonoBehaviour
             safeAnim = safe2.transform.Find("Hinge").GetComponent<SafeAnim>();
             safe2Open = true;
             safeAnim.OpenSafe(safe2);
+            safeIsOpen = true;
             //safe2.SetActive(false);
         }
         else if (Player.safeName == safe3.name && inputField.text == correctCode3)
@@ -219,7 +226,8 @@ public class PadlockPuzzle : MonoBehaviour
             HideKeypadAndReset();
             safeAnim = safe3.transform.Find("Hinge").GetComponent<SafeAnim>();
             safe3Open = true;
-            safeAnim.OpenSafe(safe3); 
+            safeAnim.OpenSafe(safe3);
+            safeIsOpen = true;
             //safe3.SetActive(false);
         }
         else if (Player.safeName == safe4.name && inputField.text == correctCode4)
@@ -230,6 +238,7 @@ public class PadlockPuzzle : MonoBehaviour
             safeAnim = safe4.transform.Find("Hinge").GetComponent<SafeAnim>();
             safe4Open = true;
             safeAnim.OpenSafe(safe4);
+            safeIsOpen = true;
             //safe3.SetActive(false);
         }
         else

@@ -321,10 +321,13 @@ public class Player : MonoBehaviour
             //safes
             else if ((hit.collider.gameObject.CompareTag("safe") && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost)))
             {
-                GameObject temp = hit.collider.gameObject;
-                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                displayText.text = "Press F to Use";
+                if(hit.collider.gameObject.GetComponent<PadlockPuzzle>().safeIsOpen)
+                {
+                    GameObject temp = hit.collider.gameObject;
+                    reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                    displayText.text = "Press F to Use";
+                }
             }
             //tvs
             else if ((hit.collider.gameObject.CompareTag("TV") && hit.distance < Player.reticleDist / 2))
