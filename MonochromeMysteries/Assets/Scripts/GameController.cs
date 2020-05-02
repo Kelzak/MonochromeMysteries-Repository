@@ -36,7 +36,7 @@ public class GameController : MonoBehaviour
     private GameObject pauseMenu;
     private GameObject[] pauseMenu_tabs;
     private GameObject[] pauseMenu_menus;
-    public enum Menu { Scrapbook, LoadGame, Options };
+    public enum Menu { Scrapbook, LoadGame, Options, Notepad};
     private Menu pauseMenu_activeMenu;
 
     [Header("Load Game"), HideInInspector]
@@ -87,13 +87,23 @@ public class GameController : MonoBehaviour
         mainHUD = GameObject.Find("HUD").GetComponent<Canvas>();
         pauseMenu = mainHUD.transform.Find("Menu").gameObject;
         tabs = pauseMenu.transform.Find("Tabs").gameObject;
-        pauseMenu_tabs = new GameObject[] { pauseMenu.transform.Find("Tabs").Find("Scrapbook").gameObject,
-                                            pauseMenu.transform.Find("Tabs").Find("LoadGame").gameObject,
-                                            pauseMenu.transform.Find("Tabs").Find("Options").gameObject };
-        pauseMenu_menus = new GameObject[3];
+        pauseMenu_tabs = new GameObject[] { tabs.transform.Find("Scrapbook").gameObject,
+                                            tabs.transform.Find("LoadGame").gameObject,
+                                            tabs.transform.Find("Options").gameObject,
+                                            tabs.transform.Find("Notepad").gameObject };
+        pauseMenu_menus = new GameObject[4];
         pauseMenu_menus[(int) Menu.Scrapbook] = pauseMenu.transform.Find("PhotoCollection").gameObject;
         pauseMenu_menus[(int) Menu.LoadGame] = pauseMenu.transform.Find("LoadGame").gameObject;
         pauseMenu_menus[(int) Menu.Options] = pauseMenu.transform.Find("Options").gameObject;
+        pauseMenu_menus[(int)Menu.Notepad] = pauseMenu.transform.Find("NotepadGroup").gameObject;
+
+        //Add Listeners to tabs;
+        pauseMenu_tabs[(int)Menu.Scrapbook].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Scrapbook); });
+        pauseMenu_tabs[(int)Menu.LoadGame].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.LoadGame); });
+        pauseMenu_tabs[(int)Menu.Options].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Options); });
+        pauseMenu_tabs[(int)Menu.Notepad].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Notepad); });
+
+        pauseMenu.SetActive(false);
 
         //Load Menu
         loadMenu_confirmation = pauseMenu_menus[(int)Menu.LoadGame].transform.Find("Confirmation").gameObject;
@@ -115,12 +125,6 @@ public class GameController : MonoBehaviour
                 saveSlots_delete[i - 1].SetActive(false);
         }
 
-        //Add Listeners to tabs;
-        pauseMenu_tabs[(int)Menu.Scrapbook].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Scrapbook); });
-        pauseMenu_tabs[(int)Menu.LoadGame].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.LoadGame); });
-        pauseMenu_tabs[(int)Menu.Options].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Options); });
-
-        pauseMenu.SetActive(false);
 
         cam = Camera.main;
         soul = GameObject.Find("Player");

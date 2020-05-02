@@ -11,7 +11,7 @@ public class Television : MonoBehaviour
     public Animation staticAnim;
 
     //Main Menu
-    public enum ButtonName { NewGame, Continue, Resume, Options, Quit };
+    public enum ButtonName { NewGame, Continue, Resume, HowToPlay, Quit };
     private Button[] buttons;
 
     //Save Select
@@ -112,7 +112,7 @@ public class Television : MonoBehaviour
         }
 
         //Set the right buttons at start
-        SwapButtons(true, ButtonName.NewGame, ButtonName.Options, ButtonName.Quit);
+        SwapButtons(true, ButtonName.NewGame, ButtonName.HowToPlay, ButtonName.Quit);
         SwapButtons(false, ButtonName.Resume, ButtonName.Continue);
 
         mainMenu.SetActive(false);
