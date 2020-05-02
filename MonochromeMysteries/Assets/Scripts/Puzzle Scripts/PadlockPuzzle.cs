@@ -179,7 +179,7 @@ public class PadlockPuzzle : MonoBehaviour
         Player.canLook = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        photographer.CameraLensActive = true;
+        //photographer.CameraLensActive = true;
         inputField.text = "";
         inputField.placeholder.GetComponent<Text>().text = "Enter password...";
         symbolInputField.text = "";

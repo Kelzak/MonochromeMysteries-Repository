@@ -105,16 +105,16 @@ public class ClueCatalogue : MonoBehaviour
                 switch(j)
                 {
                     case 0:
-                        if (currObj.GetComponent<MeshCollider>())
-                            targetPoint = currObj.GetComponent<MeshCollider>().bounds.center;
+                        if (currObj.GetComponent<Collider>() )
+                            targetPoint = currObj.GetComponent<Collider>().bounds.center;
                         break;
                     case 1:
-                        if (currObj.GetComponent<MeshCollider>())
-                            targetPoint = currObj.GetComponent<MeshCollider>().bounds.max;
+                        if (currObj.GetComponent<Collider>())
+                            targetPoint = currObj.GetComponent<Collider>().bounds.max;
                         break;
                     case 2:
-                        if (currObj.GetComponent<MeshCollider>())
-                            targetPoint = currObj.GetComponent<MeshCollider>().bounds.min;
+                        if (currObj.GetComponent<Collider>())
+                            targetPoint = currObj.GetComponent<Collider>().bounds.min;
                         break;
                 }
 

@@ -138,11 +138,14 @@ public class Read : MonoBehaviour
     {
         if(!closeTime)
         {
+            if(photographer.GetComponent<Player>())
+            {
+                photographer.CameraLensActive = false;
+                photographer.canTakePhoto = false;
+            }
             isOpen = true;
             index = 0;
             toRead[index].SetActive(true);
-            photographer.CameraLensActive = false;
-            photographer.canTakePhoto = false;
             //GameController.TogglePause();
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = false;
@@ -165,8 +168,11 @@ public class Read : MonoBehaviour
             {
                 page.SetActive(false);
             }
-            photographer.CameraLensActive = true;
-            photographer.canTakePhoto = true;
+            if (photographer.GetComponent<Player>())
+            {
+                photographer.CameraLensActive = true;
+                StartCoroutine(WaitToTurnOnCamera());
+            }
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Player.EnableControls(true);
@@ -193,6 +199,13 @@ public class Read : MonoBehaviour
         yield return new WaitForSecondsRealtime(.1f);
         closeTime = false;
     }
+
+    public IEnumerator WaitToTurnOnCamera()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        photographer.canTakePhoto = true;
+    }
+
     //chooses random int for flipping page sound
     private int RandFlip()
     {
