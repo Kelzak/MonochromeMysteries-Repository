@@ -285,24 +285,46 @@ public class Player : MonoBehaviour
             {
                 GameObject temp = hit.collider.gameObject;
                 reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+                if(temp.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic"))
+                {
+                    if(GetComponent<Player>().gameObject.name.Equals("Mechanic"))
+                    {
+                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+                        displayText.text = "Press F to Repair";
+                        //open
+                        if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                        {
+                            temp.GetComponentInParent<DoorScript>().Activate();
+                        }
+                    }
+                   
+                }
+
                 if (temp.GetComponentInParent<DoorScript>().isOpen)
                 {
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
                     displayText.text = "Press F to Close";
+                    //open
+                    if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                    {
+                        temp.GetComponentInParent<DoorScript>().Activate();
+                    }
                 }
                 else
                 {
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
                     displayText.text = "Press F to Open";
+                    //open
+                    if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                    {
+                        temp.GetComponentInParent<DoorScript>().Activate();
+                    }
 
                 }
-                //open
-                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
-                {
-                    temp.GetComponentInParent<DoorScript>().Activate();
-                }
+                
             }
             // music box
             else if ((hit.collider.gameObject.CompareTag("music box")) && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
