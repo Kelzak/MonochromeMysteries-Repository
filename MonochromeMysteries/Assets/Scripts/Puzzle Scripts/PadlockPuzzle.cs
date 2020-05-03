@@ -10,8 +10,8 @@ public class PadlockPuzzle : MonoBehaviour
     public static string correctCode1 = "030646"; //The mechanic's birthday
     //Safe2 in the rat room
     public static string correctCode2 = "918"; //Symbols are used here
-    public static string correctCode3 = "746583"; 
-    public static string correctCode4 = "101372";
+    public static string correctCode3 = "746583"; //Painting numerals in the order of the rooms they're in
+    public static string correctCode4 = "101372"; //Death date of the inspector
     /*public static string enteredCode1;
     public static string enteredCode2;
     public static string enteredCode3;*/
