@@ -191,18 +191,18 @@ public class Read : MonoBehaviour
     }
     public IEnumerator ReadTime()
     {
-        yield return new WaitForSecondsRealtime(.1f);
+        yield return new WaitForSecondsRealtime(.5f);
         readTime = true;
     }
     public IEnumerator CloseTime()
     {
-        yield return new WaitForSecondsRealtime(.1f);
+        yield return new WaitForSecondsRealtime(.5f);
         closeTime = false;
     }
 
     public IEnumerator WaitToTurnOnCamera()
     {
-        yield return new WaitForSecondsRealtime(1);
+        yield return new WaitForSecondsRealtime(.5f);
         photographer.canTakePhoto = true;
     }
 

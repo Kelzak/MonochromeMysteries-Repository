@@ -206,6 +206,9 @@ public class PadlockPuzzle : MonoBehaviour
             safeAnim.OpenSafe(safe1);
             safe1Open = true;
             safeIsOpen = true;
+            safe1.tag = "Untagged";
+            Destroy(safe1.GetComponent<Item>());
+            Destroy(safe1.GetComponent<Outline>());
             //safe1.SetActive(false);
         }
         else if (Player.safeName == safe2.name && symbolInputField.text == correctCode2)
@@ -217,6 +220,9 @@ public class PadlockPuzzle : MonoBehaviour
             safe2Open = true;
             safeAnim.OpenSafe(safe2);
             safeIsOpen = true;
+            safe2.tag = "Untagged";
+            Destroy(safe2.GetComponent<Item>());
+            Destroy(safe2.GetComponent<Outline>());
             //safe2.SetActive(false);
         }
         else if (Player.safeName == safe3.name && inputField.text == correctCode3)
@@ -228,6 +234,9 @@ public class PadlockPuzzle : MonoBehaviour
             safe3Open = true;
             safeAnim.OpenSafe(safe3);
             safeIsOpen = true;
+            safe3.tag = "Untagged";
+            Destroy(safe3.GetComponent<Item>());
+            Destroy(safe3.GetComponent<Outline>());
             //safe3.SetActive(false);
         }
         else if (Player.safeName == safe4.name && inputField.text == correctCode4)
@@ -239,6 +248,9 @@ public class PadlockPuzzle : MonoBehaviour
             safe4Open = true;
             safeAnim.OpenSafe(safe4);
             safeIsOpen = true;
+            safe4.tag = "Untagged";
+            Destroy(safe4.GetComponent<Item>());
+            Destroy(safe4.GetComponent<Outline>());
             //safe3.SetActive(false);
         }
         else
