@@ -15,6 +15,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public static GameController _instance = null;
+    public static GameObject gameManagement;
     public Canvas mainHUD;
     public Camera cam;
     public static GameObject soul;
@@ -70,7 +71,6 @@ public class GameController : MonoBehaviour
     {
         //_instance = this;
             _instance = this;
-        DontDestroyOnLoad(_instance.transform.parent.gameObject);
 
     }
 

@@ -151,7 +151,8 @@ public static class SaveSystem
             Tutorial.Load(data.tutorialData);
 
             //START SEQUENCE
-
+            Player.ResetStaticVariables();
+            //Debug.Log("CanLook: " + Player.canLook + " | CanMove: " + Player.canMove + " | Paused: " + GameController._instance.paused);
         }
         else
         {
@@ -214,8 +215,8 @@ public static class SaveSystem
     public static void NewGame(int saveSlot)
     {
         currentSaveSlot = saveSlot;
+        SceneManager.LoadScene(0);
         Save(saveSlot);
-        Load(saveSlot);
         MainMenu.TriggerMainMenu();
     }
 

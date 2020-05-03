@@ -251,7 +251,7 @@ public class Television : MonoBehaviour
                 if (!saveSelect_confirmation.activeSelf)
                     StartCoroutine(Confirmation(temp
                                    , newGame_message
-                                   , () => { SaveSystem.NewGame(temp); MainMenu.ChangeFromInitialOptions(); }));
+                                   , () => { SaveSystem.NewGame(temp); MainMenu.ChangeFromInitialOptions(); ResetSaveSelect(); }));
             });
         }
     }

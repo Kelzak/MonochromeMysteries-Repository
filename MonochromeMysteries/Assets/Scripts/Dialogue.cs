@@ -255,7 +255,7 @@ public class Dialogue : MonoBehaviour
             panel.SetActive(false);
             playerPortrait.SetActive(false);
         }
-        else if(dialogueRunning)
+        else if(dialogueRunning && dialogueQueue.Count > 0)
         {
             panel.SetActive(true);
             playerPortrait.SetActive(true);

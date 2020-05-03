@@ -150,14 +150,12 @@ public class Player : MonoBehaviour
         characterPortrait = GameObject.Find("CharacterPortrait");
         characterRole = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterRole").GetComponent<TMP_Text>();
         characterName = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterName").GetComponent<TMP_Text>();
+        reticle = HUD.transform.Find("Reticle").GetComponent<Image>();
 
         audioSource = GetComponent<AudioSource>();
         canPickup = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
-        MainMenu.OnMainMenuTriggered += HideReticle;
-        MainMenu.OnMainMenuTriggered += HidePortrait;
 
         camOffset = new Vector3(0, 0.25f, 0);
 
@@ -1238,7 +1236,7 @@ public class Player : MonoBehaviour
         Debug.Log("Player Load Complete");
     }
 
-    public void ResetStaticVariables()
+    public static void ResetStaticVariables()
     {
         EnableControls(true);
         possessionInProgress = false;
