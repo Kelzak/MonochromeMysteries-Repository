@@ -177,6 +177,7 @@ public class MainMenu : MonoBehaviour
     {
 
         tvTransitionInProgress = true;
+        Player.EnableControls(false);
 
         while (Player.GetPossessionInProgress())
             yield return null;

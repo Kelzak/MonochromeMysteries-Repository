@@ -150,6 +150,18 @@ public static class SaveSystem
             //TUTORIAL
             Tutorial.Load(data.tutorialData);
 
+            //RAT TRAPS
+            for(int i = 0; i < GameController._instance.ratTraps.Length; i++)
+            {
+                GameController._instance.ratTraps[i].Load(data.trapData);
+            }
+
+            //DOORS
+            for(int i = 0; i < GameController._instance.doors.Length; i++)
+            {
+                GameController._instance.doors[i].Load(data.doorData);
+            }
+
             //START SEQUENCE
             Player.ResetStaticVariables();
             //Debug.Log("CanLook: " + Player.canLook + " | CanMove: " + Player.canMove + " | Paused: " + GameController._instance.paused);

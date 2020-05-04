@@ -11,6 +11,24 @@ public class RatTrap : MonoBehaviour
 
     private AudioClip sound;
 
+    public bool isActive
+    {
+        get { return active; }
+        set
+        {
+            gameObject.SetActive(value);
+            active = value;
+        }
+    }
+
+    private float id;
+    private bool active = true;
+
+    private void Awake()
+    {
+        id = (1000 * transform.position.x) + transform.position.y + (0.001f * transform.position.z);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +40,24 @@ public class RatTrap : MonoBehaviour
         AudioClip sound = disableTrap;
         audioSource.PlayOneShot(sound);
 
-        Destroy(this.gameObject);
+        isActive = false;
+    }
+
+    public float GetID()
+    {
+        return id;
+    }
+
+    public void Load(Data.RatTrapData data)
+    {
+        for(int i = 0; i < data.trapIDs.Length; i++)
+        {
+            if(data.trapIDs[i] == this.id)
+            {
+                this.isActive = data.active[i];
+                return;
+            }
+        }
     }
 
     // Update is called once per frame

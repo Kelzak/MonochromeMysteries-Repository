@@ -26,11 +26,6 @@ public class Tutorial : MonoBehaviour
 
     private IEnumerator DialogueScript()
     {
-        if (isCompleted)
-        {
-            TriggerTutorialEnd();
-            yield break;
-        }
 
         yield return new WaitForSeconds(5f);
         Dialogue.AddLine(Dialogue.Character.Pete, "Hey you, you’re finally awake. It’s about time. I know you’re new to the whole ‘trapped soul’ gig but you’ve been dead for hours." ,
@@ -108,12 +103,21 @@ public class Tutorial : MonoBehaviour
         Begin();
     }
 
+    bool tutorialTriggered = false;
     void Begin()
     {
         objectives = new Queue<string>();
         objectiveText = GameController._instance.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
 
-        StartCoroutine(DialogueScript());
+        if (!isCompleted && !tutorialTriggered)
+        {
+            tutorialTriggered = true;
+            StartCoroutine(DialogueScript());
+        }
+        else
+        {
+            TriggerTutorialEnd();
+        }
         StartCoroutine(WaitForPhotographerEnter());
     }
 
@@ -261,10 +265,13 @@ public class Tutorial : MonoBehaviour
 
     private IEnumerator TutorialEnd()
     {
+
         //Wait until other parts of the tutorial have been completed
         while(onFirstRatPossession != null || onPhotographerEnter != null
                || onFirstPhoto != null || onFirstCloseScrapbook != null || Dialogue.instance.dialogueQueue.Count > 0)
         {
+            if (isCompleted)
+                break;
             yield return null;
         }
 

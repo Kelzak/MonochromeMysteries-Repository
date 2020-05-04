@@ -9,6 +9,8 @@ public class DoorScript : MonoBehaviour
 
     public GameObject OpenPanel = null;
 
+    private float id;
+
     private bool _isInsideTrigger = false;
 
     private bool isPlayer;
@@ -32,6 +34,11 @@ public class DoorScript : MonoBehaviour
     public bool personalDoor;
     //match this with the name of the game object for the character whos door it is
     public string whoDoor;
+
+    private void Awake()
+    {
+        id = (1000 * transform.position.x) + transform.position.y + (0.001f * transform.position.z);
+    }
 
     // Use this for initialization
     void Start()
@@ -101,6 +108,7 @@ public class DoorScript : MonoBehaviour
         if (personalDoor && isPlayer && !isOpen)
         {
             Debug.Log("should open");
+            isLocked = false;
             Open();
         }
         //regular open
@@ -152,6 +160,28 @@ public class DoorScript : MonoBehaviour
         }
 
     }
+
+    public void Load(Data.DoorData data)
+    {
+        for(int i = 0; i < GameController._instance.doors.Length; i++)
+        {
+            if(GameController._instance.doors[i].GetID() == this.id)
+            {
+                this.isLocked = data.locked[i];
+                if(!isLocked)
+                {
+                    personalDoor = false;
+                }
+                return;
+            }
+        }
+    }
+
+    public float GetID()
+    {
+        return id;
+    }
+
     private void Open()
     {
         _animator.SetBool("open", true);

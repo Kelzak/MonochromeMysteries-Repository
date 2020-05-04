@@ -32,6 +32,8 @@ public static class Data
         public MainMenuData mainMenuData;
         public PhotoLibraryData libraryData;
         public TutorialData tutorialData;
+        public RatTrapData trapData;
+        public DoorData doorData;
 
         public GameData(Player player, MainMenu menu, FileStream stream)
         {
@@ -40,6 +42,8 @@ public static class Data
             mainMenuData = new MainMenuData(menu);
             libraryData = new PhotoLibraryData(stream);
             tutorialData = new TutorialData();
+            trapData = new RatTrapData();
+            doorData = new DoorData();
 
         }
     }
@@ -178,6 +182,57 @@ public static class Data
         public TutorialData()
         {
             this.tutorialCompleted = Tutorial.instance.isCompleted;
+        }
+    }
+
+    [System.Serializable]
+    public class RatTrapData
+    {
+        public float[] trapIDs;
+        public bool[] active;
+
+        public RatTrapData()
+        {
+            int numTraps = GameController._instance.ratTraps.Length;
+            RatTrap currentTrap;
+
+            trapIDs = new float[numTraps];
+            active = new bool[numTraps];
+
+            for(int i = 0; i < numTraps; i++)
+            {
+                currentTrap = GameController._instance.ratTraps[i];
+
+                trapIDs[i] = currentTrap.GetID();
+                active[i] = currentTrap.isActive;
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class DoorData
+    {
+        public float[] doorIDs;
+        public bool[] locked;
+
+        public DoorData()
+        {
+            int numDoors = GameController._instance.doors.Length;
+            DoorScript currentDoor;
+
+            doorIDs = new float[numDoors];
+            locked = new bool[numDoors];
+
+            for(int i = 0; i < numDoors; i++)
+            {
+                currentDoor = GameController._instance.doors[i];
+
+                doorIDs[i] = currentDoor.GetID();
+                Debug.Log("Saving " + currentDoor.name + ": " + currentDoor.isLocked);
+                locked[i] = currentDoor.isLocked;
+            }
+
+
         }
     }
 }

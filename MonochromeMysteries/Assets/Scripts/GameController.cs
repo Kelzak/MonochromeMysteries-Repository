@@ -16,6 +16,9 @@ public class GameController : MonoBehaviour
 {
     public static GameController _instance = null;
     public static GameObject gameManagement;
+    public RatTrap[] ratTraps;
+    public DoorScript[] doors;
+
     public Canvas mainHUD;
     public Camera cam;
     public static GameObject soul;
@@ -92,9 +95,9 @@ public class GameController : MonoBehaviour
                                             tabs.transform.Find("Options").gameObject,
                                             tabs.transform.Find("Notepad").gameObject };
         pauseMenu_menus = new GameObject[4];
-        pauseMenu_menus[(int) Menu.Scrapbook] = pauseMenu.transform.Find("PhotoCollection").gameObject;
-        pauseMenu_menus[(int) Menu.LoadGame] = pauseMenu.transform.Find("LoadGame").gameObject;
-        pauseMenu_menus[(int) Menu.Options] = pauseMenu.transform.Find("Options").gameObject;
+        pauseMenu_menus[(int)Menu.Scrapbook] = pauseMenu.transform.Find("PhotoCollection").gameObject;
+        pauseMenu_menus[(int)Menu.LoadGame] = pauseMenu.transform.Find("LoadGame").gameObject;
+        pauseMenu_menus[(int)Menu.Options] = pauseMenu.transform.Find("Options").gameObject;
         pauseMenu_menus[(int)Menu.Notepad] = pauseMenu.transform.Find("NotepadGroup").gameObject;
 
         //Add Listeners to tabs;
@@ -114,22 +117,52 @@ public class GameController : MonoBehaviour
 
         saveSlots = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
         saveSlots_delete = new GameObject[SaveSystem.MAX_SAVE_SLOTS];
-        for(int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
+        for (int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
         {
             int temp = i;
             saveSlots[i - 1] = pauseMenu_menus[(int)Menu.LoadGame].transform.Find("SaveSlots").Find("Slot " + temp).gameObject;
-            saveSlots[i - 1].transform.GetComponent<Button>().onClick.AddListener(() => { if(!loadMenu_confirmation.activeSelf) StartCoroutine(LoadGame(temp)); });
+            saveSlots[i - 1].transform.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                if (!loadMenu_confirmation.activeSelf)
+                    StartCoroutine(Confirmation(temp,
+                                                string.Format("Are you sure you want to load data in Slot {0}", temp),
+                                                () =>
+                                                {
+                                                    SaveSystem.Load(temp);
+                                                    //SaveSystem.Save(saveSlot);
+                                                    if (paused)
+                                                        TogglePause();
+                                                    pauseMenu.SetActive(false);
+                                                    menuActive = false;
+                                                    StartCoroutine(InitializeGame());
+                                                }));
+
+            });
             saveSlots_delete[i - 1] = pauseMenu_menus[(int)Menu.LoadGame].transform.Find("SaveSlots").Find("Delete " + temp).gameObject;
-            saveSlots_delete[i - 1].GetComponent<Button>().onClick.AddListener(() => { SaveSystem.DeleteSave(temp); });
-            if(!SaveSystem.SaveExists(temp))
+            saveSlots_delete[i - 1].GetComponent<Button>().onClick.AddListener(() =>
+            {
+                if (!loadMenu_confirmation.activeSelf)
+                    StartCoroutine(Confirmation(temp,
+                                                string.Format("Are you sure you want to delete ALL save data in Slot {0}", temp),
+                                                () => { SaveSystem.DeleteSave(temp); }));
+
+            });
+            if (!SaveSystem.SaveExists(temp))
                 saveSlots_delete[i - 1].SetActive(false);
         }
 
-
+        //General Assignments for player and camera
         cam = Camera.main;
         soul = GameObject.Find("Player");
 
-        
+        //Keep Track of Rat Traps
+        ratTraps = GameObject.FindObjectsOfType(typeof(RatTrap)) as RatTrap[];
+        System.Array.Sort(ratTraps, (RatTrap x, RatTrap y) => { return x.GetID().CompareTo(y.GetID()); });
+
+        //Keep Track of Doors
+        doors = GameObject.FindObjectsOfType(typeof(DoorScript)) as DoorScript[];
+        System.Array.Sort(doors, (DoorScript x, DoorScript y) => { return x.GetID().CompareTo(y.GetID()); });
+
         audioSources = this.GetComponents<AudioSource>();
 
 
@@ -194,29 +227,6 @@ public class GameController : MonoBehaviour
         Application.Quit();
     }
 
-
-
-    private static void UpdateSaveSlotInfo(int saveSlot, string newDate, float newPlayTime)
-    {
-        _instance.playTime = newPlayTime;
-        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: " + newDate;
-
-        int hours, minutes , seconds;
-        newPlayTime -= (hours = (int)(newPlayTime / 3600)) * 3600;
-        newPlayTime -= (minutes = (int)(newPlayTime / 60)) * 60;
-        seconds = (int) newPlayTime;
-
-        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = string.Format("Playtime: {0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
-        saveSlots_delete[saveSlot - 1].SetActive(true);
-    }
-
-    private static void DeleteSaveSlotInfo(int saveSlot)
-    {
-        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: N/A";
-        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = "Playtime: --:--:--";
-        saveSlots_delete[saveSlot - 1].SetActive(false);
-    }
-
     /// <summary>
     /// Toggles the Game Pausing (Not the menu)
     /// </summary>
@@ -241,11 +251,34 @@ public class GameController : MonoBehaviour
     }
 
 
+
+    private static void UpdateSaveSlotInfo(int saveSlot, string newDate, float newPlayTime)
+    {
+        _instance.playTime = newPlayTime;
+        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: " + newDate;
+
+        int hours, minutes , seconds;
+        newPlayTime -= (hours = (int)(newPlayTime / 3600)) * 3600;
+        newPlayTime -= (minutes = (int)(newPlayTime / 60)) * 60;
+        seconds = (int) newPlayTime;
+
+        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = string.Format("Playtime: {0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
+        saveSlots_delete[saveSlot - 1].SetActive(true);
+    }
+
+    private static void DeleteSaveSlotInfo(int saveSlot)
+    {
+        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("Date").GetComponent<TMP_Text>().text = "Date: N/A";
+        saveSlots[saveSlot - 1].transform.Find("SaveStats").Find("PlayTime").GetComponent<TMP_Text>().text = "Playtime: --:--:--";
+        saveSlots_delete[saveSlot - 1].SetActive(false);
+    }
+
+
     bool waitForInput = false;
     bool confirmationResponse = false;
-    public IEnumerator LoadGame(int saveSlot)
+    private IEnumerator Confirmation(int saveSlot, string message, UnityEngine.Events.UnityAction action)
     {
-        if(!SaveSystem.SaveExists(saveSlot))
+        if (!SaveSystem.SaveExists(saveSlot))
         {
             Log.AddEntry("No Save Data in Slot " + saveSlot);
             yield break;
@@ -255,7 +288,7 @@ public class GameController : MonoBehaviour
         loadMenu_confirmation.SetActive(true);
 
         //Setup confirmation pop-up window
-        loadMenu_confirmation_message.text = "Are you sure you'd like to load the game in Slot " + saveSlot + "?";
+        loadMenu_confirmation_message.text = message;
         loadMenu_options[0].GetComponentInChildren<TMP_Text>().text = "Load Save Slot " + saveSlot;
 
         UnityEngine.Events.UnityAction confirm = () => { waitForInput = false; confirmationResponse = true; };
@@ -277,16 +310,8 @@ public class GameController : MonoBehaviour
             while (Player.GetPossessionInProgress())
                 yield return null;
 
-            SaveSystem.Load(saveSlot);
-            //SaveSystem.Save(saveSlot);
-            if (paused)
-                TogglePause();
-            pauseMenu.SetActive(false);
-            menuActive = false;
-            StartCoroutine(InitializeGame());
+            action.Invoke();
         }
-        
-       
     }
 
     public static bool playerInPlace = false;

@@ -227,29 +227,45 @@ public class Player : MonoBehaviour
     void Interact()
     {
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        if (Physics.Raycast(ray, out hit))
+        RaycastHit[] hit;
+        if ((hit = Physics.RaycastAll(ray, Player.reticleDist)).Length > 0)
         {
-            //glowing objects
-            if (hit.collider.gameObject.GetComponent<Outline>() && hit.distance < Player.reticleDist)
+            GameObject target = null;
+            float shortestDistance = Mathf.Infinity;
+            for(int i = 0; i < hit.Length; i++)
             {
-                if(GetComponent<Rat>() && hit.collider.gameObject.CompareTag("pickup") || hit.collider.gameObject.CompareTag("letter"))
+                if(hit[i].distance < shortestDistance && hit[i].collider.gameObject != gameObject)
                 {
-                    if(hit.distance < Player.reticleDist / 8f)
+                    target = hit[i].collider.gameObject;
+                    shortestDistance = hit[i].distance;
+                }
+            }
+
+            if (target == null)
+            {
+                displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+                return;
+            }
+
+            //glowing objects
+            if (target.GetComponent<Outline>())
+            {
+                if(GetComponent<Rat>() && target.CompareTag("pickup") || target.CompareTag("letter"))
+                {
+                    if(shortestDistance < Player.reticleDist / 8f)
                     {
                         glowSource.volume = Mathf.Lerp(glowSource.volume, .15f, fadeTime * Time.deltaTime);
-                        GameObject temp = hit.collider.gameObject;
-                        Outline outline = temp.GetComponent<Outline>();
+                        Outline outline = target.GetComponent<Outline>();
                         outline.enabled = true;
-                        reticle.color = Color.Lerp(reticle.color, temp.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
+                        reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
                     }
                 }
                 else
                 {
                     glowSource.volume = Mathf.Lerp(glowSource.volume, .15f, fadeTime * Time.deltaTime);
-                    GameObject temp = hit.collider.gameObject;
-                    Outline outline = temp.GetComponent<Outline>();
+                    Outline outline = target.GetComponent<Outline>();
                     outline.enabled = true;
-                    reticle.color = Color.Lerp(reticle.color, temp.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
+                    reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
                 }
 
             }
@@ -261,31 +277,29 @@ public class Player : MonoBehaviour
             }
 
             //possessable
-            if (hit.collider.gameObject.GetComponent<Character>() || hit.collider.gameObject.GetComponent<Rat>() || hit.collider.gameObject.GetComponent<Photographer>() && hit.distance < Player.reticleDist)
+            if (target.GetComponent<Possessable>() && shortestDistance < Player.reticleDist)
             {
                 displayText.text = "Press E to Possess";
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
             }
             //reading objects
-            else if (hit.collider.gameObject.GetComponent<Read>() && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
+            else if (target.GetComponent<Read>() && shortestDistance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
 
-                GameObject temp = hit.collider.gameObject;
                 displayText.text = "Press F to Read";
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
                 if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
                 {
-                    temp.GetComponent<Read>().Open();
+                    target.GetComponent<Read>().Open();
                 }
             }
 
             //doors
-            else if (hit.collider.gameObject.CompareTag("door") && hit.distance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
+            else if (target.CompareTag("door") && shortestDistance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
-                GameObject temp = hit.collider.gameObject;
                 reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                if (temp.GetComponentInParent<DoorScript>().isOpen)
+                if (target.GetComponentInParent<DoorScript>().isOpen)
                 {
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
@@ -301,38 +315,35 @@ public class Player : MonoBehaviour
                 //open
                 if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
                 {
-                    temp.GetComponentInParent<DoorScript>().Activate();
+                    target.GetComponentInParent<DoorScript>().Activate();
                 }
             }
             // music box
-            else if ((hit.collider.gameObject.CompareTag("music box")) && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
+            else if ((target.CompareTag("music box")) && shortestDistance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
             {
-                GameObject temp = hit.collider.gameObject;
                 reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
                 displayText.text = "Press F to Use";
                 if(Input.GetKeyDown(KeyCode.F))
                 {
-                    temp.GetComponent<MusicBox>().Skip();
+                    target.GetComponent<MusicBox>().Skip();
                 }
             }
             //safes
-            else if ((hit.collider.gameObject.CompareTag("safe") && hit.distance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost)))
+            else if ((target.CompareTag("safe") && shortestDistance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost)))
             {
-                if(hit.collider.gameObject.GetComponent<PadlockPuzzle>().safeIsOpen)
+                if(target.GetComponent<PadlockPuzzle>().safeIsOpen)
                 {
-                    GameObject temp = hit.collider.gameObject;
                     reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
                     displayText.text = "Press F to Use";
                 }
             }
             //tvs
-            else if ((hit.collider.gameObject.CompareTag("TV") && hit.distance < Player.reticleDist / 2))
+            else if ((target.CompareTag("TV") && shortestDistance < Player.reticleDist / 2))
             {
                 if(!hideText)
                 {
-                    GameObject temp = hit.collider.gameObject;
                     reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
                     displayText.text = "Press F to Use";
@@ -340,11 +351,10 @@ public class Player : MonoBehaviour
 
             }
             //pickup?
-            else if (hit.collider.gameObject.CompareTag("pickup") || hit.collider.gameObject.CompareTag("letter") && hit.distance < Player.reticleDist && !StateChecker.isGhost)
+            else if (target.CompareTag("pickup") || target.CompareTag("letter") && shortestDistance < Player.reticleDist && !StateChecker.isGhost)
             {
-                GameObject temp = hit.collider.gameObject;
 
-                if (GetComponent<Rat>() && hit.distance < Player.reticleDist / 8f)
+                if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
                 {
                     if (Rat.hold)
                     {
@@ -367,16 +377,15 @@ public class Player : MonoBehaviour
                 }
             }
             //rat trap
-            else if (hit.collider.gameObject.CompareTag("ratTrap") && hit.distance < Player.reticleDist && !StateChecker.isGhost && GetComponent<Character>().gameObject.name.Equals("Exterminator"))
+            else if (target.CompareTag("ratTrap") && shortestDistance < Player.reticleDist && !StateChecker.isGhost && GetComponent<Character>().gameObject.name.Equals("Exterminator"))
             {
-                GameObject temp = hit.collider.gameObject;
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
                 displayText.text = "Press F to Disable";
 
                 if(Input.GetKeyDown(KeyCode.F))
                 {
-                    temp.GetComponent<RatTrap>().Activate();
+                    target.GetComponent<RatTrap>().Activate();
                 }
 
 
@@ -388,6 +397,10 @@ public class Player : MonoBehaviour
                 displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
 
             }
+        }
+        else
+        {
+            displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
         }
     }
 
