@@ -299,7 +299,7 @@ public class Player : MonoBehaviour
             else if (target.CompareTag("door") && shortestDistance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
                 reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                if(temp.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic"))
+                if(target.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic"))
                 {
                     if(GetComponent<Player>().gameObject.name.Equals("Mechanic"))
                     {
@@ -309,13 +309,13 @@ public class Player : MonoBehaviour
                         //open
                         if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
                         {
-                            temp.GetComponentInParent<DoorScript>().Activate();
+                            target.GetComponentInParent<DoorScript>().Activate();
                         }
                     }
 
                 }
 
-                if (temp.GetComponentInParent<DoorScript>().isOpen)
+                if (target.GetComponentInParent<DoorScript>().isOpen)
                 {
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
@@ -323,7 +323,7 @@ public class Player : MonoBehaviour
                     //open
                     if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
                     {
-                        temp.GetComponentInParent<DoorScript>().Activate();
+                        target.GetComponentInParent<DoorScript>().Activate();
                     }
                 }
                 else
@@ -334,7 +334,7 @@ public class Player : MonoBehaviour
                     //open
                     if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
                     {
-                        temp.GetComponentInParent<DoorScript>().Activate();
+                        target.GetComponentInParent<DoorScript>().Activate();
                     }
 
                 }
