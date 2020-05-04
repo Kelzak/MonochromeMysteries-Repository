@@ -22,6 +22,7 @@ public class DoorScript : MonoBehaviour
     public AudioClip[] closeDoor;
     public AudioClip[] unlockDoor;
     public AudioClip[] lockedDoor;
+    public AudioClip repairClip;
     private AudioSource audioSource;
 
     private int rand;
@@ -103,13 +104,36 @@ public class DoorScript : MonoBehaviour
             return OpenPanel.activeInHierarchy;
         }
     }
+    IEnumerator waitForSound()
+    {
+        //Wait Until Sound has finished playing
+        while (audioSource.isPlaying)
+        {
+            yield return null;
+        }
+
+        //Auidio has finished playing
+        Debug.Log("should open");
+        isLocked = false;
+        Open();
+    }
     public void Activate()
     {
         if (personalDoor && isPlayer && !isOpen)
         {
-            Debug.Log("should open");
-            isLocked = false;
-            Open();
+            if(whoDoor.Equals("Mechanic"))
+            {
+                audioSource.PlayOneShot(repairClip);
+
+                waitForSound();
+            }
+            else
+            {
+                Debug.Log("should open");
+                isLocked = false;
+                Open();
+            }
+
         }
         //regular open
         else if (!isLocked && !isOpen)

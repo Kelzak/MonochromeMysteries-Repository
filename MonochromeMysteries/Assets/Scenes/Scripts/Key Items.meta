@@ -1,8 +1,14 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:MonochromeMysteries/Assets/Scenes/Scripts/Key Items.meta
 guid: 40a987a55fa866141a9caab5e264ef29
 folderAsset: yes
 DefaultImporter:
+=======
+guid: b2e8a38948f60354681226704ca77e8e
+NativeFormatImporter:
+>>>>>>> 279e08cde3be297ca8b0dcc1b938473cf3cf8d59:MonochromeMysteries/Assets/Art Stuff/Materials/DeadBodyFinal.mat.meta
   externalObjects: {}
+  mainObjectFileID: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

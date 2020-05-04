@@ -299,24 +299,46 @@ public class Player : MonoBehaviour
             else if (target.CompareTag("door") && shortestDistance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
                 reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                if (target.GetComponentInParent<DoorScript>().isOpen)
+                if(temp.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic"))
+                {
+                    if(GetComponent<Player>().gameObject.name.Equals("Mechanic"))
+                    {
+                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+                        displayText.text = "Press F to Repair";
+                        //open
+                        if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                        {
+                            temp.GetComponentInParent<DoorScript>().Activate();
+                        }
+                    }
+
+                }
+
+                if (temp.GetComponentInParent<DoorScript>().isOpen)
                 {
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
                     displayText.text = "Press F to Close";
+                    //open
+                    if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                    {
+                        temp.GetComponentInParent<DoorScript>().Activate();
+                    }
                 }
                 else
                 {
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
                     displayText.text = "Press F to Open";
+                    //open
+                    if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                    {
+                        temp.GetComponentInParent<DoorScript>().Activate();
+                    }
 
                 }
-                //open
-                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
-                {
-                    target.GetComponentInParent<DoorScript>().Activate();
-                }
+
             }
             // music box
             else if ((target.CompareTag("music box")) && shortestDistance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
