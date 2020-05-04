@@ -23,6 +23,7 @@ public class Read : MonoBehaviour
     private bool closeTime;
 
     private bool isOpen;
+    public static bool isReading;
     private int index;
 
     private AudioSource audioSource;
@@ -143,6 +144,7 @@ public class Read : MonoBehaviour
                 photographer.CameraLensActive = false;
                 photographer.canTakePhoto = false;
             }
+            isReading = true;
             isOpen = true;
             index = 0;
             toRead[index].SetActive(true);
@@ -180,6 +182,7 @@ public class Read : MonoBehaviour
             Background.SetActive(false);
             //GameController.TogglePause();
             isOpen = false;
+            isReading = false;
             audioSource.PlayOneShot(closeClip);
             readTime = false;
             closeTime = true;

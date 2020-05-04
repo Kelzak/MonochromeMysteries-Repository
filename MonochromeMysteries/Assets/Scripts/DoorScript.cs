@@ -35,6 +35,7 @@ public class DoorScript : MonoBehaviour
     public bool personalDoor;
     //match this with the name of the game object for the character whos door it is
     public string whoDoor;
+    public bool hasNotBeenRepaired;
 
     private void Awake()
     {
@@ -104,8 +105,9 @@ public class DoorScript : MonoBehaviour
             return OpenPanel.activeInHierarchy;
         }
     }
-    IEnumerator waitForSound()
+    IEnumerator WaitForSound()
     {
+        hasNotBeenRepaired = false;
         //Wait Until Sound has finished playing
         while (audioSource.isPlaying)
         {
@@ -116,18 +118,18 @@ public class DoorScript : MonoBehaviour
         Debug.Log("should open");
         isLocked = false;
         Open();
+        
     }
     public void Activate()
     {
         if (personalDoor && isPlayer && !isOpen)
         {
-            if(whoDoor.Equals("Mechanic"))
+            if(whoDoor.Equals("Mechanic") && hasNotBeenRepaired) //mechanic branch
             {
                 audioSource.PlayOneShot(repairClip);
-
-                waitForSound();
+                StartCoroutine(WaitForSound());
             }
-            else
+            else //manager branch
             {
                 Debug.Log("should open");
                 isLocked = false;

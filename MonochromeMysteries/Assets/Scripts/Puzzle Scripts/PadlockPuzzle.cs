@@ -49,7 +49,7 @@ public class PadlockPuzzle : MonoBehaviour
 
     SafeAnim safeAnim;
 
-    public bool keypadisUp;
+    public static bool keypadisUp;
 
     //public int totalInputs = 0;
 

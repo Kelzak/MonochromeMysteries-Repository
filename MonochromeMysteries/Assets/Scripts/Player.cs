@@ -118,6 +118,7 @@ public class Player : MonoBehaviour
     public TMP_Text displayText;
     private float fadeTime = 3f;
     private bool hideText;
+    public static bool isReading = false;
 
     public AudioSource glowSource;
 
@@ -184,7 +185,7 @@ public class Player : MonoBehaviour
         if (!possessionInProgress)
             PossessionCheck();
 
-        if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress)
+        if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress && !Read.isReading && !PadlockPuzzle.keypadisUp)
         {
             canPickup = false;
             audioSource.PlayOneShot(depossessClip);
@@ -292,6 +293,7 @@ public class Player : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
                 {
                     target.GetComponent<Read>().Open();
+                    //isReading = true;
                 }
             }
 
@@ -352,9 +354,15 @@ public class Player : MonoBehaviour
                 }
             }
             //safes
-            else if ((target.CompareTag("safe") && shortestDistance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost)))
+            else if ((target.CompareTag("safe") && shortestDistance < Player.reticleDist / 2 && (!GetComponent<Rat>()))) //&& !StateChecker.isGhost)))
             {
-                if(target.GetComponent<PadlockPuzzle>().safeIsOpen)
+                if(StateChecker.isGhost && target.gameObject.name == "LockedSafe2")
+                {
+                    reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                    displayText.text = "Press F to Use";
+                }
+                else
                 {
                     reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
