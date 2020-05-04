@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 //observer to state checker to display outline on item
 [RequireComponent(typeof(Outline))]
+[RequireComponent(typeof(MeshCollider))]
 public class Item : MonoBehaviour, IObserver
 {
     public StateChecker stateChecker;
