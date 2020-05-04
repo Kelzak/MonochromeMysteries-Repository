@@ -381,7 +381,7 @@ public class Player : MonoBehaviour
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
                     displayText.text = "Press F to Use";
                 }
-                else
+                else if(!StateChecker.isGhost)
                 {
                     reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
                     displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
