@@ -299,6 +299,14 @@ public class NavPerson : MonoBehaviour
         mumbleSource.PlayOneShot(possessClip);
         isPossessed = true;
         GetComponent<NavMeshAgent>().isStopped = true;
+        try
+        {
+            GetComponentInChildren<HoverText>().UIstop = true;
+        }
+        catch
+        {
+            //throw
+        }
     }
 
     private void OnEnable()
@@ -313,6 +321,14 @@ public class NavPerson : MonoBehaviour
         {
             isWaiting = true;
             Invoke("PossessWait", waitAfterPossessTime);       
+        }
+        try
+        {
+            GetComponentInChildren<HoverText>().UIstop = false;
+        }
+        catch
+        {
+            //throw
         }
     }
 
