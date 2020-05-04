@@ -116,6 +116,11 @@ public class Player : MonoBehaviour
     //Reading letters stuff
     public Readables readables;
     public TMP_Text displayText;
+    public TMP_Text displayIconText;
+    public GameObject displayIcon;
+    public Sprite ratSprite; 
+    public Sprite screwdriverSprite; 
+    public Sprite CameraSprite; 
     private float fadeTime = 3f;
     private bool hideText;
     public static bool isReading = false;
@@ -407,16 +412,25 @@ public class Player : MonoBehaviour
                 }
             }
             //rat trap
-            else if (target.CompareTag("ratTrap") && shortestDistance < Player.reticleDist && !StateChecker.isGhost && GetComponent<Character>().gameObject.name.Equals("Exterminator"))
+            else if (target.CompareTag("ratTrap") && shortestDistance < Player.reticleDist)
             {
-                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                displayText.text = "Press F to Disable";
-
-                if(Input.GetKeyDown(KeyCode.F))
+                //use for exterm
+                if(GetComponent<Character>().gameObject.name.Equals("Exterminator"))
                 {
-                    target.GetComponent<RatTrap>().Activate();
+                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+                    displayText.text = "Press F to Disable";
+
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        target.GetComponent<RatTrap>().Activate();
+                    }
                 }
+                //icon
+                displayIconText.text = "Needs Exterminator";
+                displayIcon.GetComponent<SpriteRenderer>().sprite = ratSprite;
+                displayIcon.SetActive(false);
+
 
 
             }
@@ -431,6 +445,9 @@ public class Player : MonoBehaviour
         else
         {
             displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+            displayIconText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+            displayIcon.GetComponent<SpriteRenderer>().sprite = null;
+            displayIcon.SetActive(false);
         }
     }
 
