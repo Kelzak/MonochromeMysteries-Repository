@@ -259,7 +259,7 @@ public class Player : MonoBehaviour
             if (target.GetComponent<Outline>())
             {
                 
-                if (!target.GetComponent<Read>() && !target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>())
+                if (!target.GetComponent<Read>() && !target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe"))
                 {
                     //icon
                     displayIconText.text = "Take Photo";
@@ -426,19 +426,51 @@ public class Player : MonoBehaviour
                 }
             }
             //safes
-            else if ((target.CompareTag("safe") && shortestDistance < Player.reticleDist / 2 && (!GetComponent<Rat>()))) //&& !StateChecker.isGhost)))
+            else if ((target.CompareTag("safe") && shortestDistance < Player.reticleDist)) //&& !StateChecker.isGhost)))
             {
-                if(StateChecker.isGhost && target.gameObject.name == "LockedSafe2")
+                if(target.gameObject.name == "LockedSafe2")
                 {
-                    reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                    displayText.text = "Press F to Use";
+                    if(StateChecker.isGhost)
+                    {
+                        reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                        displayText.text = "Press F to Use";
+                    }
+                    else if (GetComponent<Rat>())
+                    {
+                        displayIconText.text = "Rat cant use";
+                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                    }
+                    else
+                    {
+                        displayIconText.text = "Only Sprit can use";
+                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                    }
+                    
                 }
-                else if(!StateChecker.isGhost)
+                else
                 {
-                    reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                    displayText.text = "Press F to Use";
+                    if (!StateChecker.isGhost && !GetComponent<Rat>())
+                    {
+                        reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+                        displayText.text = "Press F to Use";
+                    }
+                    else if (GetComponent<Rat>())
+                    {
+                        displayIconText.text = "Rat cant use";
+                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                    }
+                    else
+                    {
+                        displayIconText.text = "Sprit cant use";
+                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                    }
+                    
                 }
             }
             //tvs
@@ -511,11 +543,6 @@ public class Player : MonoBehaviour
                         target.GetComponent<RatTrap>().Activate();
                     }
                 }
-                //icon
-
-
-
-
             }
             //default
             else
