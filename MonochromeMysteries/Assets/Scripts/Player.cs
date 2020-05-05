@@ -118,6 +118,7 @@ public class Player : MonoBehaviour
     public TMP_Text displayText;
     public TMP_Text displayIconText;
     public GameObject displayIcon;
+    public GameObject displaySeperator;
     public Sprite ratSprite; 
     public Sprite screwdriverSprite; 
     public Sprite CameraSprite; 
@@ -265,6 +266,8 @@ public class Player : MonoBehaviour
                     displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
                     displayIcon.GetComponent<Image>().sprite = CameraSprite;
                     displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
                     photoUI = true;
                 }
                 else
@@ -303,10 +306,16 @@ public class Player : MonoBehaviour
                 displayText.text = "Press E to Possess";
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
             }
-            //reading objects
+            //read objects
             else if (target.GetComponent<Read>() && shortestDistance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
+                if(StateChecker.isGhost)
+                {
+                    displayIconText.text = "Possess to Read";
+                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
 
+                }
+                
                 displayText.text = "Press F to Read";
                 displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
@@ -324,16 +333,39 @@ public class Player : MonoBehaviour
                 if(target.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic"))
                 {
                     //icon
-                    displayIconText.text = "Needs Mechanic";
+                    displayIconText.text = "Needs Repairs";
                     displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
                     displayIcon.GetComponent<Image>().sprite = screwdriverSprite;
                     displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
 
                     if (GetComponent<Player>().gameObject.name.Equals("Mechanic"))
                     {
                         displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
                         displayText.text = "Press F to Repair";
+                        //open
+                        if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+                        {
+                            target.GetComponentInParent<DoorScript>().Activate();
+                        }
+                    }
+
+                }
+                if (target.GetComponentInParent<DoorScript>().whoDoor.Equals("Manager"))
+                {
+                    //icon
+                    displayIconText.text = "Needs Manager";
+                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+
+                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+                    if (GetComponent<Player>().gameObject.name.Equals("Manager"))
+                    {
+                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+                        displayText.text = "Press F to Open";
                         //open
                         if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
                         {
@@ -468,6 +500,8 @@ public class Player : MonoBehaviour
                 {
                     displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
                     displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+
                 }
                 displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);   
             }
@@ -478,6 +512,8 @@ public class Player : MonoBehaviour
             {
                 displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
                 displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+
             }
             displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
             //displayIcon.GetComponent<SpriteRenderer>().sprite = null;
