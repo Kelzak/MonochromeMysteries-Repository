@@ -109,14 +109,13 @@ public class DoorScript : MonoBehaviour
     {
         hasNotBeenRepaired = false;
         //Wait Until Sound has finished playing
-        while (audioSource.isPlaying)
-        {
-            yield return null;
-        }
+
+        yield return new WaitForSeconds(repairClip.length);
 
         //Auidio has finished playing
         Debug.Log("should open");
         isLocked = false;
+        personalDoor = false;
         Open();
         
     }

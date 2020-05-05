@@ -232,6 +232,7 @@ public class Player : MonoBehaviour
 
     void Interact()
     {
+        bool photoUI = false;
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit[] hit;
         if ((hit = Physics.RaycastAll(ray, Player.reticleDist)).Length > 0)
@@ -256,19 +257,25 @@ public class Player : MonoBehaviour
             //glowing objects
             if (target.GetComponent<Outline>())
             {
-                if(!target.GetComponent<Read>())
+                
+                if (!target.GetComponent<Read>() && !target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>())
                 {
                     //icon
-                    //displayIconText.text = "Needs Photographer";
-                    //displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    //displayIcon.GetComponent<Image>().sprite = CameraSprite;
-                    //displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                    displayIconText.text = "Take Photo";
+                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+                    displayIcon.GetComponent<Image>().sprite = CameraSprite;
+                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                    photoUI = true;
                 }
-                if(GetComponent<Rat>() && target.CompareTag("pickup") || target.CompareTag("letter"))
+                else
+                    photoUI = false;
+
+
+                if (GetComponent<Rat>() && target.CompareTag("pickup") || target.CompareTag("letter"))
                 {
                     if(shortestDistance < Player.reticleDist / 8f)
                     {
-                        glowSource.volume = Mathf.Lerp(glowSource.volume, .15f, fadeTime * Time.deltaTime);
+                        glowSource.volume = Mathf.Lerp(glowSource.volume, .25f, fadeTime * Time.deltaTime);
                         Outline outline = target.GetComponent<Outline>();
                         outline.enabled = true;
                         reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
@@ -276,7 +283,7 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    glowSource.volume = Mathf.Lerp(glowSource.volume, .15f, fadeTime * Time.deltaTime);
+                    glowSource.volume = Mathf.Lerp(glowSource.volume, .25f, fadeTime * Time.deltaTime);
                     Outline outline = target.GetComponent<Outline>();
                     outline.enabled = true;
                     reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
@@ -457,17 +464,22 @@ public class Player : MonoBehaviour
             else
             {
                 //displayText.text = "";
-                displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-                displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
-                displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
-
+                if(!photoUI)
+                {
+                    displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
+                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+                }
+                displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);   
             }
         }
         else
         {
+            if(photoUI)
+            {
+                displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
+                displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+            }
             displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-            displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
-            displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
             //displayIcon.GetComponent<SpriteRenderer>().sprite = null;
             //displayIcon.SetActive(false);
         }

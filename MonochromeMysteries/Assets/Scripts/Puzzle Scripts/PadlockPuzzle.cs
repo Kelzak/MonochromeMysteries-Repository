@@ -209,6 +209,7 @@ public class PadlockPuzzle : MonoBehaviour
             safe1Open = true;
             safeIsOpen = true;
             safe1.tag = "Untagged";
+            safe1.GetComponent<BoxCollider>().enabled = false;
             Destroy(safe1.GetComponent<Item>());
             Destroy(safe1.GetComponent<Outline>());
             //safe1.SetActive(false);
@@ -223,6 +224,7 @@ public class PadlockPuzzle : MonoBehaviour
             safeAnim.OpenSafe(safe2);
             safeIsOpen = true;
             safe2.tag = "Untagged";
+            safe2.GetComponent<BoxCollider>().enabled = false;
             Destroy(safe2.GetComponent<Item>());
             Destroy(safe2.GetComponent<Outline>());
             //safe2.SetActive(false);
@@ -237,6 +239,7 @@ public class PadlockPuzzle : MonoBehaviour
             safeAnim.OpenSafe(safe3);
             safeIsOpen = true;
             safe3.tag = "Untagged";
+            safe3.GetComponent<BoxCollider>().enabled = false;
             Destroy(safe3.GetComponent<Item>());
             Destroy(safe3.GetComponent<Outline>());
             //safe3.SetActive(false);
@@ -251,6 +254,7 @@ public class PadlockPuzzle : MonoBehaviour
             safeAnim.OpenSafe(safe4);
             safeIsOpen = true;
             safe4.tag = "Untagged";
+            safe4.GetComponent<BoxCollider>().enabled = false;
             Destroy(safe4.GetComponent<Item>());
             Destroy(safe4.GetComponent<Outline>());
             //safe3.SetActive(false);
