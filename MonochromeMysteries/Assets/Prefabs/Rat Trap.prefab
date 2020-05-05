@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d799baed19542c54798c54b80cdc42d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableTrap: {fileID: 8300000, guid: 50e9f7bc208c22e4b92c82f7c64d84f4, type: 3}
+  disableTrap: {fileID: 8300000, guid: 93df34589c81d804c807456ea83a39c7, type: 3}
 --- !u!82 &7168793217853607293
 AudioSource:
   m_ObjectHideFlags: 0
