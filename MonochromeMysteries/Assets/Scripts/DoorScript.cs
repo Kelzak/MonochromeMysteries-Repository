@@ -31,6 +31,7 @@ public class DoorScript : MonoBehaviour
     public bool isOpen;
     public bool autoClose = true;
     public bool stayOpen;
+    private bool repairing = false;
 
     public bool personalDoor;
     //match this with the name of the game object for the character whos door it is
@@ -107,7 +108,7 @@ public class DoorScript : MonoBehaviour
     }
     IEnumerator WaitForSound()
     {
-        hasNotBeenRepaired = false;
+        
         //Wait Until Sound has finished playing
 
         yield return new WaitForSeconds(3);
@@ -115,7 +116,8 @@ public class DoorScript : MonoBehaviour
         //Auidio has finished playing
         Debug.Log("should open");
         isLocked = false;
-        
+        personalDoor = false;
+        repairing = false;
         Open();
         
     }
@@ -124,14 +126,15 @@ public class DoorScript : MonoBehaviour
         if (personalDoor && isPlayer && !isOpen)
         {
             Debug.Log("personal door activate");
-            if(whoDoor.Equals("Mechanic") && hasNotBeenRepaired) //mechanic branch
+            if(whoDoor.Equals("Mechanic") && !repairing) //mechanic branch
             {
+                repairing = true;
                 audioSource.PlayOneShot(repairClip);
                 StartCoroutine(WaitForSound());
             }
             else if(whoDoor.Equals("Manager"))//manager branch
             {
-                Debug.Log("should open");
+                Debug.Log("manager open");
                 isLocked = false;
                 personalDoor = false;
                 Open();

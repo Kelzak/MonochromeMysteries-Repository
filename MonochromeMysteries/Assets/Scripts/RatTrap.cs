@@ -37,15 +37,18 @@ public class RatTrap : MonoBehaviour
 
     public void Activate()
     {
-        AudioClip sound = disableTrap;
-        audioSource.PlayOneShot(sound);
-
-        isActive = false;
+        audioSource.PlayOneShot(disableTrap);
+        Invoke("Disable", .1f);
     }
 
     public float GetID()
     {
         return id;
+    }
+    void Disable()
+    {
+        isActive = false;
+
     }
 
     public void Load(Data.RatTrapData data)

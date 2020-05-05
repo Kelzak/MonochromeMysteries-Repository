@@ -281,7 +281,7 @@ public class Player : MonoBehaviour
                 {
                     if (shortestDistance < Player.reticleDist / 8f)
                     {
-                        glowSource.volume = Mathf.Lerp(glowSource.volume, .25f, fadeTime * Time.deltaTime);
+                        glowSource.volume = Mathf.Lerp(glowSource.volume, .75f, fadeTime * Time.deltaTime);
                         Outline outline = target.GetComponent<Outline>();
                         outline.enabled = true;
                         reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
@@ -290,7 +290,7 @@ public class Player : MonoBehaviour
                 else
                 {
                     //Debug.Log("Should glow with raycast");
-                    glowSource.volume = Mathf.Lerp(glowSource.volume, .25f, fadeTime * Time.deltaTime);
+                    glowSource.volume = Mathf.Lerp(glowSource.volume, .75f, fadeTime * Time.deltaTime);
                     Outline outline = target.GetComponent<Outline>();
                     outline.enabled = true;
 
@@ -467,7 +467,7 @@ public class Player : MonoBehaviour
                         displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
                         displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
                     }
-                    else if(!GetComponent<Rat>())
+                    else 
                     {
                         displayIconText.text = "Only Sprit can use";
                         displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
