@@ -110,12 +110,12 @@ public class DoorScript : MonoBehaviour
         hasNotBeenRepaired = false;
         //Wait Until Sound has finished playing
 
-        yield return new WaitForSeconds(repairClip.length);
+        yield return new WaitForSeconds(3);
 
         //Auidio has finished playing
         Debug.Log("should open");
         isLocked = false;
-        personalDoor = false;
+        
         Open();
         
     }
@@ -123,15 +123,17 @@ public class DoorScript : MonoBehaviour
     {
         if (personalDoor && isPlayer && !isOpen)
         {
+            Debug.Log("personal door activate");
             if(whoDoor.Equals("Mechanic") && hasNotBeenRepaired) //mechanic branch
             {
                 audioSource.PlayOneShot(repairClip);
                 StartCoroutine(WaitForSound());
             }
-            else //manager branch
+            else if(whoDoor.Equals("Manager"))//manager branch
             {
                 Debug.Log("should open");
                 isLocked = false;
+                personalDoor = false;
                 Open();
             }
 

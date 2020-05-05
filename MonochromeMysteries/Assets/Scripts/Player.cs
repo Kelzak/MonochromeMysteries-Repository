@@ -330,7 +330,7 @@ public class Player : MonoBehaviour
             else if (target.CompareTag("door") && shortestDistance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
             {
                 reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                if(target.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic"))
+                if(target.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic") && target.GetComponentInParent<DoorScript>().personalDoor)
                 {
                     //icon
                     displayIconText.text = "Needs Repairs";
@@ -340,7 +340,7 @@ public class Player : MonoBehaviour
 
                     displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
 
-                    if (GetComponent<Player>().gameObject.name.Equals("Mechanic"))
+                    if (GetComponent<Player>().gameObject.name.Equals("Mechanic") && target.GetComponentInParent<DoorScript>().personalDoor)
                     {
                         displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
@@ -361,7 +361,7 @@ public class Player : MonoBehaviour
 
                     displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
 
-                    if (GetComponent<Player>().gameObject.name.Equals("Manager"))
+                    if (GetComponent<Player>().gameObject.name.Equals("Manager") && target.GetComponentInParent<DoorScript>().personalDoor)
                     {
                         displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
@@ -441,6 +441,9 @@ public class Player : MonoBehaviour
             //pickup?
             else if (target.CompareTag("pickup") || target.CompareTag("letter") && shortestDistance < Player.reticleDist && !StateChecker.isGhost)
             {
+                displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
+                displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
 
                 if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
                 {
