@@ -163,6 +163,7 @@ public class Dialogue : MonoBehaviour
             }
             holding = false;
 
+            Tutorial.ShowObjective(false);
             //Fade Panel back in
             if (panel.activeSelf == false)
             {

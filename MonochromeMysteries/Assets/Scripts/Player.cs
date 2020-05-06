@@ -1008,7 +1008,7 @@ public class Player : MonoBehaviour
         yMovement = Input.GetAxis("Vertical");
 
         //Tutorial Bit
-        if ((xMovement != 0 || yMovement != 0) && Dialogue.holding)
+        if ((xMovement != 0 || yMovement != 0))
         {
             Tutorial.instance.OnFirstMovement();
         }
@@ -1207,7 +1207,7 @@ public class Player : MonoBehaviour
         EnableControls(true);
 
         //First Rat possession
-        if (target.GetComponent<Rat>() && Dialogue.holding)
+        if (target.GetComponent<Rat>())
         {
             Tutorial.instance.OnFirstRatPossession();
         }

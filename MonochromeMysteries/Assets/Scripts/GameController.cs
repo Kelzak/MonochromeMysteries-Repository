@@ -105,15 +105,15 @@ public class GameController : MonoBehaviour
         StartCoroutine(InitializeGame());
     }
 
-    public static bool initialLoad = false;
+    public static bool initialLoad = true;
     private void Awake()
     {
         Debug.Log("Running Awake");
         _instance = this;
-        if (initialLoad == false)
+        if (initialLoad == true)
         {
             SaveSystem.Load(SaveSystem.currentSaveSlot);
-            initialLoad = true;
+            initialLoad = false;
         }
         menuActive = false;
 
@@ -336,7 +336,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public static bool playerInPlace = false;
+    public static bool initialTVTransition = true;
     private IEnumerator InitializeGame()
     {
         Debug.Log("Running Initialize");
@@ -379,7 +379,13 @@ public class GameController : MonoBehaviour
         MainMenu.UpdateTVRanges();
 
         Debug.Log("Trying to enter tv");
-        MainMenu.TriggerMainMenu();
+        if (initialTVTransition == true)
+        {
+            MainMenu.TriggerMainMenu();
+            initialTVTransition = false;
+        }
+
+        SaveSystem.Save(SaveSystem.currentSaveSlot);
     }
 
     public void ChangeNotepad(int pageNumber)

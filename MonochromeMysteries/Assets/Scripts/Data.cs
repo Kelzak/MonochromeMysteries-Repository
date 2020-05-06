@@ -102,7 +102,6 @@ public static class Data
 
         public PhotoLibraryData(FileStream stream)
         {
-            Debug.Log(PhotoLibrary.GetPhotoInfo().Count);
 
             List<PhotoLibrary.PhotoInfo> photoInfo = PhotoLibrary.GetPhotoInfo();
             photoImgPaths = PhotoLibrary._instance.photoPaths.ToArray();
@@ -183,6 +182,7 @@ public static class Data
 
         public TutorialData()
         {
+            Debug.Log("TutorialData: Saving completed as: " + Tutorial.instance.isCompleted + " | To save slot: " + SaveSystem.currentSaveSlot);
             this.tutorialCompleted = Tutorial.instance.isCompleted;
         }
     }
@@ -230,7 +230,7 @@ public static class Data
                 currentDoor = GameController._instance.doors[i];
 
                 doorIDs[i] = currentDoor.GetID();
-                Debug.Log("Saving " + currentDoor.name + ": " + currentDoor.isLocked);
+                //Debug.Log("Saving " + currentDoor.name + ": " + currentDoor.isLocked);
                 locked[i] = currentDoor.isLocked;
             }
 

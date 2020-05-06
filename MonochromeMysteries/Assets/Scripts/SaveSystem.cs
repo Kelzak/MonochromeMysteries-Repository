@@ -134,6 +134,7 @@ public static class SaveSystem
 
             //if (GameController.initialLoad == true)
             //{
+            currentSaveSlot = saveSlot;
             SceneManager.LoadScene(0, LoadSceneMode.Single);
             MainMenu.TriggerMainMenu();
             //}
@@ -229,11 +230,11 @@ public static class SaveSystem
             File.Delete(path);
             OnDeleteSave?.Invoke(saveSlot);
 
-            if(saveSlot == currentSaveSlot)
-            {
-                SaveSystem.Load(saveSlot);
+            //if(saveSlot == currentSaveSlot)
+            //{
+            //    SaveSystem.Load(saveSlot);
                 
-            }
+            //}
         }
         else
         {
@@ -246,9 +247,9 @@ public static class SaveSystem
         currentSaveSlot = saveSlot;
         if(SaveExists(saveSlot))
             DeleteSave(currentSaveSlot);
-        Load(saveSlot);
+        //Load(saveSlot);
         SceneManager.LoadScene(0, LoadSceneMode.Single);
-        Save(saveSlot);
+        //Save(saveSlot);
         MainMenu.TriggerMainMenu();
     }
 

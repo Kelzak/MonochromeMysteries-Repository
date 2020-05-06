@@ -332,10 +332,7 @@ public class PhotoLibrary : MonoBehaviour
         {
             if(ClueCatalogue._instance.clues[x].name == "Dead Body")
                 //First Photo
-                if (Dialogue.holding)
-                {
-                    Tutorial.instance.OnFirstPhoto();
-                }
+                Tutorial.instance.OnFirstPhoto();
         }
 
         photo = _instance.CropPhoto(photo, 160 * 2, 150 * 2);

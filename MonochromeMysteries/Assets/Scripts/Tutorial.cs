@@ -70,6 +70,15 @@ public class Tutorial : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        instance = this;
+
+        isCompleted = false;
+        objectives = new Queue<string>();
+        objectiveText = GameController._instance.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
+    }
+
     private void Start()
     {
 
@@ -115,13 +124,6 @@ public class Tutorial : MonoBehaviour
 
     }
 
-    private void Awake()
-    {
-        instance = this;
-
-        objectives = new Queue<string>();
-        objectiveText = GameController._instance.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
-    }
 
     // Start is called before the first frame update
     bool tutorialTriggered = false;
@@ -304,7 +306,9 @@ public class Tutorial : MonoBehaviour
             Destroy(wall);
         }
 
-        if (!isCompleted)
+        isCompleted = true;
+
+        if (SaveSystem.gameData.tutorialData.tutorialCompleted == false)
         {
             objectives.Enqueue("Solve your murder");
             UpdateObjective();
@@ -314,11 +318,11 @@ public class Tutorial : MonoBehaviour
             //Debug.Log("TutorialEnd");
         }
 
-        isCompleted = true;
     }
 
     public static void Load(Data.TutorialData tutorialData)
-    { 
+    {
+        Debug.Log("Loading Tutorial isCompleted: " + tutorialData.tutorialCompleted + " | From Slot: " + SaveSystem.currentSaveSlot);
         instance.isCompleted = tutorialData.tutorialCompleted;
     }
 }
