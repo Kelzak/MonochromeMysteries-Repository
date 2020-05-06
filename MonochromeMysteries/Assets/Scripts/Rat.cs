@@ -105,6 +105,7 @@ public class Rat : Possessable
 
             squeakSource.PlayOneShot(obtainClip);
             target = other.gameObject;
+
             hold = true;
         }
         else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "pickup" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)

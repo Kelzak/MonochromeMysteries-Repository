@@ -31,12 +31,14 @@ public class DoorScript : MonoBehaviour
     public bool isOpen;
     public bool autoClose = true;
     public bool stayOpen;
-    private bool repairing = false;
+    public bool repairing = false;
 
     public bool personalDoor;
     //match this with the name of the game object for the character whos door it is
     public string whoDoor;
     public bool hasNotBeenRepaired;
+
+    public bool hasKey = false;
 
     private void Awake()
     {
@@ -49,6 +51,10 @@ public class DoorScript : MonoBehaviour
         stayOpen = false;
         _animator = transform.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        if(key != null)
+        {
+            hasKey = true;
+        }
     }
 
     private void FixedUpdate()
@@ -128,6 +134,7 @@ public class DoorScript : MonoBehaviour
             Debug.Log("personal door activate");
             if(whoDoor.Equals("Mechanic") && !repairing) //mechanic branch
             {
+                Log.AddEntry("Repairing Door...");
                 repairing = true;
                 audioSource.PlayOneShot(repairClip);
                 StartCoroutine(WaitForSound());
@@ -135,6 +142,7 @@ public class DoorScript : MonoBehaviour
             else if(whoDoor.Equals("Manager"))//manager branch
             {
                 Debug.Log("manager open");
+                Log.AddEntry("Unlocked Office");
                 isLocked = false;
                 personalDoor = false;
                 Open();
@@ -149,8 +157,15 @@ public class DoorScript : MonoBehaviour
         //locked open
         else if (isLocked && !isOpen && Player.keys.Contains(key))
         {
+            Log.AddEntry("Used: " + key.name);
             isLocked = false;
-            Open();
+
+            int rand = Random.Range(0, unlockDoor.Length);
+            AudioClip sound = unlockDoor[rand];
+            audioSource.PlayOneShot(sound);
+
+            Invoke("Open", .75f);
+            //Open();
         }
         //close door if able
         else if (isOpen && !stayOpen)
@@ -167,7 +182,7 @@ public class DoorScript : MonoBehaviour
             rand = Random.Range(0, lockedDoor.Length);
             sound = lockedDoor[rand];
             audioSource.PlayOneShot(sound);
-            if (key != null)
+            if (hasKey)
             {
                 Log.AddEntry("The Door needs a Key");
             }
@@ -219,7 +234,7 @@ public class DoorScript : MonoBehaviour
         int rand = Random.Range(0, openDoor.Length);
         AudioClip sound = openDoor[rand];
         audioSource.PlayOneShot(sound);
-
+        hasKey = false;
         isOpen = true;
     }
 

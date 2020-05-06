@@ -122,6 +122,7 @@ public class Player : MonoBehaviour
     public GameObject displaySeperator;
     public Sprite ratSprite;
     public Sprite screwdriverSprite;
+    public Sprite screwdriverSpriteFlip;
     public Sprite CameraSprite;
     public Sprite keySprite;
     private float fadeTime = 3f;
@@ -132,6 +133,7 @@ public class Player : MonoBehaviour
 
     private bool ratWalk;
     public GameObject photographersCam;
+    public GameObject mustache;
 
     private void OnEnable()
     {
@@ -232,6 +234,16 @@ public class Player : MonoBehaviour
             photographersCam.GetComponent<Renderer>().enabled = true;
 
         }
+        //hunter mustache disable on possession
+        if (GetComponent<Player>().gameObject.name.Equals("Hunter"))
+        {
+            mustache.GetComponent<Renderer>().enabled = false;
+        }
+        else
+        {
+            mustache.GetComponent<Renderer>().enabled = true;
+
+        }
     }
 
     void Interact()
@@ -262,16 +274,32 @@ public class Player : MonoBehaviour
             if (target.GetComponent<Outline>())
             {
 
-                if (!target.GetComponent<Read>() && !target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe"))
+                if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide"))
                 {
-                    //icon
-                    displayIconText.text = "Take Photo";
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    displayIcon.GetComponent<Image>().sprite = CameraSprite;
-                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                    if((StateChecker.isGhost || GetComponent<Rat>()) && target.GetComponent<Read>())
+                    {
 
-                    photoUI = true;
+                    }
+                    else
+                    {
+                        //icon
+                        if(GetComponent<Photographer>())
+                        {
+                            displayIconText.text = "Take Photo";
+
+                        }
+                        else
+                        {
+                            displayIconText.text = "Need Photographer";
+
+                        }
+                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+                        displayIcon.GetComponent<Image>().sprite = CameraSprite;
+                        displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                        photoUI = true;
+                    }
+                    
                 }
                 else
                 {
@@ -366,9 +394,17 @@ public class Player : MonoBehaviour
                 if (target.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic") && target.GetComponentInParent<DoorScript>().personalDoor)
                 {
                     //icon
+                    if(target.GetComponentInParent<DoorScript>().repairing)
+                    {
+                        //displayIcon.GetComponent<Image>().rectTransform.rotation = Quaternion.Euler(0f, 0f, 45f * Mathf.Sin(Time.deltaTime * 1f));
+                        displayIcon.GetComponent<Image>().sprite = screwdriverSpriteFlip;
+                    }
+                    else
+                    {
+                        displayIcon.GetComponent<Image>().sprite = screwdriverSprite;
+                    }
                     displayIconText.text = "Needs Repairs";
                     displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    displayIcon.GetComponent<Image>().sprite = screwdriverSprite;
                     displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
 
                     displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
@@ -407,7 +443,7 @@ public class Player : MonoBehaviour
                     }
 
                 }
-                if (target.GetComponentInParent<DoorScript>().key != null && target.GetComponentInParent<DoorScript>().isLocked)
+                if (target.GetComponentInParent<DoorScript>().hasKey && target.GetComponentInParent<DoorScript>().isLocked)
                 {
                     displayIconText.text = "Needs Key";
                     displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
@@ -601,6 +637,7 @@ public class Player : MonoBehaviour
                 displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
                 displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
                 reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
+                
             }
 
             //displayIcon.GetComponent<SpriteRenderer>().sprite = null;
@@ -828,7 +865,7 @@ public class Player : MonoBehaviour
                             Log.AddEntry("Picked up: " + selection.gameObject.name);
                             audioSource.PlayOneShot(obtainClip);
                             keys.Add(selection.gameObject);
-                            Destroy(selection.gameObject);
+                            selection.gameObject.SetActive(false);
                         }
                         else if (selection.gameObject.CompareTag("Knife") && StateChecker.isGhost)
                         {
@@ -837,7 +874,7 @@ public class Player : MonoBehaviour
                             audioSource.PlayOneShot(obtainClip);
                             endingManager.ShowKnifeInstructions();
                             spiritKnifeIconInUI.SetActive(true);
-                            Destroy(selection.gameObject);
+                            selection.gameObject.SetActive(false);
                         }
                     }
                 }

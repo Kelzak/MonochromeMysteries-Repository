@@ -167,10 +167,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 34b3722387ea5ea42b44ecd39b0ecbd0, type: 3}
   - {fileID: 8300000, guid: 6eb6782136f2d8b4287fa849be2e9b8a, type: 3}
   unlockDoor:
-  - {fileID: 8300000, guid: ad0611f07c6daf648a4ce146a87e0ee7, type: 3}
   - {fileID: 8300000, guid: a01e3f8b4887d9840b35fec448c377bc, type: 3}
-  - {fileID: 8300000, guid: f063267d4bf3dfc4ea3cecb6db455814, type: 3}
-  - {fileID: 8300000, guid: 4f001114dc83df3488c98e3fe2bfb754, type: 3}
+  - {fileID: 8300000, guid: a01e3f8b4887d9840b35fec448c377bc, type: 3}
   lockedDoor:
   - {fileID: 8300000, guid: 8d0e67eec8952044eba7784bc2f579e8, type: 3}
   - {fileID: 8300000, guid: 39c0a8273d0d6fa42926ba8b96d17328, type: 3}
@@ -178,8 +176,11 @@ MonoBehaviour:
   isOpen: 0
   autoClose: 0
   stayOpen: 0
+  repairing: 0
   personalDoor: 0
   whoDoor: Exterminator
+  hasNotBeenRepaired: 0
+  hasKey: 0
 --- !u!1 &946832010998203559
 GameObject:
   m_ObjectHideFlags: 0
