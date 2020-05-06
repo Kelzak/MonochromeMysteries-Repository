@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
     public GameObject cam;
 
     [Header("Movement")]
-    private float moveSpeed = 9f;
+    private float moveSpeed = 7f;
     [HideInInspector]
     public static bool canMove = true;
 
@@ -85,6 +85,7 @@ public class Player : MonoBehaviour
     public AudioClip depossessClip;
     public GameObject darkBackground;
 
+    public static bool tv_Visible = false;
 
     //sound stuff
     public StateChecker stateChecker;
@@ -132,7 +133,6 @@ public class Player : MonoBehaviour
 
     private void OnEnable()
     {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += Begin;
         MainMenu.OnMainMenuTriggered += HideReticle;
         MainMenu.OnMainMenuTriggered += HidePortrait;
     }
@@ -140,11 +140,6 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         //ppvToggle.Toggle(true);
-    }
-
-    private void Begin(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
-    {
-        ResetStaticVariables();
     }
 
     bool initialized = false;
@@ -377,6 +372,7 @@ public class Player : MonoBehaviour
             //tvs
             else if ((target.CompareTag("TV") && shortestDistance < Player.reticleDist / 2))
             {
+                tv_Visible = true;
                 if(!hideText)
                 {
                     reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
@@ -412,7 +408,7 @@ public class Player : MonoBehaviour
                 }
             }
             //rat trap
-            else if (target.CompareTag("ratTrap") && shortestDistance < Player.reticleDist)
+            else if (target.CompareTag("ratTrap") && GetComponent<Character>() && shortestDistance < Player.reticleDist)
             {
                 //use for exterm
                 if(GetComponent<Character>().gameObject.name.Equals("Exterminator"))
@@ -441,13 +437,16 @@ public class Player : MonoBehaviour
                 displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
 
             }
+
+            if (!target.CompareTag("TV"))
+                tv_Visible = false;
         }
         else
         {
             displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-            displayIconText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-            displayIcon.GetComponent<SpriteRenderer>().sprite = null;
-            displayIcon.SetActive(false);
+            //displayIconText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+            //displayIcon.GetComponent<SpriteRenderer>().sprite = null;
+            //displayIcon.SetActive(false);
         }
     }
 
@@ -1278,8 +1277,6 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("player loading");
-
         //Player player = (Player)GameObject.FindObjectOfType(typeof(Player));
         //ResetStaticVariables();
         //player.cam = Camera.main.gameObject;
@@ -1330,7 +1327,6 @@ public class Player : MonoBehaviour
 
     private void OnDisable()
     {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= Begin;
         MainMenu.OnMainMenuTriggered -= HideReticle;
         MainMenu.OnMainMenuTriggered -= HidePortrait;
     }

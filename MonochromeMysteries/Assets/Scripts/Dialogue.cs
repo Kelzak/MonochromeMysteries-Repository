@@ -263,12 +263,13 @@ public class Dialogue : MonoBehaviour
         }
     }
 
-    void Awake()
+    void Start()
     {
-            instance = this;
-            //DontDestroyOnLoad(instance.transform.parent.gameObject);
+            
+        //DontDestroyOnLoad(instance.transform.parent.gameObject);
 
-
+        if (SaveSystem.SaveExists(SaveSystem.currentSaveSlot))
+            TriggerLoad();
     }
 
     private void OnEnable()
@@ -276,9 +277,10 @@ public class Dialogue : MonoBehaviour
         MainMenu.OnMainMenuTriggered += HideDialogue;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
+        instance = this;
+
         panel = GameObject.Find("HUD").transform.Find("Dialogue").gameObject;
         playerPortrait = GameObject.Find("CharacterPortrait");
         speakerImage = panel.transform.Find("PhotoSlot").Find("Image").GetComponent<Image>();
@@ -289,6 +291,7 @@ public class Dialogue : MonoBehaviour
         continuePrompt.SetActive(false);
         panel.SetActive(false);
         dialogueQueue = new Queue<DialogueLine>();
+
     }
 
     // Update is called once per frame

@@ -67,10 +67,25 @@ public class Tutorial : MonoBehaviour
         }
     }
 
-    private void Awake()
+    private void Start()
     {
-        instance = this;
+
         //DontDestroyOnLoad(instance.transform.parent.gameObject);
+        //Load
+        if (SaveSystem.gameData != null)
+            Load(SaveSystem.gameData.tutorialData);
+
+        if (!isCompleted && !tutorialTriggered)
+        {
+            tutorialTriggered = true;
+            StartCoroutine(DialogueScript());
+        }
+        else
+        {
+            TriggerTutorialEnd();
+        }
+        StartCoroutine(WaitForPhotographerEnter());
+
 
     }
 
@@ -83,7 +98,6 @@ public class Tutorial : MonoBehaviour
         onFirstPhoto += TriggerFirstPhoto;
         onFirstCloseScrapbook += TriggerFirstCloseScrapbook;
 
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += Begin;
     }
 
     private void OnDisable()
@@ -94,38 +108,19 @@ public class Tutorial : MonoBehaviour
         onFirstPhoto -= TriggerFirstPhoto;
         onFirstCloseScrapbook -= TriggerFirstCloseScrapbook;
 
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= Begin;
+    }
+
+    private void Awake()
+    {
+        instance = this;
+
+        objectives = new Queue<string>();
+        objectiveText = GameController._instance.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
     }
 
     // Start is called before the first frame update
-    void Begin(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
-    {
-        Begin();
-    }
-
     bool tutorialTriggered = false;
-    void Begin()
-    {
-        objectives = new Queue<string>();
-        objectiveText = GameController._instance.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
 
-        if (!isCompleted && !tutorialTriggered)
-        {
-            tutorialTriggered = true;
-            StartCoroutine(DialogueScript());
-        }
-        else
-        {
-            TriggerTutorialEnd();
-        }
-        StartCoroutine(WaitForPhotographerEnter());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public static void UpdateObjective()
     {
@@ -299,7 +294,5 @@ public class Tutorial : MonoBehaviour
     public static void Load(Data.TutorialData tutorialData)
     { 
         instance.isCompleted = tutorialData.tutorialCompleted;
-
-        instance.Begin();
     }
 }

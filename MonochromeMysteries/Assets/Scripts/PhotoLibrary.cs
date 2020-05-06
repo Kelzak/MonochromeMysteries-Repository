@@ -195,35 +195,9 @@ public class PhotoLibrary : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
-
-            _instance = this;
-            //DontDestroyOnLoad(_instance.transform.parent.gameObject);
-
-        
-
-        photoInfo = new List<PhotoInfo>();
-        photoPaths = new List<string>();
-
-    }
-
-    private void OnEnable()
-    {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += Begin;
-        OnScrapbookChange += UpdateUI;
-    }
-
-    private void OnDisable()
-    {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= Begin;
-        OnScrapbookChange -= UpdateUI;
-    }
-
-    bool initialized = false;
-    private void Begin(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode)
-    {
+        _instance = this;
 
         noPhotosText = photoCollectionMenu.transform.Find("NoPhotosText").gameObject;
         examinePhotoMenu = photoCollectionMenu.transform.Find("ExamineMenu").gameObject;
@@ -239,15 +213,38 @@ public class PhotoLibrary : MonoBehaviour
 
         //Create PhotoSlots
         photoSlots = new PhotoSlot[photosPerPage];
-        for(int i = 0; i < photosPerPage; i++)
+        for (int i = 0; i < photosPerPage; i++)
         {
             GameObject newSlot = Instantiate<GameObject>(photoSlotPrefab, photoGrid.transform);
             photoSlots[i] = new PhotoSlot(newSlot);
         }
 
+        photoInfo = new List<PhotoInfo>();
+        photoPaths = new List<string>();
+
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+
+        //Save
+        if (SaveSystem.gameData != null)
+            Load(SaveSystem.gameData.libraryData);
+
         OnScrapbookChange?.Invoke();
 
-        initialized = true;
+    }
+
+    private void OnEnable()
+    {
+        OnScrapbookChange += UpdateUI;
+    }
+
+    private void OnDisable()
+    {
+        OnScrapbookChange -= UpdateUI;
     }
 
     private void Update()
@@ -493,15 +490,8 @@ public class PhotoLibrary : MonoBehaviour
         }
     }
 
-    public static void TriggerLoad(Data.PhotoLibraryData libraryData)
+    public void Load(Data.PhotoLibraryData libraryData)
     {
-        _instance.StartCoroutine(_instance.Load(libraryData));
-    }
-
-    public IEnumerator Load(Data.PhotoLibraryData libraryData)
-    {
-        while (!_instance.initialized)
-            yield return null;
 
         _instance.photoCount = libraryData.photoCount;
         _instance.photoPaths.Clear();

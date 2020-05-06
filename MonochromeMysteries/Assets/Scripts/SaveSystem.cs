@@ -12,6 +12,8 @@ public static class SaveSystem
     public static int currentSaveSlot = 1;
     public static bool existingSaveData = false;
     public static bool loading = false;
+    public static Data.GameData gameData;
+    public static Data.SaveData saveData;
 
     public delegate void SaveSlotUpdate(int saveSlot, string date, float playTime);
     public static event SaveSlotUpdate OnUpdatedSaveStats;
@@ -33,7 +35,7 @@ public static class SaveSystem
     {
         loading = true;
         formatter = new BinaryFormatter();
-        Data.GameData gameData;
+        Data.GameData newGameData;
         //Game Save
         using (var stream = new FileStream(Path.Combine(saveDataPath, string.Format("save{0}", saveSlot) + fileExtension), FileMode.Create))
         {
@@ -58,8 +60,8 @@ public static class SaveSystem
             }
 
 
-            gameData = new Data.GameData(player, (MainMenu)GameObject.FindObjectOfType(typeof(MainMenu)), stream);
-            formatter.Serialize(stream, gameData);
+            newGameData = new Data.GameData(player, (MainMenu)GameObject.FindObjectOfType(typeof(MainMenu)), stream);
+            formatter.Serialize(stream, newGameData);
         }
 
         //Save SaveInfo
@@ -71,7 +73,7 @@ public static class SaveSystem
 
 
         //Update Save Slot to reflect save info
-        OnUpdatedSaveStats?.Invoke(saveSlot, gameData.gameStats.date, gameData.gameStats.playTime);
+        OnUpdatedSaveStats?.Invoke(saveSlot, newGameData.gameStats.date, newGameData.gameStats.playTime);
         //GameController.UpdateSaveSlotInfo(saveSlot, gameData.gameStats.date, gameData.gameStats.playTime);
 
         loading = false;
@@ -81,8 +83,8 @@ public static class SaveSystem
     public static void Load(int saveSlot)
     {
         loading = true;
+        Debug.Log("Starting to load");
         string path;
-        //SceneManager.LoadScene(0);
 
         //Create Save Directory if non-existant
         if (!Directory.Exists(Path.Combine(saveDataPath, "_GameData")))
@@ -94,10 +96,11 @@ public static class SaveSystem
         if (File.Exists(path = Path.Combine(saveDataPath, "saveInfo" + fileExtension)))
         {
             Data.SaveData data;
-            using (var stream = new FileStream(path, FileMode.OpenOrCreate))
+            using (var stream = new FileStream(path, FileMode.Open))
             {
                 if (stream.Length == 0)
                 {
+                    loading = false;
                     return;
                 }
                 formatter = new BinaryFormatter();
@@ -114,13 +117,10 @@ public static class SaveSystem
             return;
         }
 
-
         if (File.Exists(path = Path.Combine(saveDataPath, string.Format("save{0}", saveSlot) + fileExtension)))
         {
-            Debug.Log("Loaded");
-
+            Debug.Log("STARTING LOAD");
             //Decode Game Data
-            Data.GameData data;
             using (var stream = new FileStream(path, FileMode.Open))
             {
                 if (stream.Length == 0)
@@ -129,47 +129,65 @@ public static class SaveSystem
                     return;
                 }
                 formatter = new BinaryFormatter();
-                data = formatter.Deserialize(stream) as Data.GameData;
+                gameData = formatter.Deserialize(stream) as Data.GameData;
             }
 
-            //GAME STATS
-            GameController._instance.playTime = data.gameStats.playTime;
+            //if (GameController.initialLoad == true)
+            //{
+            SceneManager.LoadScene(0, LoadSceneMode.Single);
+            MainMenu.TriggerMainMenu();
+            //}
 
-            //MAIN MENU
-            MainMenu.TriggerLoad(data.mainMenuData);
+            //Transform gameController = GameObject.Find("Game Management").transform.Find("GameController");
+            //Debug.Log("GameController = " + gameController.name);
 
-            //PLAYER
-            GameController.soul.GetComponent<Player>().TriggerLoad(data.playerData);
+            ////GAME STATS
+            //GameController._instance = gameController.GetComponent<GameController>();
+            //GameController._instance.playTime = data.gameStats.playTime;
+            //if (GameController._instance.paused)
+            //    GameController.TogglePause();
 
-            //PHOTO LIBRARY
-            PhotoLibrary.TriggerLoad(data.libraryData);
+            ////MAIN MENU
+            //MainMenu._instance = gameController.GetComponent<MainMenu>();
+            //MainMenu._instance.Load(data.mainMenuData);
 
-            //DIALOGUE
-            Dialogue.ForceStop();
+            ////PLAYER
+            //GameController.soul.GetComponent<Player>().TriggerLoad(data.playerData);
 
-            //TUTORIAL
-            Tutorial.Load(data.tutorialData);
+            ////PHOTO LIBRARY
+            //PhotoLibrary._instance = gameController.GetComponent<PhotoLibrary>();
+            //PhotoLibrary.TriggerLoad(data.libraryData);
 
-            //RAT TRAPS
-            for(int i = 0; i < GameController._instance.ratTraps.Length; i++)
-            {
-                GameController._instance.ratTraps[i].Load(data.trapData);
-            }
+            ////DIALOGUE
+            //Dialogue.instance = gameController.GetComponent<Dialogue>();
+            //Dialogue.ForceStop();
 
-            //DOORS
-            for(int i = 0; i < GameController._instance.doors.Length; i++)
-            {
-                GameController._instance.doors[i].Load(data.doorData);
-            }
+            ////TUTORIAL
+            //Tutorial.instance = gameController.GetComponent<Tutorial>();
+            //Tutorial.Load(data.tutorialData);
+
+            ////RAT TRAPS
+            //for(int i = 0; i < GameController._instance.ratTraps.Length; i++)
+            //{
+            //    GameController._instance.ratTraps[i].Load(data.trapData);
+            //}
+
+            ////DOORS
+            //for(int i = 0; i < GameController._instance.doors.Length; i++)
+            //{
+            //    GameController._instance.doors[i].Load(data.doorData);
+            //}
 
             //START SEQUENCE
-            Player.ResetStaticVariables();
-            //Debug.Log("CanLook: " + Player.canLook + " | CanMove: " + Player.canMove + " | Paused: " + GameController._instance.paused);
+            
         }
         else
         {
+            gameData = null;
+            
             Debug.Log("Save Data for Slot " + saveSlot + " Not Found.");
         }
+
 
         //Load Game Stats for Save Slots
         for (int i = 1; i <= MAX_SAVE_SLOTS; i++)
@@ -196,11 +214,10 @@ public static class SaveSystem
     public static void DeleteSave(int saveSlot)
     {
         string path;
-        Debug.Log("Button Pressed");
         if (File.Exists(path = Path.Combine(saveDataPath, string.Format("save{0}", saveSlot) + fileExtension)))
         {
             formatter = new BinaryFormatter();
-            using (var stream = new FileStream(path, FileMode.Open))
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite))
             {
                 Data.PhotoLibraryData data = (formatter.Deserialize(stream) as Data.GameData).libraryData;
                 foreach(string imgPath in data.photoImgPaths)
@@ -227,7 +244,10 @@ public static class SaveSystem
     public static void NewGame(int saveSlot)
     {
         currentSaveSlot = saveSlot;
-        SceneManager.LoadScene(0);
+        if(SaveExists(saveSlot))
+            DeleteSave(currentSaveSlot);
+        Load(saveSlot);
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
         Save(saveSlot);
         MainMenu.TriggerMainMenu();
     }

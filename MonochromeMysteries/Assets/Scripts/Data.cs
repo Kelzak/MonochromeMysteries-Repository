@@ -102,6 +102,8 @@ public static class Data
 
         public PhotoLibraryData(FileStream stream)
         {
+            Debug.Log(PhotoLibrary.GetPhotoInfo().Count);
+
             List<PhotoLibrary.PhotoInfo> photoInfo = PhotoLibrary.GetPhotoInfo();
             photoImgPaths = PhotoLibrary._instance.photoPaths.ToArray();
             photoCount = PhotoLibrary._instance.photoCount;

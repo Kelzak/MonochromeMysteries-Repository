@@ -27,40 +27,37 @@ public class MainMenu : MonoBehaviour
     //Says whether the MAIN MENU ONLY is active
     public static bool active = false;
 
-    private void OnEnable()
+    private void Start()
     {
-        SceneManager.sceneLoaded += Begin;
-    }
+        playerInTVRange = true;
+        //DontDestroyOnLoad(_instance.transform.parent.gameObject);
 
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= Begin;
+        if (SaveSystem.gameData != null)
+            _instance.Load(SaveSystem.gameData.mainMenuData);
+        else
+            loadComplete = true;
+
     }
 
     private void Awake()
     {
-            _instance = this;
-            //DontDestroyOnLoad(_instance.transform.parent.gameObject);
+        _instance = this;
 
-    }
-
-    bool initialized = false;
-    // Start is called before the first frame update
-    void Begin(Scene scene, LoadSceneMode loadSceneMode)
-    {
-        Begin();
-    }
-
-    void Begin()
-    {
         active = false;
         cam = Camera.main;
 
         TVs = FindObjectsOfType<Television>();
 
         playerPortrait = GameObject.Find("CharacterPortrait");
-        initialized = true;
+
+        loadComplete = false;
+
     }
+
+    bool initialized = false;
+    // Start is called before the first frame update
+
+
 
     int frameCount = 0, triggerFrame = 20;
     // Update is called once per frame
@@ -105,13 +102,14 @@ public class MainMenu : MonoBehaviour
 
     public static void TriggerMainMenu()
     {
-        if (!MainMenu._instance.tvTransitionInProgress && MainMenu.IsInRange() && (!GameController.menuActive || MainMenu.active))
+        if (!MainMenu._instance.tvTransitionInProgress && MainMenu.IsInRange() && (!GameController.menuActive || MainMenu.active) && (Player.tv_Visible || (Time.timeSinceLevelLoad < 5 && !MainMenu.active)))
         {
+            Debug.Log("Entering TV");
             MainMenu._instance.StartCoroutine(MainMenu._instance.TriggerTV());
         }
         else
         {
-            Debug.Log("tvTransitition: " + !MainMenu._instance.tvTransitionInProgress + " | In Range: " + IsInRange() + " | Etc: " + (!GameController.menuActive || MainMenu.active));
+            Debug.Log("tvTransitition: " + !MainMenu._instance.tvTransitionInProgress + " | In Range: " + IsInRange() + " | Etc: " + (!GameController.menuActive || MainMenu.active) + " | vis: " + (Player.tv_Visible || Time.timeSinceLevelLoad < 5));
 
         }
     }
@@ -149,17 +147,20 @@ public class MainMenu : MonoBehaviour
 
     public static void UpdateTVRanges()
     {
+        Transform player = (FindObjectOfType(typeof(Player)) as Player).transform;
         _instance.playerInTVRange = false;
         for (int i = 0; i < _instance.TVs.Length; i++)
         {
-            if (_instance.TVs[i].CheckForPlayerInRange())
+            if (_instance.TVs[i].CheckForPlayerInRange(player))
             {
                 _instance.playerInTVRange = true;
                 _instance.lastTvIndex = i;
                 _instance.currentTV = _instance.TVs[i];
+
             }
         }
 
+        Debug.Log("Failed");
         if (!_instance.playerInTVRange)
             _instance.lastTvIndex = -1;
     }
@@ -208,7 +209,7 @@ public class MainMenu : MonoBehaviour
             OnMainMenuTriggered?.Invoke(false);
         }
 
-        Debug.Log("Cam is in " + cam.transform.parent.name);
+
         //Transitioning into TV, store player transform so camera can be returned properly
         if (cam.GetComponentInParent<Player>())
         {
@@ -238,7 +239,6 @@ public class MainMenu : MonoBehaviour
 
         //Progress toward target transform's position and rotation
         Vector3 startPos = cam.transform.localPosition;
-        Debug.Log(targetTransform.name);
         Vector3 targetPos = targetTransform.GetComponent<Player>() ? Vector3.zero + targetTransform.GetComponent<Player>().camOffset : Vector3.zero;
         Quaternion startRot = cam.transform.localRotation;
 
@@ -301,37 +301,32 @@ public class MainMenu : MonoBehaviour
         menuTransitionInProgress = false;
     }
 
-    public static void TriggerLoad(Data.MainMenuData mainMenuData)
+    public bool loadComplete = false;
+    public void Load(Data.MainMenuData mainMenuData)
     {
-        _instance.StartCoroutine(_instance.Load(mainMenuData));
-    }
-
-    public IEnumerator Load(Data.MainMenuData mainMenuData)
-    {
-        while (!_instance.initialized)
-        {
-            yield return null;
-        }
-
         var tvPos = new Vector3(mainMenuData.currentTV_pos[0], mainMenuData.currentTV_pos[1], mainMenuData.currentTV_pos[2]);
+        Debug.Log("TV POS: " + tvPos);
         Collider[] hit = Physics.OverlapSphere(tvPos, 1f);
         Television result = null;
         foreach (Collider x in hit)
         {
             if (x.GetComponent<Television>())
                 result = x.GetComponent<Television>();
-
         }
-        if (result.screen != null)
+
+        if (result != null)
         {
+            Debug.Log("Loaded TV: " + result.transform.parent);
             _instance.SetCurrentTV(result);
             GameController._instance.playerSpawn.transform.position = result.transform.Find("CamPoint").position;
             GameController._instance.playerSpawn.transform.rotation = result.transform.Find("CamPoint").rotation;
         }
-    }
+        else
+        {
+            Debug.Log("Failed to load TV");
+        }
 
-    private Television GetDefaultTV()
-    {
-        return null;
+        loadComplete = true;
+        Debug.Log("Main Menu Load Complete");
     }
 }

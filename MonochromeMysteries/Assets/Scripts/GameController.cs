@@ -56,7 +56,6 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     private void OnEnable()
     {
-        SceneManager.sceneLoaded += Begin;
 
         SaveSystem.OnUpdatedSaveStats += UpdateSaveSlotInfo;
         SaveSystem.OnDeleteSave += DeleteSaveSlotInfo;
@@ -64,29 +63,23 @@ public class GameController : MonoBehaviour
 
     private void OnDisable()
     {
-       SceneManager.sceneLoaded -= Begin;
 
        SaveSystem.OnUpdatedSaveStats -= UpdateSaveSlotInfo;
        SaveSystem.OnDeleteSave -= DeleteSaveSlotInfo;
     }
 
+    public static bool initialLoad = false;
     private void Awake()
     {
-        //_instance = this;
-            _instance = this;
-
-    }
-
-    static bool initialLoad = false;
-    void Begin(Scene scene, LoadSceneMode loadSceneMode)
-    {
+        Debug.Log("Running Awake");
+        _instance = this;
+        if (initialLoad == false)
+        {
+            SaveSystem.Load(SaveSystem.currentSaveSlot);
+            initialLoad = true;
+        }
         menuActive = false;
-        //if (initialLoad == false)
-        //{
-        //    initialLoad = true;
-        //    SaveSystem.Load(SaveSystem.currentSaveSlot);
-        //}
-        //Assign Menus
+
         mainHUD = GameObject.Find("HUD").GetComponent<Canvas>();
         pauseMenu = mainHUD.transform.Find("Menu").gameObject;
         tabs = pauseMenu.transform.Find("Tabs").gameObject;
@@ -128,13 +121,13 @@ public class GameController : MonoBehaviour
                                                 string.Format("Are you sure you want to load data in Slot {0}", temp),
                                                 () =>
                                                 {
-                                                    SaveSystem.Load(temp);
-                                                    //SaveSystem.Save(saveSlot);
                                                     if (paused)
                                                         TogglePause();
                                                     pauseMenu.SetActive(false);
                                                     menuActive = false;
-                                                    StartCoroutine(InitializeGame());
+                                                    SaveSystem.Load(temp);
+                                                    //SaveSystem.Save(saveSlot);
+                                                    //StartCoroutine(InitializeGame());
                                                 }));
 
             });
@@ -154,6 +147,7 @@ public class GameController : MonoBehaviour
         //General Assignments for player and camera
         cam = Camera.main;
         soul = GameObject.Find("Player");
+        Player.ResetStaticVariables();
 
         //Keep Track of Rat Traps
         ratTraps = GameObject.FindObjectsOfType(typeof(RatTrap)) as RatTrap[];
@@ -164,14 +158,30 @@ public class GameController : MonoBehaviour
         System.Array.Sort(doors, (DoorScript x, DoorScript y) => { return x.GetID().CompareTo(y.GetID()); });
 
         audioSources = this.GetComponents<AudioSource>();
+    }
 
-
-        if (initialLoad == false)
+    void Start()
+    {
+        Debug.Log("Running Start");
+        if (SaveSystem.gameData != null)
         {
-            initialLoad = true;
-            SaveSystem.Load(SaveSystem.currentSaveSlot);
-        }
+            //LOAD RAT TRAPS
+            for (int i = 0; i < GameController._instance.ratTraps.Length; i++)
+            {
+                GameController._instance.ratTraps[i].Load(SaveSystem.gameData.trapData);
+            }
 
+            //DOORS
+            for (int i = 0; i < GameController._instance.doors.Length; i++)
+            {
+                GameController._instance.doors[i].Load(SaveSystem.gameData.doorData);
+            }
+
+            //Load General
+            _instance.playTime = SaveSystem.gameData.gameStats.playTime;
+            if (_instance.paused)
+                GameController.TogglePause();
+        }
 
         //Initialize Game
         StartCoroutine(InitializeGame());
@@ -317,15 +327,14 @@ public class GameController : MonoBehaviour
     public static bool playerInPlace = false;
     private IEnumerator InitializeGame()
     {
-        while (SaveSystem.loading || Player.GetPossessionInProgress())
-            yield return null;
+        Debug.Log("Running Initialize");
 
-
-        while (MainMenu._instance.TVs.Length == 0)
+        while (MainMenu._instance.TVs.Length == 0 || SaveSystem.loading || Player.GetPossessionInProgress() || !MainMenu._instance.loadComplete)
         {
+            Debug.Log("TVS: " + MainMenu._instance.TVs.Length + " | Loading: " + SaveSystem.loading + " | PossessionInProgress: " + Player.GetPossessionInProgress() + " | MainmenuLoad: " + (MainMenu._instance.loadComplete == false));
             yield return null;
         }
-
+        Debug.Log("!SaveExists: " + !SaveSystem.SaveExists(SaveSystem.currentSaveSlot) + " | CurrentTV: " + MainMenu._instance.GetCurrentTV() == null);
         if (!SaveSystem.SaveExists(SaveSystem.currentSaveSlot) || MainMenu._instance.GetCurrentTV() == null)
         {
             Debug.Log("Running initial tv settup");
@@ -344,19 +353,20 @@ public class GameController : MonoBehaviour
             MainMenu._instance.SetCurrentTV(startTV);
 
             //Vector3 target = transform.forward;
-
-
         }
 
+        Debug.Log("CanLook: " + Player.canLook + " | CanMove: " + Player.canMove + " | Paused: " + GameController._instance.paused);
 
         soul.transform.position = MainMenu._instance.GetCurrentTV().transform.Find("CamPoint").position;
         soul.transform.rotation = MainMenu._instance.GetCurrentTV().transform.Find("CamPoint").rotation;
-        Debug.Log(MainMenu._instance.GetCurrentTV().transform.parent.name);
-        playerInPlace = true;
+        Debug.Log("Player Moved to Spawn");
 
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForFixedUpdate();
 
+        Debug.Log("Updating ranges");
         MainMenu.UpdateTVRanges();
+
+        Debug.Log("Trying to enter tv");
         MainMenu.TriggerMainMenu();
     }
 

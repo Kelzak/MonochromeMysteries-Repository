@@ -24,7 +24,7 @@ public class Television : MonoBehaviour
     //TV
     private MeshRenderer mesh;
     private Vector3 boxCenter;
-    private Collider[] hit;
+    private float triggerRadius = 5;
 
     private void OnEnable()
     {
@@ -41,13 +41,15 @@ public class Television : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         screen = transform.Find("Screen").gameObject;
         mainMenu = screen.transform.Find("MainMenu").gameObject;
         howToPlay = screen.transform.Find("How To Play").gameObject;
         tvStatic = screen.transform.Find("Static").gameObject;
         saveSelect = screen.transform.Find("SaveSelect").gameObject;
+
+        boxCenter = GetComponent<MeshRenderer>().bounds.center;
         
         Transform menuOptions = transform.Find("Screen").Find("MainMenu").Find("MenuOptions");
         buttons = new Button[] { menuOptions.Find("New Game").GetComponent<Button>(), //0
@@ -142,20 +144,19 @@ public class Television : MonoBehaviour
         }
     }
 
-    public bool CheckForPlayerInRange()
+    
+    public bool CheckForPlayerInRange(Transform playerTransform)
     {
+        Vector3 target = playerTransform.GetComponent<MeshRenderer>().bounds.center;
         //Check area in front of TV for player
-        hit = Physics.OverlapBox(boxCenter, mesh.bounds.size, Quaternion.identity);
-        bool found = false;
-        foreach (Collider x in hit)
+        RaycastHit[] hit = Physics.RaycastAll(boxCenter, target - boxCenter, Mathf.Clamp(Vector3.Distance(target, boxCenter),0,triggerRadius));
+        bool playerFound = false;
+        foreach(RaycastHit x in hit)
         {
-            if (x.gameObject.GetComponent<Player>())
-            {
-                found = true;
-            }
+            if (x.collider.gameObject.GetComponentInParent<Player>())
+                playerFound = true;
         }
-
-        return found;
+        return playerFound;
     }
 
     private void UpdateSaveSlotInfo(int saveSlot, string newDate, float newPlayTime)
@@ -193,8 +194,6 @@ public class Television : MonoBehaviour
     public IEnumerator Confirmation(int saveSlot, string message, UnityEngine.Events.UnityAction action)
     {
         bool waitForResponse = false, confirmationResponse = false;
-
-        Debug.Log("Confirmation Running");
 
         saveSelect_confirmation.SetActive(true);
         saveSelect_confirmation_message.text = message;
