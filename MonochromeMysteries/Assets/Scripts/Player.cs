@@ -130,6 +130,7 @@ public class Player : MonoBehaviour
     public Sprite CameraSprite;
     public Sprite keySprite;
     public Sprite keySpriteUse;
+    public Sprite knifeicon;
     private float fadeTime = 3f;
     private bool hideText;
     public static bool isReading = false;
@@ -195,7 +196,7 @@ public class Player : MonoBehaviour
         if (!possessionInProgress)
             PossessionCheck();
 
-        if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress && !Read.isReading && !PadlockPuzzle.keypadisUp)
+        if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress && !Read.isReading && !PadlockPuzzle.keypadisUp && !Endings.isUsingKnife)
         {
             canPickup = false;
             audioSource.PlayOneShot(depossessClip);
@@ -613,6 +614,26 @@ public class Player : MonoBehaviour
                         target.GetComponent<RatTrap>().Activate();
                     }
                 }
+            }
+            //knife stuff
+            else if (target.CompareTag("Knife"))
+            {
+                if (StateChecker.isGhost)
+                {
+                    displayIconText.text = "Press F to pickup spirit knife";
+                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+                    displayIcon.GetComponent<Image>().sprite = knifeicon;
+
+                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                }
+                else
+                {
+                    displayIconText.text = "Needs spirit";
+                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+
+                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+                }
+
             }
             //default
             else
