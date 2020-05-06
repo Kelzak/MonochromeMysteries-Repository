@@ -84,6 +84,7 @@ public class Player : MonoBehaviour
     public AudioClip possessClip;
     public AudioClip depossessClip;
     public GameObject darkBackground;
+    public GameObject spiritKnifeIconInUI;
 
 
     //sound stuff
@@ -158,6 +159,7 @@ public class Player : MonoBehaviour
         characterPortrait = GameObject.Find("CharacterPortrait");
         characterRole = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterRole").GetComponent<TMP_Text>();
         characterName = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterName").GetComponent<TMP_Text>();
+        spiritKnifeIconInUI = HUD.transform.Find("Menu").transform.Find("NotepadGroup").transform.Find("SpiritKnifeIcon").gameObject;
         reticle = HUD.transform.Find("Reticle").GetComponent<Image>();
 
         audioSource = GetComponent<AudioSource>();
@@ -463,13 +465,13 @@ public class Player : MonoBehaviour
                     }
                     else if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
                     {
-                        displayIconText.text = "Rat cant use";
+                        displayIconText.text = "Rat can't use";
                         displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
                         displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
                     }
                     else 
                     {
-                        displayIconText.text = "Only Sprit can use";
+                        displayIconText.text = "Only Spirit can use";
                         displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
                         displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
                     }
@@ -483,15 +485,15 @@ public class Player : MonoBehaviour
                         displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
                         displayText.text = "Press F to Use";
                     }
-                    else if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
+                    else if (GetComponent<Rat>())// && shortestDistance < Player.reticleDist / 8f)
                     {
-                        displayIconText.text = "Rat cant use";
+                        displayIconText.text = "Rat can't use";
                         displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
                         displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
                     }
                     else
                     {
-                        displayIconText.text = "Sprit cant use";
+                        displayIconText.text = "Spirit can't use";
                         displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
                         displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
                     }
@@ -834,6 +836,7 @@ public class Player : MonoBehaviour
                             Log.AddEntry("Picked up Knife");
                             audioSource.PlayOneShot(obtainClip);
                             endingManager.ShowKnifeInstructions();
+                            spiritKnifeIconInUI.SetActive(true);
                             Destroy(selection.gameObject);
                         }
                     }

@@ -44,6 +44,8 @@ public class PadlockPuzzle : MonoBehaviour
     public GameObject symbolPanel;
     public InputField inputField;
     public InputField symbolInputField;
+    public GameObject darkBackground;
+    public GameObject pressEscToClose;
 
     public Photographer photographer;
 
@@ -148,6 +150,8 @@ public class PadlockPuzzle : MonoBehaviour
             keypadPanel.SetActive(true);
         }
         keypadisUp = true;
+        darkBackground.SetActive(true);
+        pressEscToClose.SetActive(true);
         GameController.TogglePause();
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
@@ -174,6 +178,8 @@ public class PadlockPuzzle : MonoBehaviour
             //photographer.canTakePhoto = false;
         }
         keypadisUp = false;
+        darkBackground.SetActive(false);
+        pressEscToClose.SetActive(false);
         GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);

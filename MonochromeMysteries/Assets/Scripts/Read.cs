@@ -13,6 +13,8 @@ public class Read : MonoBehaviour
 
     public GameObject[] toRead;
     private GameObject Background;
+    private GameObject pressEscToCloseText;
+
 
     public GameObject flipLeftIcon;
     public GameObject flipRightIcon;
@@ -43,6 +45,7 @@ public class Read : MonoBehaviour
         ending = FindObjectOfType<Endings>();
         player = FindObjectOfType<Player>();
         Background = player.darkBackground;
+        pressEscToCloseText = GameObject.Find("HUD").transform.Find("PressEscToClose").gameObject;
         audioSource = GetComponent<AudioSource>();
         audioSource.volume = soundVolume;
 
@@ -154,6 +157,7 @@ public class Read : MonoBehaviour
             Player.EnableControls(false);
             Time.timeScale = 0;
             Background.SetActive(true);
+            pressEscToCloseText.SetActive(true);
             StartCoroutine(ReadTime());
 
 
@@ -180,6 +184,7 @@ public class Read : MonoBehaviour
             Player.EnableControls(true);
             Time.timeScale = 1;
             Background.SetActive(false);
+            pressEscToCloseText.SetActive(false);
             //GameController.TogglePause();
             isOpen = false;
             isReading = false;

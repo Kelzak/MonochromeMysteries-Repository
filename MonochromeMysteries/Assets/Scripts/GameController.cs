@@ -52,6 +52,11 @@ public class GameController : MonoBehaviour
 
     private AudioSource[] audioSources;
 
+    public GameObject NotepadPage1;
+    public GameObject NotepadPage2;
+    public GameObject NotepadPage3;
+    public GameObject NotepadPage4;
+
 
     // Start is called before the first frame update
     private void OnEnable()
@@ -68,6 +73,14 @@ public class GameController : MonoBehaviour
 
        SaveSystem.OnUpdatedSaveStats -= UpdateSaveSlotInfo;
        SaveSystem.OnDeleteSave -= DeleteSaveSlotInfo;
+    }
+
+    private void Start()
+    {
+        NotepadPage1 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField1").gameObject;
+        NotepadPage2 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField2").gameObject;
+        NotepadPage3 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField3").gameObject;
+        NotepadPage4 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField4").gameObject;
     }
 
     private void Awake()
@@ -171,8 +184,7 @@ public class GameController : MonoBehaviour
             initialLoad = true;
             SaveSystem.Load(SaveSystem.currentSaveSlot);
         }
-
-
+        
         //Initialize Game
         StartCoroutine(InitializeGame());
 
@@ -358,6 +370,38 @@ public class GameController : MonoBehaviour
 
         MainMenu.UpdateTVRanges();
         MainMenu.TriggerMainMenu();
+    }
+
+    public void ChangeNotepad(int pageNumber)
+    {
+        if(pageNumber == 1)
+        {
+            NotepadPage1.SetActive(true);
+            NotepadPage2.SetActive(false);
+            NotepadPage3.SetActive(false);
+            NotepadPage4.SetActive(false);
+        }
+        if (pageNumber == 2)
+        {
+            NotepadPage1.SetActive(false);
+            NotepadPage2.SetActive(true);
+            NotepadPage3.SetActive(false);
+            NotepadPage4.SetActive(false);
+        }
+        if (pageNumber == 3)
+        {
+            NotepadPage1.SetActive(false);
+            NotepadPage2.SetActive(false);
+            NotepadPage3.SetActive(true);
+            NotepadPage4.SetActive(false);
+        }
+        if (pageNumber == 4)
+        {
+            NotepadPage1.SetActive(false);
+            NotepadPage2.SetActive(false);
+            NotepadPage3.SetActive(false);
+            NotepadPage4.SetActive(true);
+        }
     }
 
 }
