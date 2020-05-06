@@ -201,6 +201,10 @@ public class MainMenu : MonoBehaviour
         //Exiting menu so return to static
         else
         {
+            if (Time.time >= 5 && Dialogue.holding)
+            {
+                Tutorial.instance.OnFirstTVEnter();
+            }
             currentTV.tvStatic.SetActive(true);
             currentTV.mainMenu.SetActive(false);
             currentTV.saveSelect.SetActive(false);

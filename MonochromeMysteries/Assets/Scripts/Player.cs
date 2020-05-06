@@ -674,7 +674,7 @@ public class Player : MonoBehaviour
             {
                 if (gameObject.GetComponent<Photographer>() || gameObject.GetComponent<Character>())
                 {
-                    if (Input.GetKeyDown(KeyCode.F))
+                    if (Input.GetKeyDown(KeyCode.F) && !PadlockPuzzle.keypadisUp)
                     {
                         safeName = hit.collider.name;
                         if (!safeManager.safe1Open && safeName == "LockedSafe1")
@@ -705,7 +705,7 @@ public class Player : MonoBehaviour
                 }
                 else if (StateChecker.isGhost)
                 {
-                    if (Input.GetKeyDown(KeyCode.F))
+                    if (Input.GetKeyDown(KeyCode.F) && !PadlockPuzzle.keypadisUp)
                     {
                         safeName = hit.collider.name;
                         if (!safeManager.safe2Open && safeName == "LockedSafe2")
