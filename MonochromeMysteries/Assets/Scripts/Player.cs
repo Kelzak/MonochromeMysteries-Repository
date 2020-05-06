@@ -1564,11 +1564,15 @@ public class Player : MonoBehaviour
         {
             hideText = true;
             reticle.gameObject.SetActive(false);
+            displayIcon.SetActive(false);
+            displayIconText.text = "";
+            displayText.text = "";
         }
         else
         {
             hideText = false;
             reticle.gameObject.SetActive(true);
+            displayIcon.SetActive(true);
         }
     }
 
