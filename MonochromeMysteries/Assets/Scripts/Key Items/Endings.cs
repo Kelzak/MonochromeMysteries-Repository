@@ -14,6 +14,7 @@ public class Endings : MonoBehaviour
     public GameObject darkBackground;
     public GameObject menu;
     public TMP_Text personDecidedText;
+    public static bool isUsingKnife;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,7 @@ public class Endings : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !menu.activeSelf && !Readables.isReadingLetter && !PadlockPuzzle.keypadisUp && !StateChecker.isGhost && !Player.isRat)
         {
             knifeConfirmation.SetActive(true);
+            isUsingKnife = true;
             personDecidedText.text = "Are you certain the <b>" + Player.characterRoleForEnding + "</b> is the person who murdered you?";
             Readables.isReadingLetter = true;
             GameController.TogglePause();
@@ -94,6 +96,7 @@ public class Endings : MonoBehaviour
 
     public void HideKnifeInstructions()
     {
+        isUsingKnife = false;
         darkBackground.SetActive(false);
         Cursor.visible = false;
         knifeInstructions.SetActive(false);
