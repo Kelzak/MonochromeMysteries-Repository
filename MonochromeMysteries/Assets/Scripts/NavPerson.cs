@@ -52,6 +52,7 @@ public class NavPerson : MonoBehaviour
     public AudioClip[] maleSteps;
     public AudioClip[] femaleSteps;
     public AudioClip[] indoorSteps;
+    public AudioClip[] grassSteps;
     public AudioClip possessClip;
     public AudioClip depossessClip;
     public float stepVolume = .5f;
@@ -150,7 +151,7 @@ public class NavPerson : MonoBehaviour
     {
         bool isInside;
         Vector3 fwd = new Vector3(0, 2, 0);
-        Ray indoorCheck = new Ray(GameObject.FindObjectOfType<Player>().transform.position + fwd, transform.up);
+        Ray indoorCheck = new Ray(transform.position + fwd, transform.up);
         //Debug.DrawLine(indoorCheck.origin, hit.transform.position);
 
         
@@ -172,6 +173,55 @@ public class NavPerson : MonoBehaviour
         //Debug.Log(hit.collider.gameObject.name);
         return isInside;
     }
+    public bool OnGrass()
+    {
+        bool onGrass;
+        Vector3 fwd = new Vector3(0, 5, 0);
+        if (StateChecker.isGhost)
+        {
+            fwd = new Vector3(0, 2, 0);
+        }
+
+        Ray indoorCheck = new Ray(transform.position + fwd, Vector3.down);
+        //Debug.DrawLine(indoorCheck.origin, hit.transform.position);
+
+        RaycastHit[] hit;
+        if ((hit = Physics.RaycastAll(indoorCheck, Player.reticleDist)).Length > 0)
+        {
+            GameObject target = null;
+            float shortestDistance = Mathf.Infinity;
+            for (int i = 0; i < hit.Length; i++)
+            {
+                if (hit[i].distance < shortestDistance && hit[i].collider.gameObject != gameObject)
+                {
+                    target = hit[i].collider.gameObject;
+                    shortestDistance = hit[i].distance;
+                }
+            }
+
+
+            //Debug.Log(hit.collider.gameObject.name);
+            //Debug.Log(hit.collider.gameObject.tag);
+            if (target.CompareTag("Person"))
+            {
+                //ignore collider
+            }
+            if (target.name.Equals("Bass"))
+            {
+                Debug.Log("nav person on Graass");
+                onGrass = true;
+            }
+            else
+                onGrass = false;
+        }
+        else
+        {
+            onGrass = false;
+        }
+        //Debug.Log("Is inside: " + isInside);
+        //Debug.Log(hit.collider.gameObject.name);
+        return onGrass;
+    }
 
     void WalkAudio()
     {
@@ -184,6 +234,12 @@ public class NavPerson : MonoBehaviour
                 rand = Random.Range(0, indoorSteps.Length);
                 step = indoorSteps[rand];
                 stepSources.volume = .5f;
+                stepSources.PlayOneShot(step);
+            }
+            else if (OnGrass() == true)
+            {
+                rand = Random.Range(0, grassSteps.Length-1);
+                step = grassSteps[rand];
                 stepSources.PlayOneShot(step);
             }
             else if (isFemale)
@@ -299,6 +355,14 @@ public class NavPerson : MonoBehaviour
         mumbleSource.PlayOneShot(possessClip);
         isPossessed = true;
         GetComponent<NavMeshAgent>().isStopped = true;
+        try
+        {
+            GetComponentInChildren<HoverText>().UIstop = true;
+        }
+        catch
+        {
+            //throw
+        }
     }
 
     private void OnEnable()
@@ -313,6 +377,14 @@ public class NavPerson : MonoBehaviour
         {
             isWaiting = true;
             Invoke("PossessWait", waitAfterPossessTime);       
+        }
+        try
+        {
+            GetComponentInChildren<HoverText>().UIstop = false;
+        }
+        catch
+        {
+            //throw
         }
     }
 

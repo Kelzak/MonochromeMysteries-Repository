@@ -93,7 +93,7 @@ public class Outline : MonoBehaviour {
     outlineFillMaterial.name = "OutlineFill (Instance)";
 
     //setting items
-    outlineWidth = 7f;
+    outlineWidth = 8f;
     outlineMode = Mode.OutlineVisible;
 
     // Retrieve or generate smooth normals

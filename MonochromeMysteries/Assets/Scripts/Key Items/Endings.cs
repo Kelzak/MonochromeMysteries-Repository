@@ -11,18 +11,21 @@ public class Endings : MonoBehaviour
     //public Player player;
     public GameObject knifeInstructions;
     public GameObject knifeConfirmation;
+    public GameObject darkBackground;
+    public GameObject menu;
     public TMP_Text personDecidedText;
 
     // Start is called before the first frame update
     void Start()
     {
         personDecidedText = GameController._instance.mainHUD.transform.Find("KnifeConfirmationPanel").Find("PersonToKill").GetComponent<TMP_Text>();
+        menu = GameObject.Find("HUD").transform.Find("Menu").gameObject;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !Readables.isReadingLetter && !StateChecker.isGhost && !Player.isRat)
+        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !menu.activeSelf && !Readables.isReadingLetter && !PadlockPuzzle.keypadisUp && !StateChecker.isGhost && !Player.isRat)
         {
             knifeConfirmation.SetActive(true);
             personDecidedText.text = "Are you certain the <b>" + Player.characterRoleForEnding + "</b> is the person who murdered you?";
@@ -74,6 +77,8 @@ public class Endings : MonoBehaviour
     public void ShowKnifeInstructions()
     {
         Readables.isReadingLetter = true;
+        Read.isReading = true;
+        darkBackground.SetActive(true);
         knifeInstructions.SetActive(true);
         GameController.TogglePause();
         Cursor.lockState = CursorLockMode.Confined;
@@ -89,6 +94,7 @@ public class Endings : MonoBehaviour
 
     public void HideKnifeInstructions()
     {
+        darkBackground.SetActive(false);
         Cursor.visible = false;
         knifeInstructions.SetActive(false);
         knifeConfirmation.SetActive(false);
@@ -99,6 +105,7 @@ public class Endings : MonoBehaviour
             StartCoroutine(WaitToTurnOnCamera());
         }
         Readables.isReadingLetter = false;
+        Read.isReading = false;
     }
 
     public IEnumerator WaitToTurnOnCamera()

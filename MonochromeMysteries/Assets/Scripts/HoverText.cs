@@ -36,6 +36,16 @@ public class HoverText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(GetComponentInParent<onlyGhostSees>() && !StateChecker.isGhost)
+        {
+            //Debug.Log("UI stop on guide");
+            UIstop = true;
+        }
+        else if (GetComponentInParent<onlyGhostSees>()&& StateChecker.isGhost)
+        {
+            UIstop = false;
+        }
+
         //display = false;
         player = GameObject.FindObjectOfType<Player>();
         dist = Vector3.Distance(this.transform.position, player.transform.position);

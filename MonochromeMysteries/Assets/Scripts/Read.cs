@@ -3,6 +3,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 [RequireComponent(typeof(AudioSource))]
 public class Read : MonoBehaviour
@@ -13,6 +15,8 @@ public class Read : MonoBehaviour
 
     public GameObject[] toRead;
     private GameObject Background;
+    private GameObject pressEscToCloseText;
+
 
     public GameObject flipLeftIcon;
     public GameObject flipRightIcon;
@@ -34,6 +38,11 @@ public class Read : MonoBehaviour
     [Range(0.0f, 1.0f)]
     public float soundVolume = .5f;
 
+    private void Awake()
+    {
+        flipLeftIcon = GameObject.FindGameObjectWithTag("leftFlip");
+        flipRightIcon = GameObject.FindGameObjectWithTag("rightFlip");
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +52,7 @@ public class Read : MonoBehaviour
         ending = FindObjectOfType<Endings>();
         player = FindObjectOfType<Player>();
         Background = player.darkBackground;
+        pressEscToCloseText = GameObject.Find("HUD").transform.Find("PressEscToClose").gameObject;
         audioSource = GetComponent<AudioSource>();
         audioSource.volume = soundVolume;
 
@@ -50,6 +60,12 @@ public class Read : MonoBehaviour
         audioSource.minDistance = 0f;
         audioSource.maxDistance = 5f;
         audioSource.spatialBlend = .5f;
+
+        //Debug.Log(flipLeftIcon.name);
+        flipLeftIcon.GetComponent<Image>().enabled = false;
+        flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = false;
+        flipRightIcon.GetComponent<Image>().enabled = false;
+        flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = false;
     }
 
     // Update is called once per frame
@@ -66,7 +82,7 @@ public class Read : MonoBehaviour
             }
 
             //flipping
-            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightArrow))
             {
                 toRead[index].SetActive(false);
                 if (index >= toRead.Length - 1)
@@ -85,7 +101,7 @@ public class Read : MonoBehaviour
                     toRead[index].SetActive(true);
                 }
             }
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 toRead[index].SetActive(false);
                 if (index <= 0)
@@ -106,29 +122,35 @@ public class Read : MonoBehaviour
             }
 
             //show flip page icons
-            if (toRead.Length >= 1 && index != 0)
+            if (toRead.Length >= 1 && index != 0 && isOpen)
             {
-                flipLeftIcon.SetActive(true);
+                flipLeftIcon.GetComponent<Image>().enabled = true;
+                flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = true;
+
             }
-            else if(!isOpen)
+            //else if(!isOpen)
+            //{
+            //    flipLeftIcon.GetComponent<Image>().enabled = false;
+            //}
+            if (toRead.Length >= 1 && index != toRead.Length-1 && isOpen)
             {
-                flipLeftIcon.SetActive(false);
+                flipRightIcon.GetComponent<Image>().enabled = true;
+                flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = true;
+
             }
-            if (toRead.Length >= 1 && index != toRead.Length-1)
-            {
-                flipRightIcon.SetActive(true);
-            }
-            else if(!isOpen)
-            {
-                flipRightIcon.SetActive(false);
-            }
+            //else if(!isOpen)
+            //{
+            //    flipRightIcon.GetComponent<Image>().enabled = false;
+            //}
+
+
         }
         else
         {
             if(toRead.Length > 1)
             {
-                flipLeftIcon.SetActive(false);
-                flipRightIcon.SetActive(false);
+                //flipLeftIcon.SetActive(false);
+                //flipRightIcon.SetActive(false);
             }   
         }
     }
@@ -154,9 +176,16 @@ public class Read : MonoBehaviour
             Player.EnableControls(false);
             Time.timeScale = 0;
             Background.SetActive(true);
+            pressEscToCloseText.SetActive(true);
             StartCoroutine(ReadTime());
 
-
+            if(toRead.Length > 1)
+            {
+                flipLeftIcon.GetComponent<Image>().enabled = true;
+                flipRightIcon.GetComponent<Image>().enabled = true;
+                flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = true;
+                flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = true;
+            }
             audioSource.PlayOneShot(openClip);
         }
         
@@ -180,14 +209,18 @@ public class Read : MonoBehaviour
             Player.EnableControls(true);
             Time.timeScale = 1;
             Background.SetActive(false);
+            pressEscToCloseText.SetActive(false);
             //GameController.TogglePause();
             isOpen = false;
             isReading = false;
             audioSource.PlayOneShot(closeClip);
             readTime = false;
             closeTime = true;
-            flipLeftIcon.SetActive(false);
-            flipRightIcon.SetActive(false);
+            flipLeftIcon.GetComponent<Image>().enabled = false;
+            flipRightIcon.GetComponent<Image>().enabled = false;
+            flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = false;
+            flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = false;
+
             StartCoroutine(CloseTime());
         }
 

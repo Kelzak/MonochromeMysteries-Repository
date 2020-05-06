@@ -12,7 +12,7 @@ public class Readables : MonoBehaviour
     public GameObject redRoomCode;
     public GameObject loveNote;
     public GameObject darkBackground;
-    public GameObject pressCToCloseText;
+    public GameObject pressEscToCloseText;
     public GameObject[] diary;
     public GameObject[] love;
 
@@ -47,6 +47,7 @@ public class Readables : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
+                    pressEscToCloseText.SetActive(true);
                     readtime = false;
                     StartCoroutine(ReadTime());
                     isReadingLetter = true;
@@ -86,7 +87,6 @@ public class Readables : MonoBehaviour
                     }
 
                     Player.EnableControls(false);
-                   // pressCToCloseText.SetActive(true);
                     darkBackground.SetActive(true);
                     StartCoroutine(ReadTime());
                 }
@@ -108,7 +108,7 @@ public class Readables : MonoBehaviour
             isReadingLetter = false;
             endingManager.knifeInstructions.SetActive(false);
             passwordLetter1.SetActive(false);
-           // pressCToCloseText.SetActive(false);
+            pressEscToCloseText.SetActive(false);
             darkBackground.SetActive(false);
             redRoomCode.SetActive(false);
             loveNote.SetActive(false);
@@ -222,5 +222,4 @@ public class Readables : MonoBehaviour
             }
         }
     }
-
 }

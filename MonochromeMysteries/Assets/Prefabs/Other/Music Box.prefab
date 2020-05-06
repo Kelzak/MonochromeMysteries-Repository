@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1335478303012133368}
   - component: {fileID: 2922489905712729828}
   - component: {fileID: 6153333236649542868}
+  - component: {fileID: 4631531304813230636}
   m_Layer: 0
   m_Name: music box
   m_TagString: music box
@@ -61,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b8db373ce9c1466479ba582a4317f055, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -209,6 +210,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8625290327840942402, guid: 5009acd494975ae429947b49d7b9b50e, type: 3}
+--- !u!65 &4631531304813230636
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952661449220136039}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.5467708, z: 0.629936}
+  m_Center: {x: 0, y: 0.40362114, z: -0.18503201}
 --- !u!1 &1952661449728837647
 GameObject:
   m_ObjectHideFlags: 0

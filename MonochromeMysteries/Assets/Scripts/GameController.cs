@@ -40,7 +40,7 @@ public class GameController : MonoBehaviour
     private GameObject pauseMenu;
     private GameObject[] pauseMenu_tabs;
     private GameObject[] pauseMenu_menus;
-    public enum Menu { Scrapbook, LoadGame, Options, Notepad};
+    public enum Menu { Scrapbook, LoadGame, Options, Notepad, Reference};
     private Menu pauseMenu_activeMenu;
 
     [Header("Load Game"), HideInInspector]
@@ -51,6 +51,11 @@ public class GameController : MonoBehaviour
     private Button[] loadMenu_options;
 
     private AudioSource[] audioSources;
+
+    public GameObject NotepadPage1;
+    public GameObject NotepadPage2;
+    public GameObject NotepadPage3;
+    public GameObject NotepadPage4;
 
 
     // Start is called before the first frame update
@@ -66,6 +71,38 @@ public class GameController : MonoBehaviour
 
        SaveSystem.OnUpdatedSaveStats -= UpdateSaveSlotInfo;
        SaveSystem.OnDeleteSave -= DeleteSaveSlotInfo;
+    }
+
+    private void Start()
+    {
+        NotepadPage1 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField1").gameObject;
+        NotepadPage2 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField2").gameObject;
+        NotepadPage3 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField3").gameObject;
+        NotepadPage4 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField4").gameObject;
+
+        Debug.Log("Running Start");
+        if (SaveSystem.gameData != null)
+        {
+            //LOAD RAT TRAPS
+            for (int i = 0; i < GameController._instance.ratTraps.Length; i++)
+            {
+                GameController._instance.ratTraps[i].Load(SaveSystem.gameData.trapData);
+            }
+
+            //DOORS
+            for (int i = 0; i < GameController._instance.doors.Length; i++)
+            {
+                GameController._instance.doors[i].Load(SaveSystem.gameData.doorData);
+            }
+
+            //Load General
+            _instance.playTime = SaveSystem.gameData.gameStats.playTime;
+            if (_instance.paused)
+                GameController.TogglePause();
+        }
+
+        //Initialize Game
+        StartCoroutine(InitializeGame());
     }
 
     public static bool initialLoad = false;
@@ -86,18 +123,21 @@ public class GameController : MonoBehaviour
         pauseMenu_tabs = new GameObject[] { tabs.transform.Find("Scrapbook").gameObject,
                                             tabs.transform.Find("LoadGame").gameObject,
                                             tabs.transform.Find("Options").gameObject,
-                                            tabs.transform.Find("Notepad").gameObject };
-        pauseMenu_menus = new GameObject[4];
+                                            tabs.transform.Find("Notepad").gameObject,
+                                            tabs.transform.Find("References").gameObject};
+        pauseMenu_menus = new GameObject[5];
         pauseMenu_menus[(int)Menu.Scrapbook] = pauseMenu.transform.Find("PhotoCollection").gameObject;
         pauseMenu_menus[(int)Menu.LoadGame] = pauseMenu.transform.Find("LoadGame").gameObject;
         pauseMenu_menus[(int)Menu.Options] = pauseMenu.transform.Find("Options").gameObject;
         pauseMenu_menus[(int)Menu.Notepad] = pauseMenu.transform.Find("NotepadGroup").gameObject;
+        pauseMenu_menus[(int)Menu.Reference] = pauseMenu.transform.Find("ReferenceGroup").gameObject;
 
         //Add Listeners to tabs;
         pauseMenu_tabs[(int)Menu.Scrapbook].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Scrapbook); });
         pauseMenu_tabs[(int)Menu.LoadGame].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.LoadGame); });
         pauseMenu_tabs[(int)Menu.Options].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Options); });
         pauseMenu_tabs[(int)Menu.Notepad].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Notepad); });
+        pauseMenu_tabs[(int)Menu.Reference].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Reference); });
 
         pauseMenu.SetActive(false);
 
@@ -158,34 +198,6 @@ public class GameController : MonoBehaviour
         System.Array.Sort(doors, (DoorScript x, DoorScript y) => { return x.GetID().CompareTo(y.GetID()); });
 
         audioSources = this.GetComponents<AudioSource>();
-    }
-
-    void Start()
-    {
-        Debug.Log("Running Start");
-        if (SaveSystem.gameData != null)
-        {
-            //LOAD RAT TRAPS
-            for (int i = 0; i < GameController._instance.ratTraps.Length; i++)
-            {
-                GameController._instance.ratTraps[i].Load(SaveSystem.gameData.trapData);
-            }
-
-            //DOORS
-            for (int i = 0; i < GameController._instance.doors.Length; i++)
-            {
-                GameController._instance.doors[i].Load(SaveSystem.gameData.doorData);
-            }
-
-            //Load General
-            _instance.playTime = SaveSystem.gameData.gameStats.playTime;
-            if (_instance.paused)
-                GameController.TogglePause();
-        }
-
-        //Initialize Game
-        StartCoroutine(InitializeGame());
-
     }
 
     // Update is called once per frame
@@ -368,6 +380,38 @@ public class GameController : MonoBehaviour
 
         Debug.Log("Trying to enter tv");
         MainMenu.TriggerMainMenu();
+    }
+
+    public void ChangeNotepad(int pageNumber)
+    {
+        if(pageNumber == 1)
+        {
+            NotepadPage1.SetActive(true);
+            NotepadPage2.SetActive(false);
+            NotepadPage3.SetActive(false);
+            NotepadPage4.SetActive(false);
+        }
+        if (pageNumber == 2)
+        {
+            NotepadPage1.SetActive(false);
+            NotepadPage2.SetActive(true);
+            NotepadPage3.SetActive(false);
+            NotepadPage4.SetActive(false);
+        }
+        if (pageNumber == 3)
+        {
+            NotepadPage1.SetActive(false);
+            NotepadPage2.SetActive(false);
+            NotepadPage3.SetActive(true);
+            NotepadPage4.SetActive(false);
+        }
+        if (pageNumber == 4)
+        {
+            NotepadPage1.SetActive(false);
+            NotepadPage2.SetActive(false);
+            NotepadPage3.SetActive(false);
+            NotepadPage4.SetActive(true);
+        }
     }
 
 }
