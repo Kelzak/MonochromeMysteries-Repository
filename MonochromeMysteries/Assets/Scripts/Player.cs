@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
     [Header("Movement")]
     private float moveSpeed = 7f;
     [HideInInspector]
+    private float sprintModifier = 1.75f;
+    [HideInInspector]
     public static bool canMove = true;
 
     float xMovement, yMovement;
@@ -996,6 +998,7 @@ public class Player : MonoBehaviour
 
     }
 
+    bool sprinting = false;
     /// <summary>
     /// Handles the movement of the player
     /// </summary>
@@ -1010,12 +1013,24 @@ public class Player : MonoBehaviour
             Tutorial.instance.OnFirstMovement();
         }
 
-        //Movement
-        Vector3 velocity = (transform.right * xMovement * moveSpeed) + (transform.forward * yMovement * moveSpeed);
-
+        //Sprinting Modifier
+        float effectiveMoveSpeed = moveSpeed;
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
-            velocity += Physics.gravity;
+            sprinting = true;
+            effectiveMoveSpeed *= sprintModifier;
+            if (sprintFOVrunning == false)  
+                StartCoroutine(SprintFOV());
         }
+        else
+        {
+            sprinting = false;
+        }
+
+        //Movement
+        Vector3 velocity = (transform.right * xMovement * effectiveMoveSpeed) + (transform.forward * yMovement * effectiveMoveSpeed);
+
+        velocity += Physics.gravity;
 
         character.Move(velocity * Time.deltaTime);
     }
@@ -1586,6 +1601,43 @@ public class Player : MonoBehaviour
         {
             characterPortrait.SetActive(true);
         }
+    }
+
+    bool sprintFOVrunning = false;
+    private IEnumerator SprintFOV()
+    {
+        sprintFOVrunning = true;
+
+        float baseFOV = Camera.main.fieldOfView;
+        float addedFOV = 5f;
+        float timeSprinting = 0;
+        float transitionTime = 0.20f;
+
+
+        //Start FOV Change
+        while(sprinting && !possessionInProgress && timeSprinting <= transitionTime)
+        {
+            Camera.main.fieldOfView = Mathf.Lerp(baseFOV, baseFOV + addedFOV, Mathf.SmoothStep(0f, 1f, timeSprinting / transitionTime));
+            timeSprinting += Time.deltaTime;
+            yield return null;
+        }
+
+        //Wait until stop sprinting
+        while (sprinting && !possessionInProgress)
+            yield return null;
+
+        timeSprinting = 0;
+        //End FOV Change
+        while (!possessionInProgress && timeSprinting <= transitionTime)
+        {
+            Camera.main.fieldOfView = Mathf.Lerp(baseFOV + addedFOV, baseFOV, Mathf.SmoothStep (0f, 1f, timeSprinting / transitionTime));
+            timeSprinting += Time.deltaTime;
+            yield return null;
+        }
+
+        Camera.main.fieldOfView = baseFOV;
+
+        sprintFOVrunning = false;
     }
 
     private void OnDisable()
