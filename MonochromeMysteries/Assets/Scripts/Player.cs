@@ -125,6 +125,7 @@ public class Player : MonoBehaviour
     public Sprite screwdriverSpriteFlip;
     public Sprite CameraSprite;
     public Sprite keySprite;
+    public Sprite keySpriteUse;
     private float fadeTime = 3f;
     private bool hideText;
     public static bool isReading = false;
@@ -447,7 +448,14 @@ public class Player : MonoBehaviour
                 {
                     displayIconText.text = "Needs Key";
                     displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    displayIcon.GetComponent<Image>().sprite = keySprite;
+                    if(target.GetComponentInParent<DoorScript>().unlocking)
+                    {
+                        displayIcon.GetComponent<Image>().sprite = keySpriteUse;
+                    }
+                    else
+                    {
+                        displayIcon.GetComponent<Image>().sprite = keySprite;
+                    }
                     displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
 
                     displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);

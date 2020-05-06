@@ -32,6 +32,7 @@ public class DoorScript : MonoBehaviour
     public bool autoClose = true;
     public bool stayOpen;
     public bool repairing = false;
+    public bool unlocking = false;
 
     public bool personalDoor;
     //match this with the name of the game object for the character whos door it is
@@ -163,7 +164,7 @@ public class DoorScript : MonoBehaviour
             int rand = Random.Range(0, unlockDoor.Length);
             AudioClip sound = unlockDoor[rand];
             audioSource.PlayOneShot(sound);
-
+            unlocking = true;
             Invoke("Open", .75f);
             //Open();
         }
@@ -235,6 +236,7 @@ public class DoorScript : MonoBehaviour
         AudioClip sound = openDoor[rand];
         audioSource.PlayOneShot(sound);
         hasKey = false;
+        unlocking = false;
         isOpen = true;
     }
 
