@@ -94,6 +94,7 @@ public class Player : MonoBehaviour
     public AudioClip[] maleSteps;
     public AudioClip[] femaleSteps;
     public AudioClip[] indoorSteps;
+    public AudioClip[] grassSteps;
     public AudioClip[] ratSteps;
     public float stepVolume;
     public float walkSoundInterval = .5f;
@@ -848,6 +849,55 @@ public class Player : MonoBehaviour
         //Debug.Log(hit.collider.gameObject.name);
         return isInside;
     }
+    public bool OnGrass()
+    {
+        bool onGrass;
+        Vector3 fwd = new Vector3(0, 5, 0);
+        if (StateChecker.isGhost)
+        {
+            fwd = new Vector3(0, 2, 0);
+        }
+
+        Ray indoorCheck = new Ray(GameObject.FindObjectOfType<Player>().transform.position + fwd, Vector3.down);
+        //Debug.DrawLine(indoorCheck.origin, hit.transform.position);
+
+        RaycastHit[] hit;
+        if ((hit = Physics.RaycastAll(indoorCheck, Player.reticleDist)).Length > 0)
+        {
+            GameObject target = null;
+            float shortestDistance = Mathf.Infinity;
+            for (int i = 0; i < hit.Length; i++)
+            {
+                if (hit[i].distance < shortestDistance && hit[i].collider.gameObject != gameObject)
+                {
+                    target = hit[i].collider.gameObject;
+                    shortestDistance = hit[i].distance;
+                }
+            }
+
+            
+            //Debug.Log(hit.collider.gameObject.name);
+            //Debug.Log(hit.collider.gameObject.tag);
+            if (target.CompareTag("Person"))
+            {
+                //ignore collider
+            }
+            if (target.name.Equals("Bass"))
+            {
+                //Debug.Log("Player on Graass");
+                onGrass = true;
+            }
+            else
+                onGrass = false;
+        }
+        else
+        {
+            onGrass = false;
+        }
+        //Debug.Log("Is inside: " + isInside);
+        //Debug.Log(hit.collider.gameObject.name);
+        return onGrass;
+    }
 
     void PickUp()
     {
@@ -1442,6 +1492,12 @@ public class Player : MonoBehaviour
                 {
                     rand = Random.Range(0, ratSteps.Length);
                     step = ratSteps[rand];
+                    audioSource.PlayOneShot(step);
+                }
+                else if (OnGrass() == true)
+                {
+                    rand = Random.Range(0, grassSteps.Length);
+                    step = grassSteps[rand];
                     audioSource.PlayOneShot(step);
                 }
                 else if (IsInside() == true)

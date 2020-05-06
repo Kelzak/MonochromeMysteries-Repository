@@ -38,6 +38,7 @@ public class RatTrap : MonoBehaviour
     public void Activate()
     {
         audioSource.PlayOneShot(disableTrap);
+        Log.AddEntry("Disabled Rat Trap");
         Invoke("Disable", .1f);
     }
 

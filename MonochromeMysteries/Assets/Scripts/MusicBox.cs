@@ -11,10 +11,13 @@ public class MusicBox : MonoBehaviour
     public AudioClip[] music;
     public AudioSource MusicSource;
 
+    private int index;
+
     void Start()
     {
         MusicSource = this.gameObject.GetComponent<AudioSource>();
         PlayMusic(music[0]);
+        index = 0;
     }
     // Update is called once per frame
     void Update()
@@ -39,12 +42,15 @@ public class MusicBox : MonoBehaviour
 
     public void Skip()
     {
-        for (int i = 0; i < music.Length; i++)
-        {
-            if (i >= music.Length)
-                i = 0;
-            PlayMusic(music[i]);
-        }
+
+        if (index >= music.Length - 1)
+            index = 0;
+        else
+            index++;
+
+        //Debug.Log("Skip index = " + index);
+        PlayMusic(music[index]);
+
     }
 
     void OnTriggerEnter(Collider other)

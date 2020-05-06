@@ -61,7 +61,7 @@ public class Read : MonoBehaviour
         audioSource.maxDistance = 5f;
         audioSource.spatialBlend = .5f;
 
-        Debug.Log(flipLeftIcon.name);
+        //Debug.Log(flipLeftIcon.name);
         flipLeftIcon.GetComponent<Image>().enabled = false;
         flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = false;
         flipRightIcon.GetComponent<Image>().enabled = false;
