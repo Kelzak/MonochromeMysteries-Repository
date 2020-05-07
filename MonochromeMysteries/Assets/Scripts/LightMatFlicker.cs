@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles light material flickering, but is now obsolete
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

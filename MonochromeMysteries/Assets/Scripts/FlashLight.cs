@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles the ghosts spot light
+ */
+
+ using UnityEngine;
 using System.Collections;
 
 public class FlashLight : MonoBehaviour

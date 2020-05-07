@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles door interactions
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

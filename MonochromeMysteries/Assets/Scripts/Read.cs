@@ -1,4 +1,7 @@
-﻿//Made by matt kirchoff
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles readables in game and flipping pages
+ */
 
 using System.Collections;
 using System.Collections.Generic;

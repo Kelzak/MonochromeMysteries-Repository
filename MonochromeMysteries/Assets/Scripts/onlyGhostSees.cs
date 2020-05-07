@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script turns off mesh when player is not ghost (mostly used for spirit guide)
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

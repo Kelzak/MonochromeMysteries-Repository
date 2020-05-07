@@ -55,7 +55,7 @@ public class VideoCutscene : MonoBehaviour
             interactiveCanvas.SetActive(false);
 
             //Make Button return the player to the Main Menu (into the TV as if the player was just starting the game
-            interactiveCanvas.transform.Find("Return To Main Menu").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => 
+            interactiveCanvas.transform.Find("Return To Main Menu").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() =>
                 {
                     GameController.initialLoad = true;
                     GameController.initialTVTransition = true;
@@ -79,6 +79,6 @@ public class VideoCutscene : MonoBehaviour
                 interactiveCanvas.SetActive(true);
         }
     }
-    
+
 
 }

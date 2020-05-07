@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles cutscenes in forms of panels or pngs
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

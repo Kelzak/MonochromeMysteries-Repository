@@ -1,4 +1,7 @@
-﻿//made by matt kirchoff
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles what music the player hears
+ */
 
 using System.Collections;
 using System.Collections.Generic;
@@ -41,12 +44,12 @@ public class MusicListener : MonoBehaviour
             if (i == index)
             {
                 audioSource = musicBoxes[i].GetComponentInChildren<AudioSource>();
-                audioSource.volume = Mathf.Lerp(0, musicVolume, 1f);
+                audioSource.volume = Mathf.Lerp(0, musicVolume, 5f);
             }
             else
             {
                 audioSource = musicBoxes[i].GetComponentInChildren<AudioSource>();
-                audioSource.volume = Mathf.Lerp(musicVolume, 0, 1f);
+                audioSource.volume = Mathf.Lerp(musicVolume, 0, 5f);
             }
 
         }
