@@ -12,9 +12,20 @@ public class VideoCutscene : MonoBehaviour
     public int sceneIndex;
     float length;
     private AudioSource audioSource;
+    private GameObject interactiveCanvas;
 
     [Range(0.0f, 1.0f)]
     public float clipVolume = .5f;
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +38,24 @@ public class VideoCutscene : MonoBehaviour
         StartCoroutine(LoadScene(sceneIndex));
     }
 
+    void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        if(scene.name.Contains("Win") || scene.name.Contains("Lose"))
+        {
+            //Get Win or Lose canvas and hide it while video plays
+            interactiveCanvas = GameObject.Find("Canvas").gameObject;
+            interactiveCanvas.SetActive(false);
+
+            //Make Button return the player to the Main Menu (into the TV as if the player was just starting the game
+            interactiveCanvas.transform.Find("Return To Main Menu").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => 
+                {
+                    GameController.initialLoad = true;
+                    GameController.initialTVTransition = true;
+                    SceneManager.LoadScene(0, LoadSceneMode.Single);
+                });
+        }
+    }
+
     IEnumerator LoadScene(int index)
     {
         yield return new WaitForSecondsRealtime(length);
@@ -36,13 +65,10 @@ public class VideoCutscene : MonoBehaviour
         {
             SaveSystem.NewGame(SaveSystem.currentSaveSlot);
         }
-        else if (SceneManager.GetActiveScene().name.Contains("Win"))
+        else
         {
-
-        }
-        else if (SceneManager.GetActiveScene().name.Contains("Lose"))
-        {
-
+            if(interactiveCanvas != null)
+                interactiveCanvas.SetActive(true);
         }
     }
     
