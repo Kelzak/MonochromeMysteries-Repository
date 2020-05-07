@@ -1,8 +1,10 @@
 ﻿/* Name: Player.cs
  * Author: Zackary Seiple - Possession System and Player Movement
- * Contributors: Kevon Long - Reticle interaction with objects, display text popping up that changes based on what the player is looking at,
-                              and Character UI that displays what character the user is playing as
+ * Contributors: 
                  Matthew Kirchoff - Sounds and Sound Implementation
+                                    Reticle interaction with objects, display text popping up that changes based on what the player is looking at
+
+                Kevon Long - Safe interaction and post process monochrome Character UI that displays what character the user is playing as
  * Last Updated: 5/6/2020 (Zackary Seiple)
  * Changes: Added header
  */
@@ -278,7 +280,7 @@ public class Player : MonoBehaviour
             if (target.GetComponent<Outline>())
             {
 
-                if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide"))
+                if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide") && !target.CompareTag("ratTrap"))
                 {
                     if((StateChecker.isGhost || GetComponent<Rat>()) && target.GetComponent<Read>())
                     {
