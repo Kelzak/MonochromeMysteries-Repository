@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Television : MonoBehaviour
 {
@@ -252,7 +253,12 @@ public class Television : MonoBehaviour
                 if (!saveSelect_confirmation.activeSelf)
                     StartCoroutine(Confirmation(temp
                                    , newGame_message
-                                   , () => { SaveSystem.NewGame(temp); MainMenu.ChangeFromInitialOptions(); ResetSaveSelect(); }));
+                                   , () => 
+                                   { SaveSystem.currentSaveSlot = temp;
+                                     SceneManager.LoadScene("Opening Cutscene", LoadSceneMode.Single);
+                                     MainMenu.ChangeFromInitialOptions();
+                                     ResetSaveSelect();
+                                   }));
             });
         }
     }

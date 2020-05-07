@@ -186,10 +186,10 @@ public class MainMenu : MonoBehaviour
         //Changes 'paused' to true if this pauses the game, false if the game was already paused and is now unpausing
         GameController.TogglePause();
         //If true, this function handles the transition INTO the main menu, if false, this function handles the exit
-        active = GameController._instance.paused;
+        active = GameController.paused;
         //This variable is static and lets the game know that there is now a menu up (So another menu shouldn't be able to pop up on top of it)
         if(active == true)
-        GameController.menuActive = GameController._instance.paused;
+        GameController.menuActive = GameController.paused;
         Transform targetTransform;
         Quaternion targetRotation;
 
@@ -260,7 +260,7 @@ public class MainMenu : MonoBehaviour
         if (!active)
         {
             Player.EnableControls(true);
-            GameController.menuActive = GameController._instance.paused;
+            GameController.menuActive = GameController.paused;
         }
         //Entering menu so turn menu on and static off
         else

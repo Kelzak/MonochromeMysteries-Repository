@@ -27,19 +27,23 @@ public class VideoCutscene : MonoBehaviour
         StartCoroutine(LoadScene(sceneIndex));
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     IEnumerator LoadScene(int index)
     {
-        yield return new WaitForSeconds(length);
+        yield return new WaitForSecondsRealtime(length);
 
         Debug.Log("load Scene");
-        SaveSystem.NewGame(SaveSystem.currentSaveSlot);
-        //SceneManager.LoadScene(index);
+        if (SceneManager.GetActiveScene().name.Contains("Opening"))
+        {
+            SaveSystem.NewGame(SaveSystem.currentSaveSlot);
+        }
+        else if (SceneManager.GetActiveScene().name.Contains("Win"))
+        {
+
+        }
+        else if (SceneManager.GetActiveScene().name.Contains("Lose"))
+        {
+
+        }
     }
     
 

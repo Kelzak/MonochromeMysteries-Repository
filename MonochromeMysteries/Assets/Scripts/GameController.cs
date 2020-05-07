@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour
     public PadlockPuzzle padlocks;
 
 
-    public bool paused = false;
+    public static bool paused = false;
 
     [Header("Game Stats")]
     public float playTime = 0;
@@ -97,7 +97,7 @@ public class GameController : MonoBehaviour
 
             //Load General
             _instance.playTime = SaveSystem.gameData.gameStats.playTime;
-            if (_instance.paused)
+            if (paused)
                 GameController.TogglePause();
         }
 
@@ -110,6 +110,8 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Running Awake");
         _instance = this;
+        if (paused)
+            TogglePause();
         if (initialLoad == true)
         {
             SaveSystem.Load(SaveSystem.currentSaveSlot);
@@ -254,9 +256,9 @@ public class GameController : MonoBehaviour
     /// </summary>
     public static void TogglePause()
     {
-        _instance.paused = !_instance.paused;
+        paused = !paused;
 
-        if (_instance.paused)
+        if (paused)
         { //Paused
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -367,7 +369,7 @@ public class GameController : MonoBehaviour
             //Vector3 target = transform.forward;
         }
 
-        Debug.Log("CanLook: " + Player.canLook + " | CanMove: " + Player.canMove + " | Paused: " + GameController._instance.paused);
+        Debug.Log("CanLook: " + Player.canLook + " | CanMove: " + Player.canMove + " | Paused: " + GameController.paused);
 
         soul.transform.position = MainMenu._instance.GetCurrentTV().transform.Find("CamPoint").position;
         soul.transform.rotation = MainMenu._instance.GetCurrentTV().transform.Find("CamPoint").rotation;
@@ -384,8 +386,10 @@ public class GameController : MonoBehaviour
             MainMenu.TriggerMainMenu();
             initialTVTransition = false;
         }
-
-        SaveSystem.Save(SaveSystem.currentSaveSlot);
+        else
+        {
+            SaveSystem.Save(SaveSystem.currentSaveSlot);
+        }
     }
 
     public void ChangeNotepad(int pageNumber)

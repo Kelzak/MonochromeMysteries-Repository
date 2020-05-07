@@ -68,7 +68,7 @@ public class Photographer : Person
         //if (Dialogue.leftClickPriority == true)
         //    return;
 
-        if (!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() < PhotoLibrary.MAX_PHOTOS && Time.time > 5)
+        if (!GameController.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() < PhotoLibrary.MAX_PHOTOS && Time.time > 5)
         {
             Player.EnableControls(false);
             StartCoroutine(CameraFlash());
@@ -78,7 +78,7 @@ public class Photographer : Person
 
 
         }
-        else if (!GameController._instance.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() >= PhotoLibrary.MAX_PHOTOS)
+        else if (!GameController.paused && canTakePhoto && PhotoLibrary._instance.GetPhotoCount() >= PhotoLibrary.MAX_PHOTOS)
         {
             Log.AddEntry("You have no more room for photos");
         }

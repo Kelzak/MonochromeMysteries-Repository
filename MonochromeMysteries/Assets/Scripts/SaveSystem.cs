@@ -250,7 +250,7 @@ public static class SaveSystem
         //Load(saveSlot);
         SceneManager.LoadScene(0, LoadSceneMode.Single);
         //Save(saveSlot);
-        MainMenu.TriggerMainMenu();
+        //MainMenu.TriggerMainMenu();
     }
 
     public static bool SaveExists(int saveSlot)

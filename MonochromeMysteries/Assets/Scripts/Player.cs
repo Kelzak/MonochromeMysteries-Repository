@@ -1050,7 +1050,7 @@ public class Player : MonoBehaviour
         yMovement = Input.GetAxis("Vertical");
 
         //Tutorial Bit
-        if ((xMovement != 0 || yMovement != 0))
+        if ((xMovement != 0 || yMovement != 0) && Dialogue.holding)
         {
             Tutorial.instance.OnFirstMovement();
         }
@@ -1061,7 +1061,7 @@ public class Player : MonoBehaviour
         {
             sprinting = true;
             effectiveMoveSpeed *= sprintModifier;
-            if (sprintFOVrunning == false)  
+            if (sprintFOVrunning == false && (xMovement != 0 || yMovement != 0))  
                 StartCoroutine(SprintFOV());
         }
         else
