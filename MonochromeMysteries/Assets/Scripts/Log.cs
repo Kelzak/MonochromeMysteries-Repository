@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿/* Name: Log.cs
+ * Primary Author: Zackary Seiple
+ * Description: Handles queue of notifications at the top right of the screen that notify the player when actions are performed
+ * Last Updated: 5/6/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,8 +1,8 @@
 ﻿/* Name: PhotoLibrary.cs
- * Author: Zackary Seiple
- * Description: Contains a library of all the photos taken by the Photographer. Also controls the menu containing all the photos
- * Last Updated: 2/25/2020 (Zackary Seiple)
- * Changes: Added Photo Examining
+ * Primary Author: Zackary Seiple
+ * Description: Contains a library of all the photos taken by the Photographer. Controls the Cropping, Storing, Deletion, and Updating of the scrapbook with photos
+ * Last Updated: 5/6/2020 (Zackary Seiple)
+ * Changes: Added Header
  */
 
 using System.Collections;

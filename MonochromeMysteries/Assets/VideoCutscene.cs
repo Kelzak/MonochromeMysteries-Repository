@@ -1,4 +1,12 @@
-﻿using System.Collections;
+﻿/* Name: VideoCutscene.cs
+ * Primary Author: Matthew Kirchoff - Main Video Functinoality
+ * Contributors: Zackary Seiple - Specific implementation for functioning with differing cutscenes and transitions between scenes
+ * Description: Handles the playing of cutscenes as well as specific implementation for changing scenes and handling UI in win and lose states
+ * Last Updated: 5/6/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;

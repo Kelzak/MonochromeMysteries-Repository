@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿/* Name: Television.cs
+ * Primary Author: Zackary Seiple
+ * Description: Handles the functions of each individual TV's menu and buttons. Includes Save and Load screens that directly interact with the save systems
+ * Last Updated: 5/6/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -96,20 +103,8 @@ public class Television : MonoBehaviour
         for (int i = 1; i <= SaveSystem.MAX_SAVE_SLOTS; i++)
         {
             int temp = i;
-            //Set up Listener for Save Slot
+            //Set up Save Slot Objects
             saveSelect_slots[temp - 1] = saveSelectSlots.Find(string.Format("Slot {0}", temp)).gameObject;
-            //saveSelect_slots[temp - 1].GetComponent<Button>().onClick.AddListener(() => 
-            //{
-            //    string message = SaveSystem.SaveExists(temp) ?
-            //        string.Format("Are you sure you want to override existing data in Slot {0}?", temp) : //Confirm overwrite of Save Slot
-            //        string.Format("Would you like to start a new game in Slot {0}?", temp); //Create new save game
-
-            //    if (!saveSelect_confirmation.activeSelf)
-            //        StartCoroutine(Confirmation(temp
-            //                       ,message
-            //                       ,() => { SaveSystem.NewGame(temp); }));
-
-            //});
 
             //Set Up Listener for Delete button
             saveSelect_delete[temp - 1] = saveSelectSlots.Find(string.Format("Delete {0}", temp)).gameObject;

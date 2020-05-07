@@ -1,7 +1,8 @@
 ﻿/* Name: GameController.cs
- * Author: Zackary Seiple
- * Description: Handles the basic functions of the game including pulling up menus and pausing
- * Last Updated: 2/18/2020 (Zackary Seiple)
+ * Primary Author: Zackary Seiple - Initialization for the game, Scrapbook screen, and Tabs at the top for switching menus
+ * Contributors: Kevon Long - Notepad and References Screen
+ * Description: Handles the basic functions of the game including pulling up menus, pausing, and initial setup for the game
+ * Last Updated: 5/6/2020 (Zackary Seiple)
  * Changes: Added Header
  */
 

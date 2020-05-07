@@ -1,4 +1,13 @@
-﻿using System.Collections;
+﻿/* Name: Tutorial.cs
+ * Primary Author: Zackary Seiple - Event System and Objective Framework, events for the tutorial, as well as loading functionality
+ * Contributors: Kevon Long - event for entering TV
+ *               Matthew Kirchoff - Invisible walls
+ * Description: Handles the events and objectives used during the tutorial to guide the player through a set path in learning the game
+ * Last Updated: 5/6/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;

@@ -2,7 +2,7 @@
  * Author: Zackary Seiple
  * Description: Contains the behaviour and ability of the Photographer Character. Handles taking pictures and sending them to
  *              the PhotoLibrary to be cropped and stored
- * Last Updated: 2/18/2020 (Zackary Seiple)
+ * Last Updated: 5/6/2020 (Zackary Seiple)
  * Changes: Added header
  */
 

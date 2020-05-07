@@ -1,4 +1,12 @@
-﻿using System.Collections;
+﻿/* Name: MainMenu.cs
+ * Primary Author: Zackary Seiple 
+ * Description: Handles the management of every Television object in the scene, keeping track of the active TV,  management of the initial transition into the Main Menu,
+ *              and switching Menus via static transition
+ * Last Updated: 5/6/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

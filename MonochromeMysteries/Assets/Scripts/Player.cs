@@ -1,7 +1,9 @@
 ﻿/* Name: Player.cs
- * Author: Zackary Seiple
- * Description: This script handles the player's ghost behaviours and their ability to posses
- * Last Updated: 2/18/2020 (Zackary Seiple)
+ * Author: Zackary Seiple - Possession System and Player Movement
+ * Contributors: Kevon Long - Reticle interaction with objects, display text popping up that changes based on what the player is looking at,
+                              and Character UI that displays what character the user is playing as
+                 Matthew Kirchoff - Sounds and Sound Implementation
+ * Last Updated: 5/6/2020 (Zackary Seiple)
  * Changes: Added header
  */
 

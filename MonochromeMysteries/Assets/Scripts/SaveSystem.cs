@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿/* Name: SaveSystem.cs
+ * Primary Author: Zackary Seiple
+ * Description: Handles the Saving and Loading of game states, as well as functionality for starting new games and deleting saves
+ * Last Updated: 5/6/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -132,54 +139,10 @@ public static class SaveSystem
                 gameData = formatter.Deserialize(stream) as Data.GameData;
             }
 
-            //if (GameController.initialLoad == true)
-            //{
             currentSaveSlot = saveSlot;
             SceneManager.LoadScene(0, LoadSceneMode.Single);
             MainMenu.TriggerMainMenu();
-            //}
 
-            //Transform gameController = GameObject.Find("Game Management").transform.Find("GameController");
-            //Debug.Log("GameController = " + gameController.name);
-
-            ////GAME STATS
-            //GameController._instance = gameController.GetComponent<GameController>();
-            //GameController._instance.playTime = data.gameStats.playTime;
-            //if (GameController._instance.paused)
-            //    GameController.TogglePause();
-
-            ////MAIN MENU
-            //MainMenu._instance = gameController.GetComponent<MainMenu>();
-            //MainMenu._instance.Load(data.mainMenuData);
-
-            ////PLAYER
-            //GameController.soul.GetComponent<Player>().TriggerLoad(data.playerData);
-
-            ////PHOTO LIBRARY
-            //PhotoLibrary._instance = gameController.GetComponent<PhotoLibrary>();
-            //PhotoLibrary.TriggerLoad(data.libraryData);
-
-            ////DIALOGUE
-            //Dialogue.instance = gameController.GetComponent<Dialogue>();
-            //Dialogue.ForceStop();
-
-            ////TUTORIAL
-            //Tutorial.instance = gameController.GetComponent<Tutorial>();
-            //Tutorial.Load(data.tutorialData);
-
-            ////RAT TRAPS
-            //for(int i = 0; i < GameController._instance.ratTraps.Length; i++)
-            //{
-            //    GameController._instance.ratTraps[i].Load(data.trapData);
-            //}
-
-            ////DOORS
-            //for(int i = 0; i < GameController._instance.doors.Length; i++)
-            //{
-            //    GameController._instance.doors[i].Load(data.doorData);
-            //}
-
-            //START SEQUENCE
             
         }
         else

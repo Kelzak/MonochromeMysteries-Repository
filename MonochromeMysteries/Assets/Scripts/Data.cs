@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿/* Name: Data.cs
+ * Primary Author: Zackary Seiple
+ * Description: Defines the serializable data structures necessary to record key information about the game to be saved and loaded
+ * Last Updated: 5/6/2020 (Zackary Seiple)
+ * Changes: Added Header
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
