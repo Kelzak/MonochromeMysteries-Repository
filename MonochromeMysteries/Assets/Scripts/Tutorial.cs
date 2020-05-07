@@ -47,7 +47,7 @@ public class Tutorial : MonoBehaviour
         Dialogue.AddLine(Dialogue.Character.Pete, true, "Also, items that are picked up by a <b>human</b> you're possessing are brought with you when you decide to possess someone new. How about you try possessing one of these critters, hm.");
         objectives.Enqueue("Possess a rat (Press E to Possess)");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "Now, get out of that rat and head over to a Television set over there. The TV's in each room are also possessable. When you possess the TV, <b>you can access the main menu, save/load, or adjust settings</b>.");
-        objectives.Enqueue("Possess a TV by standing in front of it and pressing [F] as a spirit, then exit with [ESC] or [F] again");
+        objectives.Enqueue("Possess a TV by standing in front of it and pressing [F] as a spirit");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "If you’re gonna start solvin’ your murder, you’ll need to have a way to document evidence. See if you can find someone with a camera and bring him back here, would ya? Use what I’ve taught ya so far.");
         OnPhotographerEnter();
         objectives.Enqueue("Find the Photographer and bring him to the crime scene");

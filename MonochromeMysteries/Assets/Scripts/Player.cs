@@ -280,7 +280,7 @@ public class Player : MonoBehaviour
             if (target.GetComponent<Outline>())
             {
 
-                if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide") && !target.CompareTag("ratTrap"))
+                if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide"))
                 {
                     if((StateChecker.isGhost || GetComponent<Rat>()) && target.GetComponent<Read>())
                     {
