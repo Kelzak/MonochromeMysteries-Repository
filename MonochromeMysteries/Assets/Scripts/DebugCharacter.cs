@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script was made to debug characters 
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +20,7 @@ public class DebugCharacter : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Minus))
         {
-            transform.position = pos;
+            //transform.position = pos;
         }
     }
 }

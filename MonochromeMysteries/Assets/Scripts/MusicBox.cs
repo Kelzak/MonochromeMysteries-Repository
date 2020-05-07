@@ -1,4 +1,7 @@
-﻿//Made by matt kirchoff
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles music boxes / radio
+ */
 
 using System.Collections;
 using System.Collections.Generic;
@@ -13,12 +16,25 @@ public class MusicBox : MonoBehaviour
 
     private int index;
 
+    //used to play first clip of music box, on the box in the tutorial room
+    public bool playFirst = false;
+
     void Start()
     {
         MusicSource = this.gameObject.GetComponent<AudioSource>();
-        int rand = Random.Range(0, music.Length);
-        PlayMusic(music[rand]);
-        index = rand;
+
+        if(playFirst)
+        {
+            PlayMusic(music[0]);
+            index = 0;
+        }
+        else
+        {
+            int rand = Random.Range(0, music.Length);
+            PlayMusic(music[rand]);
+            index = rand;
+        }
+        
     }
     // Update is called once per frame
     void Update()

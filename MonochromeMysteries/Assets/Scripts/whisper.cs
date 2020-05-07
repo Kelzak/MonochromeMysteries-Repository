@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script plays whispers every so often in ghost form
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,8 +19,9 @@ public class whisper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(gameObject.name);
         audioSource = GetComponent<AudioSource>();
-        InvokeRepeating("Speak", 10f, whisperInterval);
+        Invoke("Speak", 10f);
     }
 
     // Update is called once per frame
@@ -32,6 +37,6 @@ public class whisper : MonoBehaviour
             rand = Random.Range(0, whispers.Length);
             audioSource.PlayOneShot(whispers[rand]);
         }
-        
+        Invoke("Speak", Random.Range(0, whisperInterval * 2));
     }
 }

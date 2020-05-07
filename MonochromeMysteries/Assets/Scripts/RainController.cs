@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles the rain in game
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

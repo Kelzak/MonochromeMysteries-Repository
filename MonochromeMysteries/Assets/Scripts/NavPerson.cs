@@ -1,7 +1,9 @@
-﻿/*
- * Created by Matt Kirchoff
- * character movement AI
+﻿/* Name: Player.cs
+ * Author: Matt Kirchoff
+ * Description: This script handles all AI for characters
+ * Wander, pathing, randomize, wait times, locations, etc.
  */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
