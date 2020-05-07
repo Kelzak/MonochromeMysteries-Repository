@@ -8,11 +8,11 @@ using UnityEngine.SceneManagement;
 public class Television : MonoBehaviour
 {
     public GameObject screen;
-    public GameObject mainMenu, tvStatic, howToPlay, saveSelect;
+    public GameObject mainMenu, tvStatic, howToPlay, saveSelect, creditsMenu;
     public Animation staticAnim;
 
     //Main Menu
-    public enum ButtonName { NewGame, Continue, Resume, HowToPlay, Quit, LoadGame };
+    public enum ButtonName { NewGame, Continue, Resume, HowToPlay, Quit, LoadGame, Credits };
     private Button[] buttons;
 
     //Save Select
@@ -49,6 +49,7 @@ public class Television : MonoBehaviour
         howToPlay = screen.transform.Find("How To Play").gameObject;
         tvStatic = screen.transform.Find("Static").gameObject;
         saveSelect = screen.transform.Find("SaveSelect").gameObject;
+        creditsMenu = screen.transform.Find("Credits").gameObject;
 
         boxCenter = GetComponent<MeshRenderer>().bounds.center;
         
@@ -59,7 +60,9 @@ public class Television : MonoBehaviour
                                      menuOptions.Find("How To Play").GetComponent<Button>(), //3
                                      howToPlay.transform.Find("Back").GetComponent<Button>(), //4
                                      menuOptions.Find("Quit").GetComponent<Button>(), //5
-                                     menuOptions.Find("Load Game").GetComponent<Button>() }; //6
+                                     menuOptions.Find("Load Game").GetComponent<Button>(),//6
+                                     menuOptions.Find("Credits").GetComponent<Button>(),//7
+                                     creditsMenu.transform.Find("Back").GetComponent<Button>()}; //8
 
         //Add Listeners
         buttons[0].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("SaveSelect"));
@@ -72,6 +75,8 @@ public class Television : MonoBehaviour
         buttons[5].onClick.AddListener(() => GameController.QuitGame());
         buttons[6].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("SaveSelect"));
         buttons[6].onClick.AddListener(PrepareForLoadGame);
+        buttons[7].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("Credits"));
+        buttons[8].onClick.AddListener(() => MainMenu._instance.TriggerSwitchMenu("MainMenu"));
 
         //Save Select Screen
         saveSelect_confirmation = saveSelect.transform.Find("Confirmation").gameObject;
@@ -121,7 +126,7 @@ public class Television : MonoBehaviour
         }
 
         //Set the right buttons at start
-        SwapButtons(true, ButtonName.NewGame, ButtonName.HowToPlay, ButtonName.Quit);
+        SwapButtons(true, ButtonName.NewGame, ButtonName.HowToPlay, ButtonName.Credits, ButtonName.Quit);
         SwapButtons(false, ButtonName.Resume, ButtonName.Continue);
         if (SaveSystem.SaveExists(SaveSystem.currentSaveSlot) && GameController.initialTVTransition == true)
             SwapButtons(true, ButtonName.Continue);
@@ -131,7 +136,7 @@ public class Television : MonoBehaviour
 
         mainMenu.SetActive(false);
         howToPlay.SetActive(false);
-        
+        creditsMenu.SetActive(false);
 
 
         mesh = GetComponent<MeshRenderer>();
