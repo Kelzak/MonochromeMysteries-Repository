@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
     private GameObject pauseMenu;
     private GameObject[] pauseMenu_tabs;
     private GameObject[] pauseMenu_menus;
-    public enum Menu { Scrapbook, LoadGame, Options, Notepad, Reference};
+    public enum Menu { Scrapbook, LoadGame, Options, Notepad, Reference, MainMenu};
     private Menu pauseMenu_activeMenu;
 
     [Header("Load Game"), HideInInspector]
@@ -127,7 +127,9 @@ public class GameController : MonoBehaviour
                                             tabs.transform.Find("LoadGame").gameObject,
                                             tabs.transform.Find("Options").gameObject,
                                             tabs.transform.Find("Notepad").gameObject,
-                                            tabs.transform.Find("References").gameObject};
+                                            tabs.transform.Find("References").gameObject,
+                                            tabs.transform.Find("MainMenu").gameObject
+                                           };
         pauseMenu_menus = new GameObject[5];
         pauseMenu_menus[(int)Menu.Scrapbook] = pauseMenu.transform.Find("PhotoCollection").gameObject;
         pauseMenu_menus[(int)Menu.LoadGame] = pauseMenu.transform.Find("LoadGame").gameObject;
@@ -141,6 +143,7 @@ public class GameController : MonoBehaviour
         pauseMenu_tabs[(int)Menu.Options].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Options); });
         pauseMenu_tabs[(int)Menu.Notepad].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Notepad); });
         pauseMenu_tabs[(int)Menu.Reference].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Reference); });
+        pauseMenu_tabs[(int)Menu.MainMenu].GetComponent<Button>().onClick.AddListener(() => {  });
 
         pauseMenu.SetActive(false);
 
@@ -210,7 +213,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         //Open/Close Menu
-        if( (Input.GetKeyDown(KeyCode.Tab) && !Read.isReading && !PadlockPuzzle.keypadisUp && !Endings.isUsingKnife && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Escape) && menuActive && pauseMenu.activeSelf == true))
+        if( ( (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Escape)) && !Read.isReading && !PadlockPuzzle.keypadisUp && !Endings.isUsingKnife && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Escape) && menuActive && pauseMenu.activeSelf == true))
         {
             TogglePause();
             pauseMenu.SetActive(paused);

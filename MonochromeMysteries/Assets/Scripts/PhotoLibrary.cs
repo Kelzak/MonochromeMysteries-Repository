@@ -330,7 +330,7 @@ public class PhotoLibrary : MonoBehaviour
     {
         foreach(int x in clues)
         {
-            if(ClueCatalogue._instance.clues[x].name == "Dead Body")
+            if(ClueCatalogue._instance.clues[x].name == "Dead Body" && Dialogue.holding)
                 //First Photo
                 Tutorial.instance.OnFirstPhoto();
         }

@@ -1251,7 +1251,7 @@ public class Player : MonoBehaviour
         EnableControls(true);
 
         //First Rat possession
-        if (target.GetComponent<Rat>())
+        if (target.GetComponent<Rat>() && Dialogue.holding)
         {
             Tutorial.instance.OnFirstRatPossession();
         }
