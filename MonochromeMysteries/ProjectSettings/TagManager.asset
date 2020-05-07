@@ -25,6 +25,7 @@ TagManager:
   - ratTrap
   - rightFlip
   - leftFlip
+  - light
   layers:
   - Default
   - TransparentFX

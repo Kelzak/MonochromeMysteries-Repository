@@ -555,6 +555,27 @@ public class Player : MonoBehaviour
                 }
 
             }
+            //light switches
+            else if ((target.GetComponent<LightSwitch>() && shortestDistance < Player.reticleDist / 2) && !GetComponent<Rat>() && !StateChecker.isGhost)
+            { 
+                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+                if (target.GetComponent<LightSwitch>().off)
+                {
+                    displayText.text = "Press F to Turn on";
+                }
+                else
+                {
+                    displayText.text = "Press F to Turn off";
+                }
+
+                if(Input.GetKeyDown(KeyCode.F))
+                {
+                    target.GetComponent<LightSwitch>().Activate();
+                }
+
+            }
             //pickup?
             else if (target.CompareTag("pickup") || target.CompareTag("letter") && shortestDistance < Player.reticleDist)
             {

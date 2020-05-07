@@ -19,25 +19,24 @@ public class LightSwitch : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_isInsideTrigger)
+        
+    }
+
+    public void Activate()
+    {
+        for (int i = 0; i < lights.Length; i++)
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (off)
             {
-                for (int i = 0; i < lights.Length; i++)
-                {
-                    if(off)
-                    {
-                        lights[i].enabled = true;
-                        off = false;
-                        PlaySound(sounds[0]);
-                    }
-                    else
-                    {
-                        lights[i].enabled = false;
-                        off = true;
-                        PlaySound(sounds[1]);
-                    }
-                }
+                lights[i].enabled = true;
+                off = false;
+                PlaySound(sounds[0]);
+            }
+            else
+            {
+                lights[i].enabled = false;
+                off = true;
+                PlaySound(sounds[1]);
             }
         }
     }

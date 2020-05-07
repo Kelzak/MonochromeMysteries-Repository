@@ -16,8 +16,9 @@ public class MusicBox : MonoBehaviour
     void Start()
     {
         MusicSource = this.gameObject.GetComponent<AudioSource>();
-        PlayMusic(music[0]);
-        index = 0;
+        int rand = Random.Range(0, music.Length);
+        PlayMusic(music[rand]);
+        index = rand;
     }
     // Update is called once per frame
     void Update()

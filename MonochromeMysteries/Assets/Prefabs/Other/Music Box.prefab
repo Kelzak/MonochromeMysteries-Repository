@@ -96,9 +96,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   music:
-  - {fileID: 8300000, guid: 810df73ee3f1ac14e8923ce7612f19de, type: 3}
+  - {fileID: 8300000, guid: 25bead43d0ad8284cbc86ea2a064e943, type: 3}
   - {fileID: 8300000, guid: ca29e9b22327aa74ea6a7930093ac6c3, type: 3}
   - {fileID: 8300000, guid: 9e0a2ffe90d5f0c40b629576d34ee432, type: 3}
+  - {fileID: 8300000, guid: f5abb8c053e013f4eb279e8048efa43d, type: 3}
+  - {fileID: 8300000, guid: 6a900c7e8960b3b42b121dfb9a6fb0f9, type: 3}
+  - {fileID: 8300000, guid: 70a8d92eb54aaee43a75a43d72b7ba41, type: 3}
   MusicSource: {fileID: 2922489905712729828}
 --- !u!82 &2922489905712729828
 AudioSource:
@@ -121,7 +124,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 30
+  MaxDistance: 35
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
