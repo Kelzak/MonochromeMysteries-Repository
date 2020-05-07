@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
     public GameObject mainPlayer = null;
 
     [Header("Aiming")]
-    public float lookSensitivity = 3f;
+    public float lookSensitivity = 1f;
     [HideInInspector]
     public static bool canLook = true;
 
@@ -240,12 +240,14 @@ public class Player : MonoBehaviour
         if (GetComponent<Player>().gameObject.name.Equals("Hunter"))
         {
             mustache.GetComponent<Renderer>().enabled = false;
+
         }
         else
         {
             mustache.GetComponent<Renderer>().enabled = true;
 
         }
+
     }
 
     void Interact()

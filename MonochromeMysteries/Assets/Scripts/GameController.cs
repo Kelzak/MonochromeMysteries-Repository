@@ -143,7 +143,7 @@ public class GameController : MonoBehaviour
         //pauseMenu_tabs[(int)Menu.Options].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Options); });
         pauseMenu_tabs[(int)Menu.Notepad].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Notepad); });
         pauseMenu_tabs[(int)Menu.Reference].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Reference); });
-        pauseMenu_tabs[(int)Menu.MainMenu].GetComponent<Button>().onClick.AddListener(() => {  });
+        pauseMenu_tabs[(int)Menu.MainMenu].GetComponent<Button>().onClick.AddListener(() => { SaveSystem.Load(SaveSystem.currentSaveSlot); });
 
         pauseMenu.SetActive(false);
 
