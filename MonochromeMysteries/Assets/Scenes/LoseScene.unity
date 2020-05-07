@@ -402,13 +402,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6037736, g: 0.17372729, b: 0.17372729, a: 1}
+  m_Color: {r: 0.6603774, g: 0.30215383, b: 0.30215383, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 17b4a82ffdc321543a2be8f17a62f3c5, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -600,8 +600,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Return to Main Menu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 45f76132063405047b3d9b87e1467083, type: 2}
+  m_sharedMaterial: {fileID: 9112990057704499791, guid: 45f76132063405047b3d9b87e1467083,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -961,8 +962,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: You chose wrong...You lose!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 45f76132063405047b3d9b87e1467083, type: 2}
+  m_sharedMaterial: {fileID: 9112990057704499791, guid: 45f76132063405047b3d9b87e1467083,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1033,7 +1035,7 @@ MonoBehaviour:
     spaceCount: 3
     wordCount: 5
     linkCount: 0
-    lineCount: 3
+    lineCount: 2
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0

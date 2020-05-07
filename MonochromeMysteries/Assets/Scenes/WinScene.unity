@@ -351,13 +351,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.25985453, g: 0.7264151, b: 0.19530971, a: 1}
+  m_Color: {r: 0.66716486, g: 1, b: 0.6650944, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 17b4a82ffdc321543a2be8f17a62f3c5, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -431,8 +431,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Return To Main Menu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 45f76132063405047b3d9b87e1467083, type: 2}
+  m_sharedMaterial: {fileID: 9112990057704499791, guid: 45f76132063405047b3d9b87e1467083,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -909,8 +910,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: You chose correctly! You win!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 45f76132063405047b3d9b87e1467083, type: 2}
+  m_sharedMaterial: {fileID: 9112990057704499791, guid: 45f76132063405047b3d9b87e1467083,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
