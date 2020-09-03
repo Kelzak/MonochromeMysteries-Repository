@@ -280,7 +280,7 @@ public class Player : MonoBehaviour
             if (target.GetComponent<Outline>())
             {
 
-                if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide"))
+                if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide") && !target.GetComponent<RatTrap>())
                 {
                     if((StateChecker.isGhost || GetComponent<Rat>()) && target.GetComponent<Read>())
                     {
@@ -620,7 +620,7 @@ public class Player : MonoBehaviour
                 }
             }
             //rat trap
-            else if (target.CompareTag("ratTrap") && GetComponent<Character>() && shortestDistance < Player.reticleDist)
+            else if (target.GetComponent<RatTrap>() && shortestDistance < Player.reticleDist)
             {
                 //icon
                 displayIconText.text = "Needs Exterminator";
