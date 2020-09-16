@@ -12,10 +12,10 @@ using UnityEngine.UI;
 [RequireComponent(typeof(MeshCollider))]
 public class Item : MonoBehaviour, IObserver
 {
-    public StateChecker stateChecker;
+    private StateChecker stateChecker;
     GameObject item;
     private float dist;
-    public float playerDistGlow;
+    private float playerDistGlow;
     private GameObject player;
     //public Image reticle;
 

@@ -26,6 +26,7 @@ TagManager:
   - rightFlip
   - leftFlip
   - light
+  - Location
   layers:
   - Default
   - TransparentFX
