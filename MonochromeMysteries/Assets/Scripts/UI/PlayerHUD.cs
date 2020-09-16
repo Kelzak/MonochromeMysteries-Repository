@@ -48,7 +48,7 @@ public class PlayerHUD : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        hoverAudio.volume = 0f;
+        //hoverAudio.volume = 0f;
     }
 
     // Update is called once per frame

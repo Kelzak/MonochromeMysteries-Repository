@@ -1398,7 +1398,7 @@ public class Player : MonoBehaviour
                 List<int> floorIndexes = new List<int>();
 
                 //Make sure there's enough space around the point
-                Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents / 2);
+                Collider[] hit = Physics.OverlapSphere(temp, mainPlayerMaxExtents / 2, 0,QueryTriggerInteraction.Ignore);
                 for (int k = 0; k < hit.Length; k++)
                 {
                     if (hit[k].gameObject.tag != "Floor" && hit[k].gameObject != gameObject)

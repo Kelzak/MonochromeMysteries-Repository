@@ -18,7 +18,11 @@ public class LightSwitch : MonoBehaviour
     void Start()
     {
         audioSource = this.gameObject.GetComponent<AudioSource>();
-        lights = GetComponents<Light>();
+        if (lights == null)
+        {
+            lights = GetComponents<Light>();
+
+        }
     }
     // Update is called once per frame
     void Update()
@@ -32,6 +36,13 @@ public class LightSwitch : MonoBehaviour
         {
             if (off)
             {
+                if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                {
+                    lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
+                    GameObject bulb = GameObject.Find("bulb");
+
+                    bulb.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                }  
                 lights[i].enabled = true;
                 off = false;
                 PlaySound(sounds[0]);
@@ -41,6 +52,13 @@ public class LightSwitch : MonoBehaviour
                 lights[i].enabled = false;
                 off = true;
                 PlaySound(sounds[1]);
+                if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                {
+                    lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
+                    GameObject bulb = GameObject.Find("bulb");
+
+                    bulb.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+                }
             }
         }
     }
