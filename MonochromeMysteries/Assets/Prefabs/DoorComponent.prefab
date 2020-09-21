@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OpenPanel: {fileID: 0}
-  isLocked: 1
+  isLocked: 0
   key: {fileID: 0}
   openDoor:
   - {fileID: 8300000, guid: 76d9ce6cc2b97fc48ad08c70053eb1dc, type: 3}
@@ -176,7 +176,9 @@ MonoBehaviour:
   isOpen: 0
   autoClose: 0
   stayOpen: 0
+  brokendoor: 0
   repairing: 0
+  unlocking: 0
   personalDoor: 0
   whoDoor: Exterminator
   hasNotBeenRepaired: 0

@@ -206,7 +206,7 @@ public class DoorScript : MonoBehaviour
             }
             else
             {
-                Log.AddEntry("The Door is Locked");
+                Log.AddEntry("The Door wont budge");
             }
 
         }

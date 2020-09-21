@@ -27,6 +27,7 @@ public class PlayerHUD : MonoBehaviour
     //text with no icon directly in the middle of the screen so it looks nicer
     public TMP_Text singleText;
     public Image playerDisplayIcon;
+    private bool showLocation;
 
     [Header("Icons")]
     public Sprite cameraIcon;
@@ -54,6 +55,19 @@ public class PlayerHUD : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(showLocation)
+        {
+            playerLocationText.color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
+
+        }
+        else
+        {
+            playerLocationText.color = Color.Lerp(playerLocationText.color, Color.clear, fadeTime * Time.deltaTime);
+
+        }
+
+
+
         //Raycast();
     }
     /*
@@ -270,18 +284,21 @@ public class PlayerHUD : MonoBehaviour
         if(other.gameObject.CompareTag("Location"))
         {
             playerLocationText.text = other.gameObject.name;
-            print(playerLocationText);
-            playerLocationText.color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
+            //print(playerLocationText);
             //leftDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
             //rightDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
-            print(playerLocationText.textBounds);
+            //print(playerLocationText.textBounds);
+            showLocation = true;
+        }
+        else
+        {
+            showLocation = false;
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Location"))
         {
-            playerLocationText.color = Color.Lerp(playerLocationText.color, Color.clear, fadeTime * Time.deltaTime);
             //leftDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.clear, fadeTime * Time.deltaTime);
             //rightDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.clear, fadeTime * Time.deltaTime);
         }

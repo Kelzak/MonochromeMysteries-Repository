@@ -9,6 +9,7 @@ using UnityEngine;
 public class FlickerLight : MonoBehaviour
 {
     private Light light;
+    private bool toggle;
     public float minWaitTime;
     public float maxWaitTime;
     // Start is called before the first frame update
@@ -25,7 +26,20 @@ public class FlickerLight : MonoBehaviour
         while(true)
         {
             yield return new WaitForSeconds(Random.Range(minWaitTime, maxWaitTime));
-            light.enabled = !light.enabled;
+            toggle = !toggle;
+            light.enabled = toggle;
+            if(GetComponentInParent<MeshRenderer>())
+            {
+                if(toggle)
+                {
+                    GetComponentInParent<MeshRenderer>().material.EnableKeyword("_EMISSION");
+
+                }
+                else
+                {
+                    GetComponentInParent<MeshRenderer>().material.DisableKeyword("_EMISSION");
+                }
+            }
         }
     }
     // Update is called once per frame

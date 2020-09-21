@@ -14,6 +14,7 @@ public class LightSwitch : MonoBehaviour
     public AudioSource audioSource;
     public Light[] lights;
     public bool off;
+    public GameObject bulb;
 
     void Start()
     {
@@ -21,6 +22,7 @@ public class LightSwitch : MonoBehaviour
         if (lights == null)
         {
             lights = GetComponents<Light>();
+            bulb.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
 
         }
     }
@@ -39,9 +41,9 @@ public class LightSwitch : MonoBehaviour
                 if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
                 {
                     lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
-                    GameObject bulb = GameObject.Find("bulb");
 
                     bulb.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                    //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
                 }  
                 lights[i].enabled = true;
                 off = false;
@@ -55,9 +57,9 @@ public class LightSwitch : MonoBehaviour
                 if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
                 {
                     lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
-                    GameObject bulb = GameObject.Find("bulb");
 
                     bulb.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+                    //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
                 }
             }
         }
