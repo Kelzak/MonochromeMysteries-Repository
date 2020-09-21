@@ -81,9 +81,10 @@ public class GameController : MonoBehaviour
         NotepadPage3 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField3").gameObject;
         NotepadPage4 = pauseMenu.transform.Find("NotepadGroup").transform.Find("Notes").transform.Find("NotesInputField4").gameObject;
 
-        Debug.Log("Running Start");
+        
         if (SaveSystem.gameData != null)
         {
+            Debug.Log("Running Start: SAVE DATA EXISTS");
             //LOAD RAT TRAPS
             for (int i = 0; i < GameController._instance.ratTraps.Length; i++)
             {
@@ -115,7 +116,7 @@ public class GameController : MonoBehaviour
             TogglePause();
         if (initialLoad == true)
         {
-            SaveSystem.Load(SaveSystem.currentSaveSlot);
+            SaveSystem.Load(SaveSystem.currentSaveSlot, true);
             initialLoad = false;
         }
         menuActive = false;
@@ -143,7 +144,7 @@ public class GameController : MonoBehaviour
         //pauseMenu_tabs[(int)Menu.Options].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Options); });
         pauseMenu_tabs[(int)Menu.Notepad].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Notepad); });
         pauseMenu_tabs[(int)Menu.Reference].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Reference); });
-        pauseMenu_tabs[(int)Menu.MainMenu].GetComponent<Button>().onClick.AddListener(() => { SaveSystem.Load(SaveSystem.currentSaveSlot); });
+        pauseMenu_tabs[(int)Menu.MainMenu].GetComponent<Button>().onClick.AddListener(() => { SaveSystem.Load(SaveSystem.currentSaveSlot, true); });
 
         pauseMenu.SetActive(false);
 
@@ -385,10 +386,9 @@ public class GameController : MonoBehaviour
         MainMenu.UpdateTVRanges();
 
         Debug.Log("Trying to enter tv");
-        if (initialTVTransition == true)
+        if (SaveSystem.enterTVOnThisLoad == true)
         {
             MainMenu.TriggerMainMenu();
-            initialTVTransition = false;
         }
         else
         {

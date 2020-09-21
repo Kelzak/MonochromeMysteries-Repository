@@ -18,6 +18,7 @@ public static class SaveSystem
     [Range(1,MAX_SAVE_SLOTS)]
     public static int currentSaveSlot = 1;
     public static bool existingSaveData = false;
+    public static bool enterTVOnThisLoad = false;
     public static bool loading = false;
     public static Data.GameData gameData;
     public static Data.SaveData saveData;
@@ -87,16 +88,17 @@ public static class SaveSystem
         Log.AddEntry("Save Completed");
     }
 
-    public static void Load(int saveSlot)
+    public static void Load(int saveSlot, bool enterTVOnLoad=false)
     {
+        enterTVOnThisLoad = enterTVOnLoad;
         loading = true;
         Debug.Log("Starting to load");
         string path;
 
         //Create Save Directory if non-existant
-        if (!Directory.Exists(Path.Combine(saveDataPath, "_GameData")))
+        if (!Directory.Exists(saveDataPath))
         {
-            Directory.CreateDirectory(Path.Combine(saveDataPath, "_GameData"));
+            Directory.CreateDirectory(saveDataPath);
         }
 
         //Create universal saveInfo file for game-state independent save stuff
@@ -114,7 +116,8 @@ public static class SaveSystem
                 data = formatter.Deserialize(stream) as Data.SaveData;
                 //Load General Save information
                 SaveSystem.existingSaveData = data.existingSave;
-                SaveSystem.currentSaveSlot = data.mostRecentSaveSlot;
+                if(GameController.initialLoad)
+                    SaveSystem.currentSaveSlot = data.mostRecentSaveSlot;
             }
         }
         else
@@ -141,7 +144,8 @@ public static class SaveSystem
 
             currentSaveSlot = saveSlot;
             SceneManager.LoadScene(0, LoadSceneMode.Single);
-            MainMenu.TriggerMainMenu();
+            //if(enterTVOnLoad)
+            //    MainMenu.TriggerMainMenu();
 
             
         }
@@ -210,8 +214,8 @@ public static class SaveSystem
         currentSaveSlot = saveSlot;
         if(SaveExists(saveSlot))
             DeleteSave(currentSaveSlot);
-        //Load(saveSlot);
-        SceneManager.LoadScene(0, LoadSceneMode.Single);
+        Load(saveSlot);
+        //SceneManager.LoadScene(0, LoadSceneMode.Single);
         //Save(saveSlot);
         //MainMenu.TriggerMainMenu();
     }
