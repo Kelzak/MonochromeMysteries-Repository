@@ -122,9 +122,9 @@ public class Television : MonoBehaviour
 
         //Set the right buttons at start
         SwapButtons(true, ButtonName.NewGame, ButtonName.HowToPlay, ButtonName.Credits, ButtonName.Quit);
-        SwapButtons(false, ButtonName.Resume, ButtonName.Continue);
+        SwapButtons(false, ButtonName.LoadGame, ButtonName.Resume, ButtonName.Continue);
         if (SaveSystem.SaveExists(SaveSystem.currentSaveSlot) && GameController.initialTVTransition == true)
-            SwapButtons(true, ButtonName.Continue);
+            SwapButtons(true, ButtonName.Continue, ButtonName.LoadGame);
         else if (SaveSystem.SaveExists(SaveSystem.currentSaveSlot) && GameController.initialTVTransition == false)
             SwapButtons(true, ButtonName.Resume);
         

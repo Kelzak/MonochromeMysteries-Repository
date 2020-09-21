@@ -78,6 +78,7 @@ public class Endings : MonoBehaviour
 
     public void ShowKnifeInstructions()
     {
+        isUsingKnife = true;
         Readables.isReadingLetter = true;
         Read.isReading = true;
         darkBackground.SetActive(true);

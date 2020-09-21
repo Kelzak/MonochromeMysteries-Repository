@@ -46,6 +46,15 @@ public class VideoCutscene : MonoBehaviour
         StartCoroutine(LoadScene(sceneIndex));
     }
 
+    private void Update()
+    {
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SkipCutscene();
+        }
+    }
+
     void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
         if(scene.name.Contains("Win") || scene.name.Contains("Lose"))
@@ -79,6 +88,12 @@ public class VideoCutscene : MonoBehaviour
                 interactiveCanvas.SetActive(true);
         }
     }
-
-
+    
+    void SkipCutscene()
+    {
+       if (SceneManager.GetActiveScene().name.Contains("Opening"))
+       {
+           SaveSystem.NewGame(SaveSystem.currentSaveSlot);
+       }
+    }
 }
