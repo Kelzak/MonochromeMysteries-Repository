@@ -339,7 +339,7 @@ public class PhotoLibrary : MonoBehaviour
 
         //Create Image
         Sprite newSprite = Sprite.Create(photo, new Rect(0, 0, photo.width, photo.height), Vector2.zero, 100f);
-        newSprite.name = string.Format("Photo-{0}", _instance.photoCount);
+        newSprite.name = string.Format("{1}Photo-{0}", _instance.photoCount, SaveSystem.currentSaveSlot);
 
         //Save image
         string savePath = Path.Combine(Application.persistentDataPath, "_GameData", newSprite.name + ".png");

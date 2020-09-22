@@ -107,24 +107,26 @@ public static class SaveSystem
             Data.SaveData data;
             using (var stream = new FileStream(path, FileMode.Open))
             {
-                if (stream.Length == 0)
+                if (stream.Length != 0)
                 {
-                    loading = false;
-                    return;
+                    //SceneManager.LoadScene(0, LoadSceneMode.Single);
+                    //loading = false;
+                    //return;
+
+                    formatter = new BinaryFormatter();
+                    data = formatter.Deserialize(stream) as Data.SaveData;
+                    //Load General Save information
+                    SaveSystem.existingSaveData = data.existingSave;
+                    if (GameController.initialLoad)
+                        SaveSystem.currentSaveSlot = data.mostRecentSaveSlot;
                 }
-                formatter = new BinaryFormatter();
-                data = formatter.Deserialize(stream) as Data.SaveData;
-                //Load General Save information
-                SaveSystem.existingSaveData = data.existingSave;
-                if(GameController.initialLoad)
-                    SaveSystem.currentSaveSlot = data.mostRecentSaveSlot;
             }
         }
         else
         {
             File.Create(Path.Combine(saveDataPath, "saveInfo" + fileExtension)).Dispose();
-            loading = false;
-            return;
+            //loading = false;
+            //return;
         }
 
         if (File.Exists(path = Path.Combine(saveDataPath, string.Format("save{0}", saveSlot) + fileExtension)))
@@ -133,17 +135,15 @@ public static class SaveSystem
             //Decode Game Data
             using (var stream = new FileStream(path, FileMode.Open))
             {
-                if (stream.Length == 0)
+                if (stream.Length != 0)
                 {
-                    loading = false;
-                    return;
+                    formatter = new BinaryFormatter();
+                    gameData = formatter.Deserialize(stream) as Data.GameData;
                 }
-                formatter = new BinaryFormatter();
-                gameData = formatter.Deserialize(stream) as Data.GameData;
             }
 
-            currentSaveSlot = saveSlot;
-            SceneManager.LoadScene(0, LoadSceneMode.Single);
+            //currentSaveSlot = saveSlot;
+            //SceneManager.LoadScene(0, LoadSceneMode.Single);
             //if(enterTVOnLoad)
             //    MainMenu.TriggerMainMenu();
 
@@ -154,8 +154,11 @@ public static class SaveSystem
             gameData = null;
             
             Debug.Log("Save Data for Slot " + saveSlot + " Not Found.");
+
         }
 
+        currentSaveSlot = saveSlot;
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
 
         //Load Game Stats for Save Slots
         for (int i = 1; i <= MAX_SAVE_SLOTS; i++)
@@ -167,10 +170,12 @@ public static class SaveSystem
                 Data.GameData data;
                 using (var stream = new FileStream(path, FileMode.Open))
                 {
-                    data = formatter.Deserialize(stream) as Data.GameData;
-                    OnUpdatedSaveStats?.Invoke(temp, data.gameStats.date, data.gameStats.playTime);
-                    //GameController.UpdateSaveSlotInfo(temp, data.gameStats.date, data.gameStats.playTime);
-
+                    if (stream.Length != 0)
+                    {
+                        data = formatter.Deserialize(stream) as Data.GameData;
+                        OnUpdatedSaveStats?.Invoke(temp, data.gameStats.date, data.gameStats.playTime);
+                        //GameController.UpdateSaveSlotInfo(temp, data.gameStats.date, data.gameStats.playTime);
+                    }
                 }
 
             }
