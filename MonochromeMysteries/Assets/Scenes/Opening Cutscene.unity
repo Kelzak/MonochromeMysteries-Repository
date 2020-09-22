@@ -748,8 +748,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Press [S] to skip cutscene
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 45f76132063405047b3d9b87e1467083, type: 2}
+  m_sharedMaterial: {fileID: 9112990057704499791, guid: 45f76132063405047b3d9b87e1467083,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1223,7 +1224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   video: {fileID: 0}
   sceneIndex: 0
-  clipVolume: 0.5
+  clipVolume: 0.3
 --- !u!1 &1598957762
 GameObject:
   m_ObjectHideFlags: 0

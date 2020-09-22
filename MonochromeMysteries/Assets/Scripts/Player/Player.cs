@@ -362,7 +362,7 @@ public class Player : MonoBehaviour
                 {
                     if (shortestDistance < Player.reticleDist / 8f)
                     {
-                        if (Rat.hold)
+                        if (GetComponent<Rat>().hold)
                         {
                             displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
@@ -451,7 +451,10 @@ public class Player : MonoBehaviour
                 }
                 if (target.GetComponentInParent<DoorScript>().hasKey && target.GetComponentInParent<DoorScript>().isLocked)
                 {
-                    displayIconText.text = "Needs Key";
+                    if(keys.Contains(target.GetComponentInParent<DoorScript>().key))
+                        displayIconText.text = "Use Key";
+                    else
+                        displayIconText.text = "Needs Key";
                     displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
                     if(target.GetComponentInParent<DoorScript>().unlocking)
                     {
@@ -599,7 +602,7 @@ public class Player : MonoBehaviour
                 }
                 else if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
                 {
-                    if (Rat.hold)
+                    if (GetComponent<Rat>().hold)
                     {
                         displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
 
@@ -1266,7 +1269,11 @@ public class Player : MonoBehaviour
         //If it's not the main player, remove player script
         else if (gameObject != mainPlayer)
         {
-            //if(GetComponent<Rat>())
+            //if rat, drop item
+            if(GetComponent<Rat>())
+            {
+                GetComponent<Rat>().hold = false;
+            }
 
 
             if (GetComponent<NavPerson>())
@@ -1526,6 +1533,11 @@ public class Player : MonoBehaviour
         //If this is not the main player (Ghost) then fire any events related to leaving a host and get rid of player script
         if (gameObject != mainPlayer)
         {
+            if(GetComponent<Rat>())
+            {
+                GetComponent<Rat>().hold = false;
+            }
+
             if (GetComponent<NavPerson>())
             {
                 GetComponent<NavPerson>().enabled = true;

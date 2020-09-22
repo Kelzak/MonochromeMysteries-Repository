@@ -251,9 +251,9 @@ public class DoorScript : MonoBehaviour
     void Update()
     {
         if (waitHitbox == true)
-            GetComponent<MeshRenderer>().GetComponent<MeshCollider>().enabled = false;
+            GetComponentInChildren<MeshRenderer>().GetComponent<MeshCollider>().enabled = false;
         else
-            GetComponent<MeshRenderer>().GetComponent<MeshCollider>().enabled = true;
+            GetComponentInChildren<MeshRenderer>().GetComponent<MeshCollider>().enabled = true;
     }
     void DoorShut()
     {

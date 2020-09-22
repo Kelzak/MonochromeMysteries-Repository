@@ -29,7 +29,7 @@ public class Rat : Possessable
 
     public TMP_Text displayText;
 
-    public static bool hold;
+    public bool hold;
     private GameObject target;
 
     // Start is called before the first frame update
@@ -100,7 +100,7 @@ public class Rat : Possessable
 
     private void OnTriggerStay(Collider other)
     {
-        if(Input.GetButtonDown("PickUp") && (other.gameObject.tag == "pickup" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && !hasKey)
+        if(Input.GetButtonDown("PickUp") && (other.gameObject.tag == "pickup" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && !hasKey && GetComponent<Player>())
         {
 
             squeakSource.PlayOneShot(obtainClip);
@@ -108,7 +108,7 @@ public class Rat : Possessable
 
             hold = true;
         }
-        else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "pickup" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey)
+        else if ((Input.GetButtonDown("PickUp") && (other.gameObject.tag == "pickup" || other.gameObject.tag == "letter" || other.gameObject.tag == "Knife") && hasKey) || Input.GetKeyDown(KeyCode.Q) && other.gameObject.tag == "Key" && hasKey && GetComponent<Player>())
         {
             squeakSource.PlayOneShot(obtainClip);
             target = other.gameObject;
