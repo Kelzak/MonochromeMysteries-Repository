@@ -145,6 +145,9 @@ public class Player : MonoBehaviour
     public GameObject photographersCam;
     public GameObject mustache;
 
+    //private PlayerHUD playerHUD;
+    private GameObject playerHUD;
+
     private void OnEnable()
     {
         MainMenu.OnMainMenuTriggered += HideReticle;
@@ -184,6 +187,9 @@ public class Player : MonoBehaviour
 
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
         initialized = true;
+
+        playerHUD = FindObjectOfType<PlayerHUD>().gameObject;
+
     }
 
 
@@ -799,6 +805,9 @@ public class Player : MonoBehaviour
             StartCoroutine(endingManager.KnifeScript());
         }
     }
+
+    
+    
 
     public void DisplayCharacterInfo()
     {
@@ -1656,14 +1665,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    //also hide location text
     private void HidePortrait(bool shouldHide)
     {
+        GameObject playerHUD = FindObjectOfType<PlayerHUD>().gameObject;
         if (shouldHide)
         {
+            playerHUD.GetComponent<PlayerHUD>().playerLocationText.gameObject.SetActive(false);
+
             characterPortrait.SetActive(false);
         }
         else
         {
+            playerHUD.GetComponent<PlayerHUD>().playerLocationText.gameObject.SetActive(true);
+
             characterPortrait.SetActive(true);
         }
     }

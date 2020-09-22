@@ -27,7 +27,9 @@ public class PlayerHUD : MonoBehaviour
     //text with no icon directly in the middle of the screen so it looks nicer
     public TMP_Text singleText;
     public Image playerDisplayIcon;
-    private bool showLocation;
+    [HideInInspector]
+    public bool showLocation;
+    public string LocationText;
 
     [Header("Icons")]
     public Sprite cameraIcon;
@@ -57,12 +59,18 @@ public class PlayerHUD : MonoBehaviour
     {
         if(showLocation)
         {
+            playerLocationText.text = LocationText;
             playerLocationText.color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
+            //leftDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
+            //rightDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
+            //print(playerLocationText.textBounds);
 
         }
         else
         {
             playerLocationText.color = Color.Lerp(playerLocationText.color, Color.clear, fadeTime * Time.deltaTime);
+            //leftDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.clear, fadeTime * Time.deltaTime);
+            //rightDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.clear, fadeTime * Time.deltaTime);
 
         }
 
@@ -286,19 +294,20 @@ public class PlayerHUD : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.CompareTag("Location"))
-        {
-            playerLocationText.text = other.gameObject.name;
-            //print(playerLocationText);
-            //leftDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
-            //rightDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
-            //print(playerLocationText.textBounds);
-            showLocation = true;
-        }
-        else
-        {
-            showLocation = false;
-        }
+
+        //if(other.gameObject.CompareTag("Location"))
+        //{
+        //    playerLocationText.text = other.gameObject.name;
+        //    //print(playerLocationText);
+        //    //leftDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
+        //    //rightDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
+        //    //print(playerLocationText.textBounds);
+        //    showLocation = true;
+        //}
+        //else
+        //{
+        //    showLocation = false;
+        //}
     }
     private void OnTriggerExit(Collider other)
     {

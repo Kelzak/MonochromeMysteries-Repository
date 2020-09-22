@@ -70,7 +70,7 @@ public class Item : MonoBehaviour, IObserver
             item.GetComponent<Outline>().enabled = false;
         }
 
-
+        player = FindObjectOfType<Player>().gameObject;
 
         dist = Vector3.Distance(this.transform.position, player.transform.position);
         //Debug.Log("Dist: " + dist);
