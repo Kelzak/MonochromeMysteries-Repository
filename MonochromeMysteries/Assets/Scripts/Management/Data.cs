@@ -223,6 +223,7 @@ public static class Data
     {
         public float[] doorIDs;
         public bool[] locked;
+        public bool[] open;
 
         public DoorData()
         {
@@ -231,6 +232,7 @@ public static class Data
 
             doorIDs = new float[numDoors];
             locked = new bool[numDoors];
+            open = new bool[numDoors];
 
             for(int i = 0; i < numDoors; i++)
             {
@@ -239,6 +241,7 @@ public static class Data
                 doorIDs[i] = currentDoor.GetID();
                 //Debug.Log("Saving " + currentDoor.name + ": " + currentDoor.isLocked);
                 locked[i] = currentDoor.isLocked;
+                open[i] = currentDoor.isOpen;
             }
 
 

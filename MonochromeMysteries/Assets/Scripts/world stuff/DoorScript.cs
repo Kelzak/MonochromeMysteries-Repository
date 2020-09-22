@@ -220,8 +220,13 @@ public class DoorScript : MonoBehaviour
         {
             if(GameController._instance.doors[i].GetID() == this.id)
             {
-                this.isLocked = data.locked[i];
-                if(!isLocked)
+                this.isLocked = data.locked[i]; 
+                if(!this.isOpen & data.open[i])
+                {
+                    Open();
+                }
+                this.isOpen = data.open[i];
+                if (!isLocked)
                 {
                     personalDoor = false;
                 }
