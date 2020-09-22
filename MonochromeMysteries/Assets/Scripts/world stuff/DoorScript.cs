@@ -46,6 +46,7 @@ public class DoorScript : MonoBehaviour
     public bool hasNotBeenRepaired;
 
     public bool hasKey = false;
+    private bool waitHitbox;
 
     private void Awake()
     {
@@ -249,7 +250,10 @@ public class DoorScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (waitHitbox == true)
+            GetComponent<MeshRenderer>().GetComponent<MeshCollider>().enabled = false;
+        else
+            GetComponent<MeshRenderer>().GetComponent<MeshCollider>().enabled = true;
     }
     void DoorShut()
     {
@@ -267,5 +271,11 @@ public class DoorScript : MonoBehaviour
         sound = openDoor[rand];
         audioSource.PlayOneShot(sound);
         isOpen = true;
+    }
+    IEnumerator Blah()
+    {
+        waitHitbox = true;
+        yield return new WaitForSeconds(2);
+        waitHitbox = false;
     }
 }

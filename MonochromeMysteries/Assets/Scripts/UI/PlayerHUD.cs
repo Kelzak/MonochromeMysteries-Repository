@@ -279,6 +279,11 @@ public class PlayerHUD : MonoBehaviour
         hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, 0f, fadeTime * Time.deltaTime);
     }
     */
+
+    void Door()
+    {
+
+    }
     private void OnTriggerStay(Collider other)
     {
         if(other.gameObject.CompareTag("Location"))

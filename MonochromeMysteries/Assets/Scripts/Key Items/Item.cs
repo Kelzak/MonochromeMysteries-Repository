@@ -23,17 +23,28 @@ public class Item : MonoBehaviour, IObserver
     private bool isClose;
 
     public string itemName;
+    public string itemDescription;
     private GameObject checker;
 
     public bool isPickup;
 
+
+    public float glowWidth = 8f;
+    [HideInInspector]
     public bool glowOverride;
+    private Outline outline;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        outline = GetComponent<Outline>();
+
+        outline.OutlineWidth = glowWidth;
+
+        itemName = itemName == null ? gameObject.name : this.itemName;
+
+        //player = GameObject.FindObjectOfType<Player>();
 
         item = this.gameObject;
         checker = GameObject.FindGameObjectWithTag("StateChecker");
@@ -47,7 +58,7 @@ public class Item : MonoBehaviour, IObserver
     // Update is called once per frame
     void Update()
     {
-        //changes materials 
+        //enables outline 
         if (isGhost == true && isClose == true || glowOverride)
         {
             item.GetComponent<Outline>().enabled = true;
