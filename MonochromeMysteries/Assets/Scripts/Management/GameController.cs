@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
     private GameObject pauseMenu;
     private GameObject[] pauseMenu_tabs;
     private GameObject[] pauseMenu_menus;
-    public enum Menu { Scrapbook, LoadGame, /*Options,*/ Notepad, Reference, MainMenu, Settings};
+    public enum Menu { Scrapbook, LoadGame, /*Options,*/ Notepad, Reference, Settings, QuitGame};
     private Menu pauseMenu_activeMenu;
 
     [Header("Load Game"), HideInInspector]
@@ -129,27 +129,28 @@ public class GameController : MonoBehaviour
                                             //tabs.transform.Find("Options").gameObject,
                                             tabs.transform.Find("Notepad").gameObject,
                                             tabs.transform.Find("References").gameObject,
-                                            tabs.transform.Find("MainMenu").gameObject,
-                                            tabs.transform.Find("Settings").gameObject
+                                            tabs.transform.Find("Settings").gameObject,
+                                            tabs.transform.Find("QuitGame").gameObject
                                            };
         pauseMenu_menus = new GameObject[6];
         pauseMenu_menus[(int)Menu.Settings] = pauseMenu.transform.Find("SettingsGroup").gameObject;
         pauseMenu_menus[(int)Menu.Scrapbook] = pauseMenu.transform.Find("PhotoCollection").gameObject;
         pauseMenu_menus[(int)Menu.LoadGame] = pauseMenu.transform.Find("LoadGame").gameObject;
-        //pauseMenu_menus[(int)Menu.Options] = pauseMenu.transform.Find("Options").gameObject;
+        pauseMenu_menus[(int)Menu.QuitGame] = pauseMenu.transform.Find("QuitGameGroup").gameObject;
         pauseMenu_menus[(int)Menu.Notepad] = pauseMenu.transform.Find("NotepadGroup").gameObject;
         pauseMenu_menus[(int)Menu.Reference] = pauseMenu.transform.Find("ReferenceGroup").gameObject;
-        
+
 
 
         //Add Listeners to tabs;
+        pauseMenu_tabs[(int)Menu.Settings].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Settings); });
         pauseMenu_tabs[(int)Menu.Scrapbook].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Scrapbook); });
         pauseMenu_tabs[(int)Menu.LoadGame].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.LoadGame); });
         //pauseMenu_tabs[(int)Menu.Options].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Options); });
         pauseMenu_tabs[(int)Menu.Notepad].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Notepad); });
         pauseMenu_tabs[(int)Menu.Reference].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Reference); });
-        pauseMenu_tabs[(int)Menu.MainMenu].GetComponent<Button>().onClick.AddListener(() => { SaveSystem.Load(SaveSystem.currentSaveSlot, true); });
-        pauseMenu_tabs[(int)Menu.Settings].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.Settings); });
+        pauseMenu_tabs[(int)Menu.QuitGame].GetComponent<Button>().onClick.AddListener(() => { ChangeMenu(Menu.QuitGame); });
+        
 
 
         pauseMenu.SetActive(false);
@@ -248,7 +249,7 @@ public class GameController : MonoBehaviour
 
     public void ChangeMenu(Menu newMenu)
     {
-        for(int i = 0; i < pauseMenu_menus.Length; i++)
+        for(int i = 0; i < pauseMenu_menus.Length + 1; i++)
         {
             if (i == (int)newMenu)
             {

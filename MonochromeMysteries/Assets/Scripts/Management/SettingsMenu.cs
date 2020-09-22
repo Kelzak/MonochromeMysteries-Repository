@@ -22,5 +22,23 @@ public class SettingsMenu : MonoBehaviour
         MasterAudioMixer.SetFloat("MasterVolume", volume);
     }
 
-    //public void ToggleFullscreen();
+    public void ToggleFullscreen(bool fullscreen)
+    {
+        if (fullscreen)
+        {
+            Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+            Debug.Log("is fullscreen");
+        }
+
+        else
+        {
+            Screen.fullScreenMode = FullScreenMode.Windowed;
+            Debug.Log("is windowed");
+        }
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }

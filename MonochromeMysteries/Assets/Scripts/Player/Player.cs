@@ -252,6 +252,11 @@ public class Player : MonoBehaviour
 
     }
 
+    public void AdjustLookSpeed(float lookSpeed)
+    {
+        lookSensitivity = lookSpeed;
+    }
+
     void Interact()
     {
         bool photoUI = false;
