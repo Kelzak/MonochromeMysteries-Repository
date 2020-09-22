@@ -152,7 +152,7 @@ public class PadlockPuzzle : MonoBehaviour
         keypadisUp = true;
         darkBackground.SetActive(true);
         pressEscToClose.SetActive(true);
-        GameController.TogglePause();
+        //GameController.TogglePause();
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
         Time.timeScale = 0;
@@ -177,10 +177,9 @@ public class PadlockPuzzle : MonoBehaviour
             photographer.CameraLensActive = true;
             //photographer.canTakePhoto = false;
         }
-        keypadisUp = false;
         darkBackground.SetActive(false);
         pressEscToClose.SetActive(false);
-        GameController.TogglePause();
+        //GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
         Player.canMove = true;
@@ -193,6 +192,7 @@ public class PadlockPuzzle : MonoBehaviour
         symbolInputField.text = "";
         symbolInputField.placeholder.GetComponent<Text>().text = "Enter password...";
         StartCoroutine(WaitToTurnOnCamera());
+        StartCoroutine(WaitToBeAbleToPause());
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         //totalInputs = 0;
     }
@@ -201,6 +201,12 @@ public class PadlockPuzzle : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(1);
         photographer.canTakePhoto = true;
+    }
+
+    public IEnumerator WaitToBeAbleToPause()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        keypadisUp = false;
     }
 
     public void CheckifCodeisCorrect()

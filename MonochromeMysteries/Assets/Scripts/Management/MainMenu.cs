@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class MainMenu : MonoBehaviour
     public Television[] TVs;
 
     public GameObject playerPortrait;
+
+    public TMP_Text exitText;
 
 
     //Says whether the MAIN MENU ONLY is active
@@ -94,6 +97,13 @@ public class MainMenu : MonoBehaviour
         {
             //Save code
         }
+
+        //Text Prompt to exit TV
+        if(GameController.menuActive)
+        {
+
+        }
+
     }
 
     public static int GetLastTVIndex()
@@ -186,6 +196,7 @@ public class MainMenu : MonoBehaviour
     {
 
         tvTransitionInProgress = true;
+        //exitText.gameObject.SetActive(true);
         Player.EnableControls(false);
 
         while (Player.GetPossessionInProgress())
@@ -205,6 +216,7 @@ public class MainMenu : MonoBehaviour
         if (active)
         {
             Player.EnableControls(false);
+            exitText.gameObject.SetActive(true);
             OnMainMenuTriggered?.Invoke(true);
         }
         //Exiting menu so return to static
@@ -219,6 +231,7 @@ public class MainMenu : MonoBehaviour
             currentTV.saveSelect.SetActive(false);
             currentTV.howToPlay.SetActive(false);
             OnMainMenuTriggered?.Invoke(false);
+            exitText.gameObject.SetActive(false);
         }
 
 
@@ -286,12 +299,13 @@ public class MainMenu : MonoBehaviour
         {
             photographer.CameraLensActive = true;
         }
-
+        //exitText.gameObject.SetActive(false);
         tvTransitionInProgress = false;
     }
 
     float menuTransitionTime = 0.5f;
     bool menuTransitionInProgress = false;
+
     private IEnumerator SwitchMenu(string menuNameToSwitchTo)
     {
         menuTransitionInProgress = true;
@@ -310,6 +324,7 @@ public class MainMenu : MonoBehaviour
         currentMenu = currentTV.transform.Find("Screen").Find(menuNameToSwitchTo).gameObject;
         currentMenu.SetActive(true);
         currentTV.tvStatic.SetActive(false);
+        
         menuTransitionInProgress = false;
     }
 

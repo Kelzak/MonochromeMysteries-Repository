@@ -97,7 +97,7 @@ public class Safe : MonoBehaviour
                 photographer.canTakePhoto = false;
             }
 
-            GameController.TogglePause();
+            //GameController.TogglePause();
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
             Player.EnableControls(false);
@@ -123,7 +123,7 @@ public class Safe : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Player.EnableControls(true);
             Background.SetActive(false);
-            GameController.TogglePause();
+            //GameController.TogglePause();
             uiOpen = false;
             audioSource.PlayOneShot(incorrectSFX);
             readTime = false;
