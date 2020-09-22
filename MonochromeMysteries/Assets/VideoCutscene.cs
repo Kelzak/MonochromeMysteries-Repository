@@ -49,7 +49,7 @@ public class VideoCutscene : MonoBehaviour
     private void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
         {
             SkipCutscene();
         }
