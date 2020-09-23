@@ -38,27 +38,22 @@ public class Tutorial : MonoBehaviour
     {
 
         yield return new WaitForSeconds(5f);
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "Hey you, you’re finally awake. It’s about time! I know you’re new to the whole ‘trapped soul’ gig but you’ve been dead for hours. Take a gander around and walk over to your body with the W, A, S, D keys.");
-        objectives.Enqueue("Move around (Press W, A, S, or D)");
-        Dialogue.AddLine(Dialogue.Character.Pete, "I’m sure you’re itching to get on with your afterlife. But if you don’t want to be stuck in this here motel like good ole Pete, you’ll need to solve your murder.", "You can’t be findin’ peace with unresolved business, now can ya?");
-        Dialogue.AddLine(Dialogue.Character.Pete, "You have a couple of perks you can use now. First, you can see the aura of objects around you. These objects can provide important clues about your murder.", "<b>You should take a photo of them at every opportunity</b>. We’ll get back to the picture takin’ later...");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Another perk of being newly dead is being able to possess living creatures. You see that rat over there? You can possess him by pressing E and depossess him by pressing Q.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Creatures you possess can also pick up items, like keys or paper balls, with the [F] key. Items with a white aura can be interacted with and will have text saying how to use them right above 'em.");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "Also, items that are picked up by a <b>human</b> you're possessing are brought with you when you decide to possess someone new. How about you try possessing one of these critters, hm.");
-        objectives.Enqueue("Possess a rat (Press E to Possess)");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "Now, get out of that rat and head over to a Television set over there. The TV's in each room are also possessable. When you possess the TV, <b>you can access the main menu, save/load, or adjust settings</b>.");
-        objectives.Enqueue("Possess a TV by standing in front of it and pressing [F] as a spirit");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "If you’re gonna start solvin’ your murder, you’ll need to have a way to document evidence. See if you can find someone with a camera and bring him back here, would ya? Use what I’ve taught ya so far.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "Ah, so you’ve awoken. I apologize about your body and its...current state. I know you must be lost in this afterlife, so let me guide you. You don’t have many other options.", "However, I assure you that I have your best interest at heart.");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "Your being is unlike the one you came from.Walk around this room to get a feel for your new body.");
+        objectives.Enqueue("Move around (Press W, A, S, and D)");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I can feel the growing chaos in your heart, for your life has been taken from you. To be at rest you must solve your murder to bring justice. It might be difficult since your memory has been lost.", "As a soul you are limited. You can not interact with the world around you. However you can see things tied to your murder with a glowing aura. These objects may provide crucial information to solve the mystery.");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "As a soul, you have a direct line into the hearts in every living being, allowing you to possess and control their bodies as if it was your own, including those rats crawling around. As a rat, you can pick up various smaller items like keys and paper balls.");
+        objectives.Enqueue("Possess a rat by pressing [E]. To leave the body, press [Q].");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "These “picture boxes” will act as a hub for you to save your progress and come back to where you left off if you ever need a break.");
+        objectives.Enqueue("Possess a TV by pressing [F] in front of it. Press [F] again to exit.");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "In order to solve your mystery, you’ll need help from the man in the next room. He possesses an object that will be necessary for analyzing information. Bring him here.");
         OnPhotographerEnter();
-        objectives.Enqueue("Find the Photographer and bring him to the crime scene");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "Good job on getting that there photographer in here. Now remember what I was sayin’ about those objects with a white aura? Go and take some photographs of those right quick.");
-        objectives.Enqueue("Take a picture your dead body (Left-Click as the Photographer)");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Great, you’ve collected some evidence! <b>Now listen, this is important</b>. You'll want to keep the photographer close since you'll find more evidence the more you look around.");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "Take a look at those photographs in your scrapbook by pressing [TAB]. You’ll be able to examine them for more clues there.");
-        objectives.Enqueue("Open your scrapbook (Press Tab)");
-        Dialogue.AddLine(Dialogue.Character.Pete, "There's also a notepad section of your scrapbook where you can record your thoughts and observations. You’ll definitely want to use that later as well.", "You can also run around to get places faster by holding [LShift] while you're moving. Take a peek at the reference tab in your scrapbook if you're ever lost on how to move about the world.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "If you <b>use that brain of yours</b>, imitate all them characters on those detective shows that play on the TV nowadays, and ya keep that camera nearby, you should have this mess figured out in no time.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Well good luck out there youngin! I’ll be rootin’ for ya! You’re on your own for now, but this aint the last you’ll see Ol’ Pete. If you’re clever enough, I’ve got a <b>little gift</b> for ya later. Adios ami-ghost!");
+        objectives.Enqueue("Get the man next door into your room");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "I see you’re growing accustomed to your newfound powers. Very good. Now, you’ll see the man is well versed in capturing visages. It’d be wise to take photos of objects with auras around them to inspect them further. Try this with your body.");
+        objectives.Enqueue("Take a photo of your body as the Photographer with [LeftMouseClick]");
+        Dialogue.AddLine(Dialogue.Character.Pete, "You can use photos to save information about the important objects you find, to inspect them for further information, or use later.", "Keep that man nearby, the photos will prove a vital source of information. At any time you may examine the scrapbook and review your photos.");
+        objectives.Enqueue("Press [Tab] to open your scrapbook and examine photos");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I’ve given you all the information I can at this point. From here on out, you’ll be on your own.", "This journey will be fraught with twists that will challenge your intellect, but I trust you will be successful. The fate of your heart depends on it.");
         TriggerTutorialEnd();
     }
 

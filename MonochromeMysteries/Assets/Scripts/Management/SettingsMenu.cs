@@ -27,13 +27,13 @@ public class SettingsMenu : MonoBehaviour
         if (fullscreen)
         {
             Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-            Debug.Log("is fullscreen");
+            //Debug.Log("is fullscreen");
         }
 
         else
         {
             Screen.fullScreenMode = FullScreenMode.Windowed;
-            Debug.Log("is windowed");
+            //Debug.Log("is windowed");
         }
     }
 

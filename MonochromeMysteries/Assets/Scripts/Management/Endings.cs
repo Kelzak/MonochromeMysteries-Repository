@@ -45,14 +45,12 @@ public class Endings : MonoBehaviour
     public IEnumerator KnifeScript()
     {
         yield return new WaitForSeconds(1f);
-        Dialogue.AddLine(Dialogue.Character.Pete, "Well I’ll be, if I had to live in this room I’d be madder than a wet hen! And the stench: YUGH!");
-        Dialogue.AddLine(Dialogue.Character.Pete, "Anyhoo, it’s good to see you here, son. It shows me how motivated you are to find who did you wrong, even if it means stepping into other people’s business…and rat shit.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "You remind me a lot of myself back in my hotel inspectin’ days. Hehe, yeah those were crazy times...I reckon that’s why my gut was screamin’ at me to come lend you a helping hand.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "See, without any closure on your life, you’re gonna end up wandering around in this purgatory hell forever, and believe me that’s just enough time to drive any fella mad.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "There’s a lot of things that prohibit you from getting closure, and one of ‘ems your own emotions. I reckon you ain’t too happy about gettin’ whacked, huh?");
-        Dialogue.AddLine(Dialogue.Character.Pete, "It just ain’t fair...and if you ask this old geezer, ain’t nothing wrong with a little vigilante justice.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "I brought you somethin’ that’ll help you out in that safe over yonder. You’ll be able to use the safe and it's contents the way you are now, as a spirit, since I made them myself. I hope it finds you your ticket out, and more importantly, a little peace.");
-        Dialogue.AddLine(Dialogue.Character.Pete, "I’ll let you get back to getting revenge on the bastard who put you in this mess. Bless your heart, son.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I’m glad to see you’ve progressed this far in your search for truth. Well done. I can sense your motivation is at its peak.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "It gives me great joy to see you’ve surpassed my expectations. You’ve listened to me well, and for that, I thank you.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "Now, I suspect you’ve been pondering how youll escape this purgatory caused by the turmoil in your heart. It's enough to drive even the strongest men mad.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "What you desire is closure, and you’ll need it to heal your fractured heart. By any means necessary, no?");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I’ve brought you a gift locked in that safe that’ll prove useful in your search for justice. You’ll be able to access it and use it as a soul.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "Your decision to use this item is up to you, but remember why you’re doing this and what justice means to you. The fate of your heart - and your killer’s - is in your hands.");
     }
 
     public void UseKnife(string decision)
