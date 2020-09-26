@@ -29,6 +29,8 @@ public class Item : MonoBehaviour, IObserver
     public bool isPickup;
 
 
+
+
     public float glowWidth = 8f;
     [HideInInspector]
     public bool glowOverride;
