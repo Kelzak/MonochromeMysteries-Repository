@@ -221,7 +221,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         //Open/Close Menu
-        if( ( (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Escape)) && !Read.isReading && !PadlockPuzzle.keypadisUp && !Endings.isUsingKnife && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Escape) && menuActive && pauseMenu.activeSelf == true))
+        if( ( (Input.GetKeyDown(KeyCode.Tab)) && !Read.isReading && !PadlockPuzzle.keypadisUp && !Endings.isUsingKnife && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Tab) && menuActive && pauseMenu.activeSelf == true))
         {
             TogglePause();
             pauseMenu.SetActive(paused);

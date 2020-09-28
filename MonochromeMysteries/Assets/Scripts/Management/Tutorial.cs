@@ -39,13 +39,13 @@ public class Tutorial : MonoBehaviour
 
         yield return new WaitForSeconds(5f);
         Dialogue.AddLine(Dialogue.Character.Pete, "Ah, so you’ve awoken. I apologize about your body and its...current state. I know you must be lost in this afterlife, so let me guide you. You don’t have many other options.", "However, I assure you that I have your best interest at heart.");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "Your being is unlike the one you came from.Walk around this room to get a feel for your new body.");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "Your being is unlike the one you came from. Walk around this room to get a feel for your new body.");
         objectives.Enqueue("Move around (Press W, A, S, and D)");
-        Dialogue.AddLine(Dialogue.Character.Pete, "I can feel the growing chaos in your heart, for your life has been taken from you. To be at rest you must solve your murder to bring justice. It might be difficult since your memory has been lost.", "As a soul you are limited. You can not interact with the world around you. However you can see things tied to your murder with a glowing aura. These objects may provide crucial information to solve the mystery.");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "As a soul, you have a direct line into the hearts in every living being, allowing you to possess and control their bodies as if it was your own, including those rats crawling around. As a rat, you can pick up various smaller items like keys and paper balls.");
-        objectives.Enqueue("Possess a rat by pressing [E]. To leave the body, press [Q].");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I can feel the growing chaos in your heart, for your life has been taken from you. To be at rest you must solve your murder to bring justice. It might be difficult since your memory has been lost.", "As a soul you are limited. You can not interact with the world around you. However, you can see things tied to your murder with a glowing aura. These objects may provide crucial information to solve the mystery.");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "These “picture boxes” will act as a hub for you to save your progress and come back to where you left off if you ever need a break.");
         objectives.Enqueue("Possess a TV by pressing [F] in front of it. Press [F] again to exit.");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "As a soul, you have a direct line into the hearts in every living being, allowing you to possess and control their bodies as if it was your own, including those rats crawling around. As a rat, you can pick up various smaller items like keys and paper balls.");
+        objectives.Enqueue("Possess a rat by pressing [E]. To leave the body, press [Q].");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "In order to solve your mystery, you’ll need help from the man in the next room. He possesses an object that will be necessary for analyzing information. Bring him here.");
         OnPhotographerEnter();
         objectives.Enqueue("Get the man next door into your room");
@@ -151,14 +151,14 @@ public class Tutorial : MonoBehaviour
         onFirstMovement?.Invoke();
     }
 
-    public void OnFirstRatPossession()
-    {
-        onFirstRatPossession?.Invoke();
-    }
-
     public void OnFirstTVEnter()
     {
         onFirstTVEnter?.Invoke();
+    }
+
+    public void OnFirstRatPossession()
+    {
+        onFirstRatPossession?.Invoke();
     }
 
     public void OnPhotographerEnter()
@@ -194,23 +194,6 @@ public class Tutorial : MonoBehaviour
 
     }
 
-    //RAT POSSESSION
-    private void TriggerFirstRatPossession()
-    {
-        StartCoroutine(FirstRatPossession());
-    }
-
-    private IEnumerator FirstRatPossession()
-    {
-        while (!Dialogue.holding || onFirstMovement != null)
-        {
-            yield return null;
-        }
-
-        Dialogue.ContinueDialogue();
-        onFirstRatPossession -= TriggerFirstRatPossession;
-    }
-
     //FIRST TV ENTERED
     private void TriggerTVEnter()
     {
@@ -219,12 +202,29 @@ public class Tutorial : MonoBehaviour
 
     private IEnumerator TVEnter()
     {
-        while (!Dialogue.holding || onFirstMovement != null || onFirstRatPossession != null)
+        while (!Dialogue.holding || onFirstMovement != null)
         {
             yield return null;
         }
         Dialogue.ContinueDialogue();
         onFirstTVEnter -= TriggerTVEnter;
+    }
+
+    //RAT POSSESSION
+    private void TriggerFirstRatPossession()
+    {
+        StartCoroutine(FirstRatPossession());
+    }
+
+    private IEnumerator FirstRatPossession()
+    {
+        while (!Dialogue.holding || onFirstMovement != null || onFirstTVEnter != null)
+        {
+            yield return null;
+        }
+
+        Dialogue.ContinueDialogue();
+        onFirstRatPossession -= TriggerFirstRatPossession;
     }
 
     //PHOTOGRAPHER ENTER

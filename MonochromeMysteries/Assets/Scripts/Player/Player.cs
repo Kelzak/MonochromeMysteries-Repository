@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     public GameObject mainPlayer = null;
 
     [Header("Aiming")]
-    public float lookSensitivity = 1f;
+    public float lookSensitivity = 10f;
     [HideInInspector]
     public static bool canLook = true;
 
@@ -261,6 +261,7 @@ public class Player : MonoBehaviour
     public void AdjustLookSpeed(float lookSpeed)
     {
         lookSensitivity = lookSpeed;
+        Debug.Log(lookSensitivity);
     }
 
     void Interact()
