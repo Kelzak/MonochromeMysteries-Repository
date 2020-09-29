@@ -51,7 +51,8 @@ public class Tutorial : MonoBehaviour
         objectives.Enqueue("Get the man next door into your room");
         Dialogue.AddLine(Dialogue.Character.Pete, true, "I see you’re growing accustomed to your newfound powers. Very good. Now, you’ll see the man is well versed in capturing visages. It’d be wise to take photos of objects with auras around them to inspect them further. Try this with your body.");
         objectives.Enqueue("Take a photo of your body as the Photographer with [LeftMouseClick]");
-        Dialogue.AddLine(Dialogue.Character.Pete, "You can use photos to save information about the important objects you find, to inspect them for further information, or use later.", "Keep that man nearby, the photos will prove a vital source of information. At any time you may examine the scrapbook and review your photos.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "You can use photos to save information about the important objects you find, to inspect them for further information, or use later.");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "Keep that man nearby, the photos will prove a vital source of information. At any time you may examine the scrapbook and review your photos.");
         objectives.Enqueue("Press [Tab] to open your scrapbook and examine photos");
         Dialogue.AddLine(Dialogue.Character.Pete, "I’ve given you all the information I can at this point. From here on out, you’ll be on your own.", "This journey will be fraught with twists that will challenge your intellect, but I trust you will be successful. The fate of your heart depends on it.");
         TriggerTutorialEnd();
