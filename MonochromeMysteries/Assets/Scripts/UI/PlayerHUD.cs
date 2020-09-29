@@ -28,8 +28,8 @@ public class PlayerHUD : MonoBehaviour
     public TMP_Text singleText;
     public Image playerDisplayIcon;
     [HideInInspector]
-    public bool showLocation;
-    public string LocationText;
+    public static bool showLocation;
+    public static string LocationText;
 
     [Header("Icons")]
     public Sprite cameraIcon;
@@ -57,6 +57,7 @@ public class PlayerHUD : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        print("show Location: " + showLocation);
         if(showLocation)
         {
             playerLocationText.text = LocationText;

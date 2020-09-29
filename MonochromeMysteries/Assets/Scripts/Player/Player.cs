@@ -308,7 +308,7 @@ public class Player : MonoBehaviour
                         }
                         else
                         {
-                            displayIconText.text = "Need Photographer";
+                            displayIconText.text = "Photographable";
 
                         }
                         displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);

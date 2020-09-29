@@ -6,11 +6,12 @@ public class LocationText : MonoBehaviour
 {
     public PlayerHUD playerHUD;
     public GameObject HUDobj;
+    public static bool showOverride;
     // Start is called before the first frame update
     void Start()
     {
-        playerHUD = FindObjectOfType<PlayerHUD>();
-        HUDobj = playerHUD.gameObject;
+        //playerHUD = FindObjectOfType<PlayerHUD>();
+        playerHUD = HUDobj.GetComponent<PlayerHUD>();
     }
 
     // Update is called once per frame
@@ -23,15 +24,26 @@ public class LocationText : MonoBehaviour
     {
         if (other.gameObject.GetComponent<Player>())
         {
-            print("locations are printing");
-            playerHUD.LocationText = other.gameObject.name;
-            playerHUD.showLocation = true;
+            print("locations are printing: " + gameObject.name);
+            PlayerHUD.LocationText = gameObject.name;
+            PlayerHUD.showLocation = true;
+            showOverride = true;
+            //playerHUD.showLocation = true;
         }
-        else
+        else if(!showOverride)
         {
-            playerHUD.showLocation = false;
+            PlayerHUD.showLocation = false;
+            //playerHUD.showLocation = false;
         }
 
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.GetComponent<Player>())
+        {
+            showOverride = false;
+
+        }
     }
 
 }
