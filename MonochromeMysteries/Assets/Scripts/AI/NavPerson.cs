@@ -46,7 +46,6 @@ public class NavPerson : MonoBehaviour
     public bool canSeeGhost;
     [Header("Sound")]
     public AudioSource stepSources;
-    public AudioSource mumbleSource;
     
     private AudioClip step;
     public bool isFemale;
@@ -77,13 +76,11 @@ public class NavPerson : MonoBehaviour
         randWaitTimeMax = waitTime * 2;
 
         stepSources = this.GetComponent<AudioSource>();
-        mumbleSource = this.GetComponent<AudioSource>();
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
 
         if (!canSeeGhost)
             InvokeRepeating("LookAround", 0f, lookInterval);
 
-        mumbleSource.volume = .5f;
 
         
     }
@@ -354,7 +351,6 @@ public class NavPerson : MonoBehaviour
 
     private void OnDisable()
     {
-        mumbleSource.PlayOneShot(possessClip);
         isPossessed = true;
         GetComponent<NavMeshAgent>().isStopped = true;
         try
@@ -369,7 +365,6 @@ public class NavPerson : MonoBehaviour
 
     private void OnEnable()
     {
-        mumbleSource.PlayOneShot(depossessClip);
 
         waitAfterPossess = true;
         isPossessed = false;

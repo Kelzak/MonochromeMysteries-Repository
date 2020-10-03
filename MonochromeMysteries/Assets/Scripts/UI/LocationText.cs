@@ -24,8 +24,7 @@ public class LocationText : MonoBehaviour
     {
         if (other.gameObject.GetComponent<Player>())
         {
-            print("locations are printing: " + gameObject.name);
-            PlayerHUD.LocationText = gameObject.name;
+            PlayerHUD.locationString = gameObject.name;
             PlayerHUD.showLocation = true;
             showOverride = true;
             //playerHUD.showLocation = true;

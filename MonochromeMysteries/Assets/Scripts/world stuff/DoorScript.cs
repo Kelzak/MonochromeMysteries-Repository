@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorScript : MonoBehaviour
+public class DoorScript : ItemAbs
 {
 
     private Animator _animator;
@@ -135,7 +135,7 @@ public class DoorScript : MonoBehaviour
         Open();
         
     }
-    public void Activate()
+    public override void Activate()
     {
         if (personalDoor && isPlayer && !isOpen)
         {
@@ -282,5 +282,14 @@ public class DoorScript : MonoBehaviour
         waitHitbox = true;
         yield return new WaitForSeconds(2);
         waitHitbox = false;
+    }
+
+    public override void SetItemUI()
+    {
+        if(isOpen)
+            GetComponent<Item>().SetUI(null, null, null, "Press F to Open", true);
+        else
+            GetComponent<Item>().SetUI(null, null, null, "Press F to Close", true);
+
     }
 }

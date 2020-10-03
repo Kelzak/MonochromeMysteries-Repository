@@ -10,11 +10,19 @@ using UnityEngine.UI;
 //observer to state checker to display outline on item
 [RequireComponent(typeof(Outline))]
 [RequireComponent(typeof(MeshCollider))]
-public class Item : MonoBehaviour, IObserver
+
+//abstract item class that all other items inherit. Items that have no activation, would simply leave that method empty when implementing an item
+public abstract class ItemAbs : MonoBehaviour
 {
-    private StateChecker stateChecker;
-    GameObject item;
-    private float dist;
+    public abstract void Activate();
+
+    public abstract void SetItemUI();
+
+}
+
+public class Item : MonoBehaviour
+{
+    private float playerDistance;
     private float playerDistGlow;
     private GameObject player;
     //public Image reticle;
@@ -22,37 +30,50 @@ public class Item : MonoBehaviour, IObserver
     private bool isGhost;
     private bool isClose;
 
+    [Header("UI Settings")]
+    public Image icon;
+    public string topText;
+    public string bottomText;
+    public string singleText;
+    public bool onlySingleText;
+
+    [Header("Photo clue Settings")]
     public string itemName;
     public string itemDescription;
-    private GameObject checker;
 
+
+    [Header("Item Settings")]
     public bool isPickup;
+    public bool isReadable;
 
+    [Header("Audio Settings")]
+    public AudioSource hoverAudio;
+    [Range(0, 1)]
+    public float hoverAudioVolume = .5f;
+    public float audioFadeTime = 1f;
 
-
-
+    [Header("Outline Settings")]
     public float glowWidth = 8f;
-    [HideInInspector]
+    public float fadeTime = 3f;
+    public Color glowColor = Color.white;
     public bool glowOverride;
+
     private Outline outline;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        //gameObject.GetComponent<ItemAbs>().Activate();
         outline = GetComponent<Outline>();
 
         outline.OutlineWidth = glowWidth;
 
+        //set item nameif its null
         itemName = itemName == null ? gameObject.name : this.itemName;
 
         //player = GameObject.FindObjectOfType<Player>();
-
-        item = this.gameObject;
-        checker = GameObject.FindGameObjectWithTag("StateChecker");
-        stateChecker = checker.GetComponent<StateChecker>();
         // adds this object to observer list in statechecker
-        stateChecker.RegisterObserver(this);
 
         playerDistGlow = Player.reticleDist;
     }
@@ -60,47 +81,59 @@ public class Item : MonoBehaviour, IObserver
     // Update is called once per frame
     void Update()
     {
-        //enables outline 
-        if (isGhost == true && isClose == true || glowOverride)
-        {
-            item.GetComponent<Outline>().enabled = true;
-            //reticle.color = new Color(255.0f, 255.0f, 0.0f);
-        }
-        else
-        {
-            //reticle.color = new Color(0.0f, 255.0f, 255.0f);
-            item.GetComponent<Outline>().enabled = false;
-        }
-
         player = FindObjectOfType<Player>().gameObject;
 
-        dist = Vector3.Distance(this.transform.position, player.transform.position);
-        //Debug.Log("Dist: " + dist);
-        if (dist < playerDistGlow)
+        playerDistance = Vector3.Distance(this.transform.position, player.transform.position);
+
+        //enables outline when player is ghost and nearby, or when player overrides glow
+        if ((StateChecker.isGhost && playerDistance < playerDistGlow) || glowOverride)
         {
-            isClose = true;
+           //GetComponent<Outline>().enabled = true;
+            outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, glowWidth, fadeTime * Time.deltaTime);
 
         }
+        //else outline is turned off
         else
         {
-            isClose = false;
-        }
-    }
-    //gets data sent fron statechecker
-    public void UpdateData(bool check)
-    {
-        isGhost = check;
+            outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, 0f, fadeTime * Time.deltaTime);
+            //GetComponent<Outline>().enabled = false;
+        }   
     }
 
+    //sets ui, often called from an item abstract
+    public void SetUI(Image icon, string topText, string bottomText, string singleText, bool onlySingleText)
+    {
+        //if bool onlysingletext then update singletext line and null others 
+        if(onlySingleText)
+        {
+            this.icon.color = Color.clear;
+            this.onlySingleText = onlySingleText;
+            this.singleText = singleText;
+            this.icon = null;
+            this.topText = null;
+            this.bottomText = null;
+            return;
+        }
+        //else update other and null single lines
+        else
+        {
+            this.icon = icon;
+            this.topText = topText;
+            this.bottomText = bottomText;
+            this.singleText = null;
+            this.onlySingleText = onlySingleText;
+            return;
+        }
+    }
     private void OnTriggerStay(Collider other)
     {
         if (Input.GetButton("PickUp") && other.gameObject.tag == "Rat")
         {
-            item.GetComponent<Outline>().enabled = false;
+            GetComponent<Outline>().enabled = false;
         }
         if (Input.GetButtonUp("PickUp") && other.gameObject.tag == "Rat")
         {
-            item.GetComponent<Outline>().enabled = true;
+            GetComponent<Outline>().enabled = true;
         }
 
     }

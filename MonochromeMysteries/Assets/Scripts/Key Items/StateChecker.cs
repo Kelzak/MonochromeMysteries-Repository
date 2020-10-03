@@ -10,52 +10,50 @@ using UnityEngine;
 
 
 //this class is the subject to the item obsevers
-public class StateChecker : MonoBehaviour, ISubject
+public class StateChecker : MonoBehaviour
 {
-    private List<IObserver> observers = new List<IObserver>();
-
-    int[] temp;
+    //private List<IObserver> observers = new List<IObserver>();
 
     public GameObject player;
 
     public static bool isGhost;
 
-    public void NotifyObservers()
-    {
-        foreach (IObserver observer in observers)
-        {
-            observer.UpdateData(isGhost);
-        }
-    }
+    //public void NotifyObservers()
+    //{
+    //    foreach (IObserver observer in observers)
+    //    {
+    //        observer.UpdateData(isGhost);
+    //    }
+    //}
 
-    public void RegisterObserver(IObserver observer)
-    {
-        observers.Add(observer);
+    //public void RegisterObserver(IObserver observer)
+    //{
+    //    observers.Add(observer);
 
-        observer.UpdateData(isGhost);
-    }
+    //    observer.UpdateData(isGhost);
+    //}
 
-    public void RemoveObserver(IObserver observer)
-    {
-        if (observers.Contains(observer))
-        {
-            observers.Remove(observer);
-        }
-    }
+    //public void RemoveObserver(IObserver observer)
+    //{
+    //    if (observers.Contains(observer))
+    //    {
+    //        observers.Remove(observer);
+    //    }
+    //}
 
-    //sets the bool and then sends it to observers (items)
-    public void SetSight(bool sight)
-    {
-        isGhost = sight;
-        NotifyObservers();
+    ////sets the bool and then sends it to observers (items)
+    //public void SetSight(bool sight)
+    //{
+    //    isGhost = sight;
+    //    NotifyObservers();
 
-        /*foreach (int x in temp)
-        {
-            this.isGhost = sight;
-            NotifyObservers();
-        }*/
-        //Debug.Log("notify observers");
-    }
+    //    /*foreach (int x in temp)
+    //    {
+    //        this.isGhost = sight;
+    //        NotifyObservers();
+    //    }*/
+    //    //Debug.Log("notify observers");
+    //}
     // Start is called before the first frame update
     void Start()
     {
@@ -70,11 +68,14 @@ public class StateChecker : MonoBehaviour, ISubject
         //checks if player is active (if in ghost form)
         if (player.activeInHierarchy)
         {
-            SetSight(true);
+            isGhost = true;
+            //SetSight(true);
         }
         else
         {
-            SetSight(false);
+            isGhost = false;
+
+            //SetSight(false);
         }
     }
 }

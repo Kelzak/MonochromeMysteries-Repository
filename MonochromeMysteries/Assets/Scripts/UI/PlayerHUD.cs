@@ -16,51 +16,70 @@ using UnityEngine.UI;
 public class PlayerHUD : MonoBehaviour
 {
 
-    [Header("Variables")]
+    [Header("UI Variables")]
     public float fadeTime = 3f;
+
+    public Player player;
 
 
     [Header("Player Display Objects / Text")]
     public TMP_Text playerLocationText;
-    public TMP_Text playerInteractText;
-    public TMP_Text playerRequireText;
-    //text with no icon directly in the middle of the screen so it looks nicer
+    public TMP_Text topText;
+    public TMP_Text bottomText;
     public TMP_Text singleText;
-    public Image playerDisplayIcon;
+    public Image displayIcon;
+    public Image reticle;
+
+    //hidden variables for updating UI assets
     [HideInInspector]
     public static bool showLocation;
-    public static string LocationText;
-
-    [Header("Icons")]
-    public Sprite cameraIcon;
-    public Sprite toolIcon;
-    public Sprite keyIcon;
-    public Sprite readIcon;
+    [HideInInspector]
+    public static string locationString;
+    [HideInInspector]
+    public static string topString;
+    [HideInInspector]
+    public static string bottomString;
+    [HideInInspector]
+    public static string singleString;
+    [HideInInspector]
+    public static Image iconImage;
+    [HideInInspector]
+    public static bool showDisplayUI;
+    [HideInInspector]
+    public static bool onlySingleText;
+    [HideInInspector]
+    public static Color reticleColor;
 
     //location HUD
     public GameObject leftDash;
     public GameObject rightDash;
 
-    [Header("Audio")]
-    //other
-    public AudioSource hoverAudio;
-    [Range(0,1)]
-    public float hoverAudioVolume = .5f;
-
-
     // Start is called before the first frame update
     void Start()
     {
-        //hoverAudio.volume = 0f;
+        reticle = GameObject.FindGameObjectWithTag("Reticle").GetComponent<Image>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        print("show Location: " + showLocation);
-        if(showLocation)
+        LocationUI();
+        DisplayUI();
+
+        print(topString);
+        print(singleString);
+
+        player = FindObjectOfType<Player>();
+
+    }
+
+    //managers location UI
+    void LocationUI()
+    {
+        if (showLocation)
         {
-            playerLocationText.text = LocationText;
+            playerLocationText.text = locationString;
             playerLocationText.color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
             //leftDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
             //rightDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.white, fadeTime * Time.deltaTime);
@@ -74,10 +93,55 @@ public class PlayerHUD : MonoBehaviour
             //rightDash.GetComponent<Image>().color = Color.Lerp(playerLocationText.color, Color.clear, fadeTime * Time.deltaTime);
 
         }
+    }
+
+    //manges display UI
+    public void DisplayUI()
+    {
+
+        if(showDisplayUI)
+        {
+            //reticles
+            reticle.color = Color.Lerp(reticle.color, reticleColor, fadeTime * Time.deltaTime);
+
+            //set string values to text mesh assets
+            singleText.text = singleString;
+            topText.text = topString;
+            bottomText.text = bottomString;
+            displayIcon = iconImage;
+
+            //fade in display and icons, activate hover audio
+            if (onlySingleText)
+            {
+                singleText.color = Color.Lerp(singleText.color, Color.white, fadeTime * Time.deltaTime);
+                topText.color = Color.Lerp(topText.color, Color.clear, fadeTime * Time.deltaTime);
+                bottomText.color = Color.Lerp(bottomText.color, Color.clear, fadeTime * Time.deltaTime);
+                displayIcon.color = Color.Lerp(displayIcon.color, Color.clear, fadeTime * Time.deltaTime);
+            }
+            else
+            {
+                topText.color = Color.Lerp(topText.color, Color.white, fadeTime * Time.deltaTime);
+                bottomText.color = Color.Lerp(bottomText.color, Color.white, fadeTime * Time.deltaTime);
+                singleText.color = Color.Lerp(singleText.color, Color.white, fadeTime * Time.deltaTime);
+                displayIcon.color = Color.Lerp(displayIcon.color, Color.white, fadeTime * Time.deltaTime);
+            }            
+        }
+        else
+        {
+            //fade out display and icons, deactivate hover audio
+            topText.color = Color.Lerp(topText.color, Color.clear, fadeTime * Time.deltaTime);
+            bottomText.color = Color.Lerp(bottomText.color, Color.clear, fadeTime * Time.deltaTime);
+            singleText.color = Color.Lerp(singleText.color, Color.clear, fadeTime * Time.deltaTime);
+            displayIcon.color = Color.Lerp(displayIcon.color, Color.clear, fadeTime * Time.deltaTime);
+            reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
+
+        }
+    }
+
+    public void SetUI(Image icon, string topText, string bottomText)
+    {
 
 
-
-        //Raycast();
     }
     /*
     void Raycast()

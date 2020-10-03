@@ -86,6 +86,7 @@ public class Player : MonoBehaviour
     public GameObject keyImage;
     public Image reticle;
     public static float reticleDist = 7;
+    private float currentReticleDist;
     public AudioClip obtainClip;
     public AudioClip possessClip;
     public AudioClip depossessClip;
@@ -146,7 +147,6 @@ public class Player : MonoBehaviour
     public GameObject mustache;
 
     //private PlayerHUD playerHUD;
-    private GameObject playerHUD;
 
     private void OnEnable()
     {
@@ -169,7 +169,7 @@ public class Player : MonoBehaviour
         characterRole = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterRole").GetComponent<TMP_Text>();
         characterName = HUD.transform.Find("CharacterPortrait").transform.Find("CharacterName").GetComponent<TMP_Text>();
         spiritKnifeIconInUI = HUD.transform.Find("Menu").transform.Find("NotepadGroup").transform.Find("SpiritKnifeIcon").gameObject;
-        reticle = HUD.transform.Find("Reticle").GetComponent<Image>();
+        reticle = GameObject.FindGameObjectWithTag("Reticle").GetComponent<Image>();
 
         audioSource = GetComponent<AudioSource>();
         canPickup = false;
@@ -187,8 +187,6 @@ public class Player : MonoBehaviour
 
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
         initialized = true;
-
-        playerHUD = FindObjectOfType<PlayerHUD>().gameObject;
 
     }
 
@@ -256,6 +254,16 @@ public class Player : MonoBehaviour
 
         }
 
+        //update reticle distance when rat or nah
+        if (GetComponent<Rat>())
+        {
+            currentReticleDist = reticleDist / 2;
+        }
+        else
+        {
+            currentReticleDist = reticleDist;
+        }
+
     }
 
     public void AdjustLookSpeed(float lookSpeed)
@@ -269,7 +277,7 @@ public class Player : MonoBehaviour
         bool photoUI = false;
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit[] hit;
-        if ((hit = Physics.RaycastAll(ray, Player.reticleDist)).Length > 0)
+        if ((hit = Physics.RaycastAll(ray, currentReticleDist)).Length > 0)
         {
             GameObject target = null;
             float shortestDistance = Mathf.Infinity;
@@ -284,437 +292,476 @@ public class Player : MonoBehaviour
 
             if (target == null)
             {
-                displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+                //displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+                //PlayerHUD.showDisplayUI = false;
                 return;
             }
 
-            //glowing objects
-            if (target.GetComponent<Outline>())
+            //new item overhaul
+            if(target.GetComponent<Item>())
             {
+                //general things
+                print("looking at item");
+                target.GetComponent<Item>().glowWidth =  Mathf.Lerp(target.GetComponent<Outline>().OutlineWidth, target.GetComponent<Item>().glowWidth, fadeTime * Time.deltaTime);
 
-                if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide") && !target.GetComponent<RatTrap>())
+                //UI stuffs
+                PlayerHUD.showDisplayUI = true;
+
+                //if item has abstract class
+                if (target.GetComponent<ItemAbs>())
                 {
-                    if((StateChecker.isGhost || GetComponent<Rat>()) && target.GetComponent<Read>())
-                    {
+                    //updates ui variables if needed
+                    target.GetComponent<ItemAbs>().SetItemUI();
 
-                    }
-                    else
-                    {
-                        //icon
-                        if(GetComponent<Photographer>())
-                        {
-                            displayIconText.text = "Take Photo";
-
-                        }
-                        else
-                        {
-                            displayIconText.text = "Photographable";
-
-                        }
-                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                        displayIcon.GetComponent<Image>().sprite = CameraSprite;
-                        displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                        photoUI = true;
-                    }
-
-                }
-                else
-                {
-                    photoUI = false;
-                }
-
-
-                if (GetComponent<Rat>() && target.CompareTag("pickup") || target.CompareTag("letter"))
-                {
-                    if (shortestDistance < Player.reticleDist / 8f)
-                    {
-                        glowSource.volume = Mathf.Lerp(glowSource.volume, .75f, fadeTime * Time.deltaTime);
-                        Outline outline = target.GetComponent<Outline>();
-                        outline.enabled = true;
-                        reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
-                    }
-                }
-                else
-                {
-                    //Debug.Log("Should glow with raycast");
-                    glowSource.volume = Mathf.Lerp(glowSource.volume, .75f, fadeTime * Time.deltaTime);
-                    Outline outline = target.GetComponent<Outline>();
-                    outline.enabled = true;
-
-                    reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
-                }
-
-            }
-            else
-            {
-                //glowSource.enabled = false;
-                glowSource.volume = Mathf.Lerp(glowSource.volume, 0f, fadeTime * Time.deltaTime);
-                reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
-            }
-
-            //possessable
-            if (target.GetComponent<Possessable>() && shortestDistance < Player.reticleDist)
-            {
-                displayText.text = "Press E to Possess";
-                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-            }
-            //read objects
-            else if (target.GetComponent<Read>() && shortestDistance < Player.reticleDist)
-            {
-                if (StateChecker.isGhost)
-                {
-                    displayIconText.text = "Spirit can't Read";
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-
-
-                }
-                else if (GetComponent<Rat>() && target.CompareTag("letter"))
-                {
-                    if (shortestDistance < Player.reticleDist / 8f)
-                    {
-                        if (GetComponent<Rat>().hold)
-                        {
-                            displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                            displayText.text = "Press F to Drop";
-                        }
-                        else
-                        {
-                            displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                            displayText.text = "Press F to Drag";
-                        }
-                        displayIconText.text = "Rat can't Read";
-                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                    }
-                }
-                else
-                {
-                    reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
-                    displayText.text = "Press F to Read";
-                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                }
-
-                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
-                {
-                    target.GetComponent<Read>().Open();
-                    //isReading = true;
-                }
-            }
-
-            //doors
-            else if (target.CompareTag("door") && shortestDistance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
-            {
-                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                if (target.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic") && target.GetComponentInParent<DoorScript>().personalDoor)
-                {
-                    //icon
-                    if(target.GetComponentInParent<DoorScript>().repairing)
-                    {
-                        //displayIcon.GetComponent<Image>().rectTransform.rotation = Quaternion.Euler(0f, 0f, 45f * Mathf.Sin(Time.deltaTime * 1f));
-                        displayIcon.GetComponent<Image>().sprite = screwdriverSpriteFlip;
-                    }
-                    else
-                    {
-                        displayIcon.GetComponent<Image>().sprite = screwdriverSprite;
-                    }
-                    displayIconText.text = "Needs Repairs";
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-
-                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-
-                    if (GetComponent<Player>().gameObject.name.Equals("Mechanic") && target.GetComponentInParent<DoorScript>().personalDoor)
-                    {
-                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                        displayText.text = "Press F to Repair";
-                        //open
-                        if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
-                        {
-                            target.GetComponentInParent<DoorScript>().Activate();
-                        }
-                    }
-
-                }
-                if (target.GetComponentInParent<DoorScript>().whoDoor.Equals("Manager"))
-                {
-                    //icon
-                    displayIconText.text = "Needs Manager";
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-
-                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-
-                    if (GetComponent<Player>().gameObject.name.Equals("Manager") && target.GetComponentInParent<DoorScript>().personalDoor)
-                    {
-                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                        displayText.text = "Press F to Open";
-                        //open
-                        if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
-                        {
-                            target.GetComponentInParent<DoorScript>().Activate();
-                        }
-                    }
-
-                }
-                if (target.GetComponentInParent<DoorScript>().hasKey && target.GetComponentInParent<DoorScript>().isLocked)
-                {
-                    if(keys.Contains(target.GetComponentInParent<DoorScript>().key))
-                        displayIconText.text = "Use Key";
-                    else
-                        displayIconText.text = "Needs Key";
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    if(target.GetComponentInParent<DoorScript>().unlocking)
-                    {
-                        displayIcon.GetComponent<Image>().sprite = keySpriteUse;
-                    }
-                    else
-                    {
-                        displayIcon.GetComponent<Image>().sprite = keySprite;
-                    }
-                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-
-                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                }
-                if (target.GetComponentInParent<DoorScript>().isOpen)
-                {
-                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                    displayText.text = "Press F to Close";
-                    //open
-                    if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
-                    {
-                        target.GetComponentInParent<DoorScript>().Activate();
-                    }
-                }
-                else
-                {
-                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                    displayText.text = "Press F to Open";
-                    //open
-                    if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
-                    {
-                        target.GetComponentInParent<DoorScript>().Activate();
-                    }
-
-                }
-
-            }
-            // music box
-            else if ((target.CompareTag("music box")) && shortestDistance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
-            {
-                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                displayText.text = "Press F to Use";
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    target.GetComponent<MusicBox>().Skip();
-                }
-            }
-            //safes
-            else if ((target.CompareTag("safe") && shortestDistance < Player.reticleDist)) //&& !StateChecker.isGhost)))
-            {
-                if (target.gameObject.name == "LockedSafe2")
-                {
-                    if (StateChecker.isGhost)
-                    {
-                        reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                        displayText.text = "Press F to Use";
-                    }
-                    else if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
-                    {
-                        displayIconText.text = "Rat can't use";
-                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                    }
-                    else
-                    {
-                        displayIconText.text = "Only Spirit can use";
-                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                    }
-
-                }
-                else
-                {
-                    if (!StateChecker.isGhost && !GetComponent<Rat>())
-                    {
-                        reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                        displayText.text = "Press F to Use";
-                    }
-                    else if (GetComponent<Rat>())// && shortestDistance < Player.reticleDist / 8f)
-                    {
-                        displayIconText.text = "Rat can't use";
-                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                    }
-                    else
-                    {
-                        displayIconText.text = "Spirit can't use";
-                        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                    }
-
-                }
-            }
-            //tvs
-            else if ((target.CompareTag("TV") && shortestDistance < Player.reticleDist / 2))
-            {
-                tv_Visible = true;
-                if(!hideText)
-                {
-                    reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-                    displayText.text = "Press F to Use";
-                }
-
-            }
-            //light switches
-            else if ((target.GetComponent<LightSwitch>() && shortestDistance < Player.reticleDist / 2) && !GetComponent<Rat>() && !StateChecker.isGhost)
-            { 
-                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
-                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                if (target.GetComponent<LightSwitch>().off)
-                {
-                    displayText.text = "Press F to Turn on";
-                }
-                else
-                {
-                    displayText.text = "Press F to Turn off";
-                }
-
-                if(Input.GetKeyDown(KeyCode.F))
-                {
-                    target.GetComponent<LightSwitch>().Activate();
-                }
-
-            }
-            //pickup?
-            else if (target.CompareTag("pickup") || target.CompareTag("letter") && shortestDistance < Player.reticleDist)
-            {
-
-                displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
-                displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
-                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
-
-                if (StateChecker.isGhost)
-                {
-                    displayIconText.text = "Spirit can't pickup";
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-
-                }
-                else if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
-                {
-                    if (GetComponent<Rat>().hold)
-                    {
-                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                        displayText.text = "Press F to Drop";
-                    }
-                    else
-                    {
-                        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                        displayText.text = "Press F to Drag";
-                    }
-                }
-                else if (!GetComponent<Rat>() && !StateChecker.isGhost)
-                {
-                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                    displayText.text = "Press F to Pickup";
-                }
-            }
-            //rat trap
-            else if (target.GetComponent<RatTrap>() && shortestDistance < Player.reticleDist)
-            {
-                //icon
-                displayIconText.text = "Needs Exterminator";
-                displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                displayIcon.GetComponent<Image>().sprite = ratSprite;
-
-                displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-
-                //use for exterm
-                if (GetComponent<Character>().gameObject.name.Equals("Exterminator"))
-                {
-                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
-
-                    displayText.text = "Press F to Disable";
-
+                    //input to activate item
                     if (Input.GetKeyDown(KeyCode.F))
-                    {
-                        target.GetComponent<RatTrap>().Activate();
-                    }
-                }
-            }
-            //knife stuff
-            else if (target.CompareTag("Knife"))
-            {
-                if (StateChecker.isGhost)
-                {
-                    displayIconText.text = "Press F to pickup spirit knife";
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-                    displayIcon.GetComponent<Image>().sprite = knifeicon;
-
-                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                }
-                else
-                {
-                    displayIconText.text = "Needs spirit";
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
-
-                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
-                }
-
-            }
-            //default
-            else
-            {
-                //displayText.text = "";
-                if (!photoUI)
-                {
-                    displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
-                    displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
-                    displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+                        target.GetComponent<ItemAbs>().Activate();
 
                 }
-                displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-            }
 
-            if (!target.CompareTag("TV"))
-                tv_Visible = false;
-        }
-        else
-        {
-            if (photoUI)
-            {
-                displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
-                displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
-                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
-
+                //set UI
+                PlayerHUD.topString = target.GetComponent<Item>().topText;
+                PlayerHUD.bottomString = target.GetComponent<Item>().bottomText;
+                PlayerHUD.iconImage = target.GetComponent<Item>().icon;
+                PlayerHUD.singleString = target.GetComponent<Item>().singleText;
+                PlayerHUD.onlySingleText = target.GetComponent<Item>().onlySingleText;
+                PlayerHUD.reticleColor = target.GetComponent<Item>().glowColor;
             }
             else
             {
-                displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
-                displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
-                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
-                displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-                reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
-
+                PlayerHUD.showDisplayUI = false;
             }
 
-            //displayIcon.GetComponent<SpriteRenderer>().sprite = null;
-            //displayIcon.SetActive(false);
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //    //glowing objects
+        //    if (target.GetComponent<Outline>())
+        //    {
+
+        //        if (!target.CompareTag("pickup") && !target.GetComponent<Rat>() && !target.GetComponent<Photographer>() && !target.CompareTag("safe") && !target.name.Equals("guide") && !target.GetComponent<RatTrap>())
+        //        {
+        //            if((StateChecker.isGhost || GetComponent<Rat>()) && target.GetComponent<Read>())
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                //icon
+        //                if(GetComponent<Photographer>())
+        //                {
+        //                    displayIconText.text = "Take Photo";
+
+        //                }
+        //                else
+        //                {
+        //                    displayIconText.text = "Photographable";
+
+        //                }
+        //                displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //                displayIcon.GetComponent<Image>().sprite = CameraSprite;
+        //                displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //                photoUI = true;
+        //            }
+
+        //        }
+        //        else
+        //        {
+        //            photoUI = false;
+        //        }
+
+
+        //        if (GetComponent<Rat>() && target.CompareTag("pickup") || target.CompareTag("letter"))
+        //        {
+        //            if (shortestDistance < Player.reticleDist / 8f)
+        //            {
+        //                glowSource.volume = Mathf.Lerp(glowSource.volume, .75f, fadeTime * Time.deltaTime);
+        //                Outline outline = target.GetComponent<Outline>();
+        //                outline.enabled = true;
+        //                reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            //Debug.Log("Should glow with raycast");
+        //            glowSource.volume = Mathf.Lerp(glowSource.volume, .75f, fadeTime * Time.deltaTime);
+        //            Outline outline = target.GetComponent<Outline>();
+        //            outline.enabled = true;
+
+        //            reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        //glowSource.enabled = false;
+        //        glowSource.volume = Mathf.Lerp(glowSource.volume, 0f, fadeTime * Time.deltaTime);
+        //        reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
+        //    }
+
+        //    //possessable
+        //    if (target.GetComponent<Possessable>() && shortestDistance < Player.reticleDist)
+        //    {
+        //        displayText.text = "Press E to Possess";
+        //        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+        //    }
+        //    //read objects
+        //    else if (target.GetComponent<Read>() && shortestDistance < Player.reticleDist)
+        //    {
+        //        if (StateChecker.isGhost)
+        //        {
+        //            displayIconText.text = "Spirit can't Read";
+        //            displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //            displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+
+        //        }
+        //        else if (GetComponent<Rat>() && target.CompareTag("letter"))
+        //        {
+        //            if (shortestDistance < Player.reticleDist / 8f)
+        //            {
+        //                if (GetComponent<Rat>().hold)
+        //                {
+        //                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //                    displayText.text = "Press F to Drop";
+        //                }
+        //                else
+        //                {
+        //                    displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //                    displayText.text = "Press F to Drag";
+        //                }
+        //                displayIconText.text = "Rat can't Read";
+        //                displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            reticle.color = Color.Lerp(reticle.color, target.GetComponent<Outline>().OutlineColor, fadeTime * Time.deltaTime);
+        //            displayText.text = "Press F to Read";
+        //            displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+        //        }
+
+        //        if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+        //        {
+        //            target.GetComponent<Read>().Open();
+        //            //isReading = true;
+        //        }
+        //    }
+
+        //    //doors
+        //    else if (target.CompareTag("door") && shortestDistance < Player.reticleDist && !GetComponent<Rat>() && !StateChecker.isGhost)
+        //    {
+        //        reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+        //        if (target.GetComponentInParent<DoorScript>().whoDoor.Equals("Mechanic") && target.GetComponentInParent<DoorScript>().personalDoor)
+        //        {
+        //            //icon
+        //            if(target.GetComponentInParent<DoorScript>().repairing)
+        //            {
+        //                //displayIcon.GetComponent<Image>().rectTransform.rotation = Quaternion.Euler(0f, 0f, 45f * Mathf.Sin(Time.deltaTime * 1f));
+        //                displayIcon.GetComponent<Image>().sprite = screwdriverSpriteFlip;
+        //            }
+        //            else
+        //            {
+        //                displayIcon.GetComponent<Image>().sprite = screwdriverSprite;
+        //            }
+        //            displayIconText.text = "Needs Repairs";
+        //            displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //            displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+        //            displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+        //            if (GetComponent<Player>().gameObject.name.Equals("Mechanic") && target.GetComponentInParent<DoorScript>().personalDoor)
+        //            {
+        //                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //                displayText.text = "Press F to Repair";
+        //                //open
+        //                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+        //                {
+        //                    target.GetComponentInParent<DoorScript>().Activate();
+        //                }
+        //            }
+
+        //        }
+        //        if (target.GetComponentInParent<DoorScript>().whoDoor.Equals("Manager"))
+        //        {
+        //            //icon
+        //            displayIconText.text = "Needs Manager";
+        //            displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //            displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+        //            if (GetComponent<Player>().gameObject.name.Equals("Manager") && target.GetComponentInParent<DoorScript>().personalDoor)
+        //            {
+        //                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //                displayText.text = "Press F to Open";
+        //                //open
+        //                if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+        //                {
+        //                    target.GetComponentInParent<DoorScript>().Activate();
+        //                }
+        //            }
+
+        //        }
+        //        if (target.GetComponentInParent<DoorScript>().hasKey && target.GetComponentInParent<DoorScript>().isLocked)
+        //        {
+        //            if(keys.Contains(target.GetComponentInParent<DoorScript>().key))
+        //                displayIconText.text = "Use Key";
+        //            else
+        //                displayIconText.text = "Needs Key";
+        //            displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //            if(target.GetComponentInParent<DoorScript>().unlocking)
+        //            {
+        //                displayIcon.GetComponent<Image>().sprite = keySpriteUse;
+        //            }
+        //            else
+        //            {
+        //                displayIcon.GetComponent<Image>().sprite = keySprite;
+        //            }
+        //            displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+        //            displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //        }
+        //        if (target.GetComponentInParent<DoorScript>().isOpen)
+        //        {
+        //            displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //            displayText.text = "Press F to Close";
+        //            //open
+        //            if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+        //            {
+        //                target.GetComponentInParent<DoorScript>().Activate();
+        //            }
+        //        }
+        //        else
+        //        {
+        //            displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //            displayText.text = "Press F to Open";
+        //            //open
+        //            if (Input.GetKeyDown(KeyCode.F) && !StateChecker.isGhost && !GetComponent<Rat>())
+        //            {
+        //                target.GetComponentInParent<DoorScript>().Activate();
+        //            }
+
+        //        }
+
+        //    }
+        //    // music box
+        //    else if ((target.CompareTag("music box")) && shortestDistance < Player.reticleDist / 2 && (!GetComponent<Rat>() && !StateChecker.isGhost))
+        //    {
+        //        reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+        //        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+        //        displayText.text = "Press F to Use";
+        //        if (Input.GetKeyDown(KeyCode.F))
+        //        {
+        //            target.GetComponent<MusicBox>().Skip();
+        //        }
+        //    }
+        //    //safes
+        //    else if ((target.CompareTag("safe") && shortestDistance < Player.reticleDist)) //&& !StateChecker.isGhost)))
+        //    {
+        //        if (target.gameObject.name == "LockedSafe2")
+        //        {
+        //            if (StateChecker.isGhost)
+        //            {
+        //                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+        //                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+        //                displayText.text = "Press F to Use";
+        //            }
+        //            else if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
+        //            {
+        //                displayIconText.text = "Rat can't use";
+        //                displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //            }
+        //            else
+        //            {
+        //                displayIconText.text = "Only Spirit can use";
+        //                displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //            }
+
+        //        }
+        //        else
+        //        {
+        //            if (!StateChecker.isGhost && !GetComponent<Rat>())
+        //            {
+        //                reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+        //                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+        //                displayText.text = "Press F to Use";
+        //            }
+        //            else if (GetComponent<Rat>())// && shortestDistance < Player.reticleDist / 8f)
+        //            {
+        //                displayIconText.text = "Rat can't use";
+        //                displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //            }
+        //            else
+        //            {
+        //                displayIconText.text = "Spirit can't use";
+        //                displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //                displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //            }
+
+        //        }
+        //    }
+        //    //tvs
+        //    else if ((target.CompareTag("TV") && shortestDistance < Player.reticleDist / 2))
+        //    {
+        //        tv_Visible = true;
+        //        if(!hideText)
+        //        {
+        //            reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+        //            displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+        //            displayText.text = "Press F to Use";
+        //        }
+
+        //    }
+        //    //light switches
+        //    else if ((target.GetComponent<LightSwitch>() && shortestDistance < Player.reticleDist / 2) && !GetComponent<Rat>() && !StateChecker.isGhost)
+        //    { 
+        //        reticle.color = Color.Lerp(reticle.color, Color.white, fadeTime * Time.deltaTime);
+        //        displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //        if (target.GetComponent<LightSwitch>().off)
+        //        {
+        //            displayText.text = "Press F to Turn on";
+        //        }
+        //        else
+        //        {
+        //            displayText.text = "Press F to Turn off";
+        //        }
+
+        //        if(Input.GetKeyDown(KeyCode.F))
+        //        {
+        //            target.GetComponent<LightSwitch>().Activate();
+        //        }
+
+        //    }
+        //    //pickup?
+        //    else if (target.CompareTag("pickup") || target.CompareTag("letter") && shortestDistance < Player.reticleDist)
+        //    {
+
+        //        displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
+        //        displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+        //        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+
+        //        if (StateChecker.isGhost)
+        //        {
+        //            displayIconText.text = "Spirit can't pickup";
+        //            displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //            displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+        //        }
+        //        else if (GetComponent<Rat>() && shortestDistance < Player.reticleDist / 8f)
+        //        {
+        //            if (GetComponent<Rat>().hold)
+        //            {
+        //                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //                displayText.text = "Press F to Drop";
+        //            }
+        //            else
+        //            {
+        //                displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //                displayText.text = "Press F to Drag";
+        //            }
+        //        }
+        //        else if (!GetComponent<Rat>() && !StateChecker.isGhost)
+        //        {
+        //            displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //            displayText.text = "Press F to Pickup";
+        //        }
+        //    }
+        //    //rat trap
+        //    else if (target.GetComponent<RatTrap>() && shortestDistance < Player.reticleDist)
+        //    {
+        //        //icon
+        //        displayIconText.text = "Needs Exterminator";
+        //        displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //        displayIcon.GetComponent<Image>().sprite = ratSprite;
+
+        //        displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+
+        //        //use for exterm
+        //        if (GetComponent<Character>().gameObject.name.Equals("Exterminator"))
+        //        {
+        //            displayText.color = Color.Lerp(displayText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //            displayText.text = "Press F to Disable";
+
+        //            if (Input.GetKeyDown(KeyCode.F))
+        //            {
+        //                target.GetComponent<RatTrap>().Activate();
+        //            }
+        //        }
+        //    }
+        //    //knife stuff
+        //    else if (target.CompareTag("Knife"))
+        //    {
+        //        if (StateChecker.isGhost)
+        //        {
+        //            displayIconText.text = "Press F to pickup spirit knife";
+        //            displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+        //            displayIcon.GetComponent<Image>().sprite = knifeicon;
+
+        //            displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //        }
+        //        else
+        //        {
+        //            displayIconText.text = "Needs spirit";
+        //            displayIconText.color = Color.Lerp(displayIconText.color, Color.white, fadeTime * Time.deltaTime);
+
+        //            displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.white, fadeTime * Time.deltaTime);
+        //        }
+
+        //    }
+        //    //default
+        //    else
+        //    {
+        //        //displayText.text = "";
+        //        if (!photoUI)
+        //        {
+        //            displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
+        //            displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+        //            displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+
+        //        }
+        //        displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+        //    }
+
+        //    if (!target.CompareTag("TV"))
+        //        tv_Visible = false;
+        //}
+        //else
+        //{
+        //    if (photoUI)
+        //    {
+        //        displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
+        //        displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+        //        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+
+        //    }
+        //    else
+        //    {
+        //        displayIconText.color = Color.Lerp(displayIconText.color, Color.clear, fadeTime * Time.deltaTime);
+        //        displayIcon.GetComponent<Image>().color = Color.Lerp(displayIcon.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+        //        displaySeperator.GetComponent<Image>().color = Color.Lerp(displaySeperator.GetComponent<Image>().color, Color.clear, fadeTime * Time.deltaTime);
+        //        displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
+        //        reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
+
+        //    }
+
+        //    //displayIcon.GetComponent<SpriteRenderer>().sprite = null;
+        //    //displayIcon.SetActive(false);
         }
     }
 
