@@ -8,12 +8,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class MusicBox : MonoBehaviour
+public class MusicBox : ItemAbs
 {
     private bool _isInsideTrigger = false;
 
     public AudioClip[] music;
     public AudioSource MusicSource;
+
+    public Player player;
 
     private int index;
 
@@ -40,6 +42,8 @@ public class MusicBox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        player = FindObjectOfType<Player>();
+
         if (_isInsideTrigger)
         {
             if (Input.GetKeyDown(KeyCode.F))
@@ -90,6 +94,24 @@ public class MusicBox : MonoBehaviour
         {
             _isInsideTrigger = false;
             //OpenPanel.SetActive(false);
+        }
+    }
+
+    public override void Activate()
+    {
+        Skip();
+    }
+
+    public override void SetItemUI()
+    {
+        if (!player.GetComponent<Rat>() && !StateChecker.isGhost)
+        {
+            GetComponent<Item>().SetUI(null, null, null, "Press F to Skip", true);
+        }
+        else
+        {
+            GetComponent<Item>().SetUI(null, null, null, "", true);
+
         }
     }
 }

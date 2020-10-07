@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightSwitch : MonoBehaviour
+public class LightSwitch : ItemAbs
 {
     private bool _isInsideTrigger = false;
 
@@ -15,54 +15,70 @@ public class LightSwitch : MonoBehaviour
     public Light[] lights;
     public bool off;
     public GameObject bulb;
+    public Player player;
 
     void Start()
     {
         audioSource = this.gameObject.GetComponent<AudioSource>();
-        if (lights == null)
+
+        if (lights.Length == 0)
         {
             lights = GetComponents<Light>();
-            bulb.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+
+            try
+            {
+                 bulb = GameObject.Find("bulb");
+            }           
+            catch
+            {
+            }
 
         }
     }
     // Update is called once per frame
     void Update()
     {
-        
+        player = FindObjectOfType<Player>();   
     }
 
-    public void Activate()
+    public override void Activate()
     {
-        for (int i = 0; i < lights.Length; i++)
+        if(!player.GetComponent<Rat>() && !StateChecker.isGhost)
         {
-            if (off)
+            for (int i = 0; i < lights.Length; i++)
             {
-                if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                if (off)
                 {
-                    lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
+                    if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                    {
+                        lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
 
-                    bulb.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
-                    //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
-                }  
-                lights[i].enabled = true;
-                off = false;
-                PlaySound(sounds[0]);
-            }
-            else
-            {
-                lights[i].enabled = false;
-                off = true;
-                PlaySound(sounds[1]);
-                if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                        if (bulb != null)
+                            bulb.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                        //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
+                    }
+                    lights[i].enabled = true;
+                    off = false;
+                    PlaySound(sounds[0]);
+                }
+                else
                 {
-                    lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
+                    lights[i].enabled = false;
+                    off = true;
+                    PlaySound(sounds[1]);
+                    if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                    {
+                        lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
 
-                    bulb.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
-                    //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+                        if (bulb != null)
+                            bulb.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+                        //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+                    }
                 }
             }
+
         }
+        
     }
 
     void PlaySound(AudioClip clip)
@@ -91,5 +107,29 @@ public class LightSwitch : MonoBehaviour
             _isInsideTrigger = false;
             //OpenPanel.SetActive(false);
         }
+    }
+
+    public override void SetItemUI()
+    {
+        if (!player.GetComponent<Rat>() && !StateChecker.isGhost)
+        {
+            GetComponent<Item>().dontChangeReticleColor = false;
+
+            if (off)
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Press F to turn On", true);
+
+            }
+            else
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Press F to turn Off", true);
+            }
+        }
+        else
+        {
+            GetComponent<Item>().SetUI(null, null, null, "", true);
+            GetComponent<Item>().dontChangeReticleColor = true;
+        }
+
     }
 }

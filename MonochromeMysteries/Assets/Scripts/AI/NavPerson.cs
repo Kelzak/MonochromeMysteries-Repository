@@ -237,7 +237,7 @@ public class NavPerson : MonoBehaviour
             }
             else if (OnGrass() == true)
             {
-                rand = Random.Range(0, grassSteps.Length-1);
+                rand = Random.Range(0, grassSteps.Length);
                 step = grassSteps[rand];
                 stepSources.PlayOneShot(step);
             }

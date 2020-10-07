@@ -12,10 +12,12 @@ public class FlickerLight : MonoBehaviour
     private bool toggle;
     public float minWaitTime;
     public float maxWaitTime;
+    public int maxFlickers = 4;
     // Start is called before the first frame update
     void Start()
     {
-        minWaitTime = .2f;
+        maxFlickers = 5;
+        minWaitTime = .5f;
         maxWaitTime = 5f;
         light = GetComponent<Light>();
         StartCoroutine(Flashing());
@@ -26,20 +28,26 @@ public class FlickerLight : MonoBehaviour
         while(true)
         {
             yield return new WaitForSeconds(Random.Range(minWaitTime, maxWaitTime));
-            toggle = !toggle;
-            light.enabled = toggle;
-            if(GetComponentInParent<MeshRenderer>())
+            for(int i = 0 ; i < Random.Range(1, maxFlickers); i++)
             {
-                if(toggle)
+                toggle = !toggle;
+                light.enabled = toggle;
+                if (GetComponentInParent<MeshRenderer>())
                 {
-                    GetComponentInParent<MeshRenderer>().material.EnableKeyword("_EMISSION");
+                    if (toggle)
+                    {
+                        GetComponentInParent<MeshRenderer>().material.EnableKeyword("_EMISSION");
 
+                    }
+                    else
+                    {
+                        GetComponentInParent<MeshRenderer>().material.DisableKeyword("_EMISSION");
+                    }
                 }
-                else
-                {
-                    GetComponentInParent<MeshRenderer>().material.DisableKeyword("_EMISSION");
-                }
+                yield return new WaitForSeconds(.1f);
+
             }
+            
         }
     }
     // Update is called once per frame

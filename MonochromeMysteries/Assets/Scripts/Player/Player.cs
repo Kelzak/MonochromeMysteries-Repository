@@ -274,12 +274,13 @@ public class Player : MonoBehaviour
 
     void Interact()
     {
+        GameObject target = null;
         bool photoUI = false;
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit[] hit;
         if ((hit = Physics.RaycastAll(ray, currentReticleDist)).Length > 0)
         {
-            GameObject target = null;
+            target = null;
             float shortestDistance = Mathf.Infinity;
             for (int i = 0; i < hit.Length; i++)
             {
@@ -326,12 +327,19 @@ public class Player : MonoBehaviour
                 PlayerHUD.iconSprite = target.GetComponent<Item>().icon;
                 PlayerHUD.singleString = target.GetComponent<Item>().singleText;
                 PlayerHUD.onlySingleText = target.GetComponent<Item>().onlySingleText;
-                PlayerHUD.reticleColor = target.GetComponent<Item>().glowColor;
+
+                if(!target.GetComponent<Item>().dontChangeReticleColor)
+                    PlayerHUD.reticleColor = target.GetComponent<Item>().glowColor;
             }
             else
             {
                 PlayerHUD.showDisplayUI = false;
-                //PlayerHUD.reticleColor = new Color32(0, 255, 255, 100);
+                //find all items and make the glow override stop
+                Item[] items = FindObjectsOfType<Item>();
+                foreach (Item item in items)
+                {
+                    item.glowOverride = false;
+                }                //PlayerHUD.reticleColor = new Color32(0, 255, 255, 100);
             }
 
             //do not get rid of below yet, its reference code for now.
@@ -764,6 +772,17 @@ public class Player : MonoBehaviour
 
             //    //displayIcon.GetComponent<SpriteRenderer>().sprite = null;
             //    //displayIcon.SetActive(false);
+        }
+        //default to not show display if player raycast isnt hitting anything
+        else
+        {
+            PlayerHUD.showDisplayUI = false;
+            //find all items and make the glow override stop
+            Item[] items = FindObjectsOfType<Item>();
+            foreach(Item item in items)
+            {
+                item.glowOverride = false;
+            }
         }
     }
 

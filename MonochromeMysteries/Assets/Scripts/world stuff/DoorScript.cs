@@ -301,52 +301,64 @@ public class DoorScript : ItemAbs
     //UI managment
     public override void SetItemUI()
     {
-        //lock and key
-        if(isLocked)
+        if(!StateChecker.isGhost && !player.GetComponent<Rat>())
         {
-            if (hasKey)
+            GetComponent<Item>().dontChangeReticleColor = false;
+            //lock and key
+            if (isLocked)
             {
-                if (Player.keys.Contains(key))
-                    GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Use Key", "", false);
+                if (hasKey)
+                {
+                    if (Player.keys.Contains(key))
+                        GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Use Key", "", false);
+                    else
+                        GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Needs Key", "", false);
+                }
+                else if (unlocking)
+                {
+                    GetComponent<Item>().SetUI(keyIconFlip, "Unlocking", "Used Key", "", false);
+                }
                 else
-                    GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Needs Key", "", false);
+                {
+                    GetComponent<Item>().SetUI(null, null, null, "Press F to Open", true);
+                }
             }
-            if(unlocking)
+            else if (personalDoor)
             {
-                GetComponent<Item>().SetUI(keyIconFlip, "Unlocking", "Used Key", "", false);
+                if (whoDoor.name.Equals("Mechanic"))
+                {
+                    GetComponent<Item>().SetUI(repairIcon, "Press F to Repair", "Needs " + whoDoor.name, "", false);
+                }
+                else
+                {
+                    GetComponent<Item>().SetUI(keyIcon, "Press F to Open", "Needs " + whoDoor.name, "", false);
+                }
             }
+            else if (repairing)
+            {
+                if (whoDoor.name.Equals("Mechanic"))
+                {
+                    GetComponent<Item>().SetUI(repairIconFlip, "Repairing", "Needs " + whoDoor.name, "", false);
+                }
+                else
+                {
+                    GetComponent<Item>().SetUI(keyIcon, "Press F to Open", "Needs " + whoDoor.name, "", false);
+                }
+            }
+            //default open and close
+            else if (isOpen)
+                GetComponent<Item>().SetUI(null, null, null, "Press F to Close", true);
             else
-            {
                 GetComponent<Item>().SetUI(null, null, null, "Press F to Open", true);
-            }
         }
-        else if (personalDoor)
-        {
-            if(whoDoor.name.Equals("Mechanic"))
-            {
-                GetComponent<Item>().SetUI(repairIcon, "Press F to Repair", "Needs " + whoDoor.name, "", false);
-            }
-            else
-            {
-                GetComponent<Item>().SetUI(keyIcon, "Press F to Open", "Needs " + whoDoor.name, "", false);
-            }
-        }
-        else if (repairing)
-        {
-            if (whoDoor.name.Equals("Mechanic"))
-            {
-                GetComponent<Item>().SetUI(repairIconFlip, "Repairing", "Needs " + whoDoor.name, "", false);
-            }
-            else
-            {
-                GetComponent<Item>().SetUI(keyIcon, "Press F to Open", "Needs " + whoDoor.name, "", false);
-            }
-        }
-        //default open and close
-        else if (isOpen)
-            GetComponent<Item>().SetUI(null, null, null, "Press F to Close", true);
+        //clear UI changes for when rat or ghost
         else
-            GetComponent<Item>().SetUI(null, null, null, "Press F to Open", true);
+        {
+            GetComponent<Item>().dontChangeReticleColor = true;
+            GetComponent<Item>().SetUI(null, null, null, "", true);
+
+        }
+
 
     }
 }

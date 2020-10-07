@@ -48,6 +48,9 @@ public class Item : MonoBehaviour
     public float fadeTime = 3f;
     public Color glowColor = Color.white;
     public bool glowOverride;
+    public bool noOutline;
+    public bool dontChangeReticleColor;
+
 
     private Outline outline;
 
@@ -55,6 +58,16 @@ public class Item : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //rat ui to possess
+        if(GetComponent<Rat>())
+        {
+            onlySingleText = true;
+            singleText = "Press E to Possess";
+            itemName = "Rat";
+            itemDescription = "Big o'l Rat";
+        }
+        
+
         //default icon to camera
         if(icon == null)
         {
@@ -74,11 +87,15 @@ public class Item : MonoBehaviour
         }
         playerDistGlow = Player.reticleDist;
 
+        if (noOutline)
+            glowWidth = 0f;
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
         player = FindObjectOfType<Player>().gameObject;
 
 

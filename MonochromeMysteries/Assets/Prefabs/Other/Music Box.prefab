@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 2922489905712729828}
   - component: {fileID: 6153333236649542868}
   - component: {fileID: 4631531304813230636}
+  - component: {fileID: 4568679065294438050}
+  - component: {fileID: 7102641606256874208}
   m_Layer: 0
   m_Name: music box
   m_TagString: music box
@@ -103,6 +105,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6a900c7e8960b3b42b121dfb9a6fb0f9, type: 3}
   - {fileID: 8300000, guid: 70a8d92eb54aaee43a75a43d72b7ba41, type: 3}
   MusicSource: {fileID: 2922489905712729828}
+  player: {fileID: 0}
+  playFirst: 0
 --- !u!82 &2922489905712729828
 AudioSource:
   m_ObjectHideFlags: 0
@@ -226,6 +230,46 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.5467708, z: 0.629936}
   m_Center: {x: 0, y: 0.40362114, z: -0.18503201}
+--- !u!114 &4568679065294438050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952661449220136039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef300d362a5f68a48a573a3c5119effa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  topText: 
+  bottomText: 
+  singleText: 
+  onlySingleText: 0
+  itemName: 
+  itemDescription: 
+  glowWidth: 8
+  fadeTime: 3
+  glowColor: {r: 1, g: 1, b: 1, a: 1}
+  glowOverride: 0
+  noOutline: 1
+--- !u!114 &7102641606256874208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952661449220136039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &1952661449728837647
 GameObject:
   m_ObjectHideFlags: 0

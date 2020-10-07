@@ -81,6 +81,9 @@ public class Safe : ItemAbs
                 animator = transform.Find("Hinge").GetComponent<SafeAnim>();
                 animator.OpenSafe(this.gameObject);
                 safeOpened = true;
+                GetComponent<BoxCollider>().enabled = false;
+                Destroy(GetComponent<Item>());
+                Destroy(GetComponent<Outline>());
                 //safe1.SetActive(false);
             }
         }

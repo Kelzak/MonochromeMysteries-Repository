@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5118328623672869807}
   - component: {fileID: 5118328623672869806}
   - component: {fileID: 5118328623672869800}
+  - component: {fileID: 4122793518741149497}
+  - component: {fileID: 499424720755753465}
   m_Layer: 0
   m_Name: Light 1 (1)
   m_TagString: light
@@ -113,6 +115,8 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   lights: []
   off: 0
+  bulb: {fileID: 0}
+  player: {fileID: 0}
 --- !u!136 &5118328623672869806
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -223,6 +227,46 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4122793518741149497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5118328623672869803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef300d362a5f68a48a573a3c5119effa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  topText: 
+  bottomText: 
+  singleText: 
+  onlySingleText: 0
+  itemName: 
+  itemDescription: 
+  glowWidth: 8
+  fadeTime: 3
+  glowColor: {r: 1, g: 1, b: 1, a: 1}
+  glowOverride: 0
+  noOutline: 1
+--- !u!114 &499424720755753465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5118328623672869803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &5625454506388519796
 GameObject:
   m_ObjectHideFlags: 0
