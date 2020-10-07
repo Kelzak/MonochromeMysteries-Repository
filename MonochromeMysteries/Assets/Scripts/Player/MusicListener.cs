@@ -44,12 +44,12 @@ public class MusicListener : MonoBehaviour
             if (i == index)
             {
                 audioSource = musicBoxes[i].GetComponentInChildren<AudioSource>();
-                audioSource.volume = Mathf.Lerp(0, musicVolume, 5f);
+                audioSource.volume = Mathf.Lerp(0, musicVolume, 15f);
             }
             else
             {
                 audioSource = musicBoxes[i].GetComponentInChildren<AudioSource>();
-                audioSource.volume = Mathf.Lerp(musicVolume, 0, 5f);
+                audioSource.volume = Mathf.Lerp(musicVolume, 0, 15f);
             }
 
         }

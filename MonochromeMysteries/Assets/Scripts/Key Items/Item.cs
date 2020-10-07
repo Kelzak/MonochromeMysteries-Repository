@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//observer to state checker to display outline on item
 [RequireComponent(typeof(Outline))]
 [RequireComponent(typeof(MeshCollider))]
+[RequireComponent(typeof(AudioSource))]
 
 //abstract item class that all other items inherit. Items that have no activation, would simply leave that method empty when implementing an item
 public abstract class ItemAbs : MonoBehaviour
@@ -27,11 +27,8 @@ public class Item : MonoBehaviour
     private GameObject player;
     //public Image reticle;
 
-    private bool isGhost;
-    private bool isClose;
-
     [Header("UI Settings")]
-    public Image icon;
+    public Sprite icon;
     public string topText;
     public string bottomText;
     public string singleText;
@@ -45,12 +42,6 @@ public class Item : MonoBehaviour
     [Header("Item Settings")]
     public bool isPickup;
     public bool isReadable;
-
-    [Header("Audio Settings")]
-    public AudioSource hoverAudio;
-    [Range(0, 1)]
-    public float hoverAudioVolume = .5f;
-    public float audioFadeTime = 1f;
 
     [Header("Outline Settings")]
     public float glowWidth = 8f;
@@ -66,16 +57,14 @@ public class Item : MonoBehaviour
     {
         //gameObject.GetComponent<ItemAbs>().Activate();
         outline = GetComponent<Outline>();
-
-        outline.OutlineWidth = glowWidth;
+        //set outline wifth to 0 to avoid outlines at start
+        outline.OutlineWidth = 0f;
 
         //set item nameif its null
         itemName = itemName == null ? gameObject.name : this.itemName;
 
-        //player = GameObject.FindObjectOfType<Player>();
-        // adds this object to observer list in statechecker
-
         playerDistGlow = Player.reticleDist;
+
     }
 
     // Update is called once per frame
@@ -83,12 +72,13 @@ public class Item : MonoBehaviour
     {
         player = FindObjectOfType<Player>().gameObject;
 
+
         playerDistance = Vector3.Distance(this.transform.position, player.transform.position);
 
         //enables outline when player is ghost and nearby, or when player overrides glow
         if ((StateChecker.isGhost && playerDistance < playerDistGlow) || glowOverride)
         {
-           //GetComponent<Outline>().enabled = true;
+            //GetComponent<Outline>().enabled = true;
             outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, glowWidth, fadeTime * Time.deltaTime);
 
         }
@@ -97,33 +87,22 @@ public class Item : MonoBehaviour
         {
             outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, 0f, fadeTime * Time.deltaTime);
             //GetComponent<Outline>().enabled = false;
-        }   
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     //sets ui, often called from an item abstract
-    public void SetUI(Image icon, string topText, string bottomText, string singleText, bool onlySingleText)
+    public void SetUI(Sprite icon, string topText, string bottomText, string singleText, bool onlySingleText)
     {
-        //if bool onlysingletext then update singletext line and null others 
-        if(onlySingleText)
-        {
-            this.icon.color = Color.clear;
-            this.onlySingleText = onlySingleText;
-            this.singleText = singleText;
-            this.icon = null;
-            this.topText = null;
-            this.bottomText = null;
-            return;
-        }
-        //else update other and null single lines
-        else
-        {
-            this.icon = icon;
-            this.topText = topText;
-            this.bottomText = bottomText;
-            this.singleText = null;
-            this.onlySingleText = onlySingleText;
-            return;
-        }
+        this.icon = icon;
+        this.topText = topText;
+        this.bottomText = bottomText;
+        this.singleText = singleText;
+        this.onlySingleText = onlySingleText;
     }
     private void OnTriggerStay(Collider other)
     {

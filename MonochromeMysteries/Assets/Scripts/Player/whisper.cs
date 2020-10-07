@@ -19,7 +19,7 @@ public class whisper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("whisper script object: " + gameObject.name);
+        //Debug.Log("whisper script object: " + gameObject.name);
         audioSource = GetComponent<AudioSource>();
         Invoke("Speak", 10f);
     }

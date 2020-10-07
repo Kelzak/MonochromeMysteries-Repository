@@ -15,22 +15,40 @@ using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour
 {
-
-    [Header("UI Variables")]
-    public float fadeTime = 3f;
-
+    [HideInInspector]
     public Player player;
 
 
+    public float fadeTime = 3f;
+
+
     [Header("Player Display Objects / Text")]
-    public TMP_Text playerLocationText;
     public TMP_Text topText;
     public TMP_Text bottomText;
     public TMP_Text singleText;
-    public Image displayIcon;
-    public Image reticle;
 
-    //hidden variables for updating UI assets
+    public GameObject displayIcon;
+    public GameObject displaySeperator;
+    private Image displaySeperatorImage;
+    private Image displayIconImage;
+
+
+    [Header("Reticle Settings")]
+    public Image reticle;
+    public Color defaultReticleColor = new Color32(0, 255, 255, 100);
+
+    [Header("location HUD")]
+    public TMP_Text playerLocationText;
+    public GameObject leftDash;
+    public GameObject rightDash;
+
+    [Header("Audio Settings")]
+    public AudioSource hoverAudio;
+    public AudioClip hoverClip;
+    [Range(0, 1)]
+    public float hoverAudioVolume = .5f;
+
+    //hidden static used variables for updating UI assets
     [HideInInspector]
     public static bool showLocation;
     [HideInInspector]
@@ -42,7 +60,7 @@ public class PlayerHUD : MonoBehaviour
     [HideInInspector]
     public static string singleString;
     [HideInInspector]
-    public static Image iconImage;
+    public static Sprite iconSprite;
     [HideInInspector]
     public static bool showDisplayUI;
     [HideInInspector]
@@ -50,14 +68,22 @@ public class PlayerHUD : MonoBehaviour
     [HideInInspector]
     public static Color reticleColor;
 
-    //location HUD
-    public GameObject leftDash;
-    public GameObject rightDash;
-
     // Start is called before the first frame update
     void Start()
     {
         reticle = GameObject.FindGameObjectWithTag("Reticle").GetComponent<Image>();
+        displayIconImage = displayIcon.GetComponent<Image>();
+        displaySeperatorImage = displaySeperator.GetComponent<Image>();
+
+        singleText.text = singleString;
+        topText.text = topString;
+        bottomText.text = bottomString;
+        displayIconImage.sprite = iconSprite;
+
+        //initalize hover settings
+        hoverAudio = GetComponent<AudioSource>();
+        hoverAudio.volume = 0f;
+        hoverAudio.clip = hoverClip;
 
     }
 
@@ -67,14 +93,11 @@ public class PlayerHUD : MonoBehaviour
         LocationUI();
         DisplayUI();
 
-        print(topString);
-        print(singleString);
-
         player = FindObjectOfType<Player>();
 
     }
 
-    //managers location UI
+    //manages location UI
     void LocationUI()
     {
         if (showLocation)
@@ -98,42 +121,51 @@ public class PlayerHUD : MonoBehaviour
     //manges display UI
     public void DisplayUI()
     {
-
-        if(showDisplayUI)
+        //if showing, read values and display
+        if (showDisplayUI)
         {
-            //reticles
+            //set reticle color, reads from glow of object
             reticle.color = Color.Lerp(reticle.color, reticleColor, fadeTime * Time.deltaTime);
+
+            hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, hoverAudioVolume, fadeTime * Time.deltaTime);
 
             //set string values to text mesh assets
             singleText.text = singleString;
             topText.text = topString;
             bottomText.text = bottomString;
-            displayIcon = iconImage;
+            displayIconImage.sprite = iconSprite;
 
             //fade in display and icons, activate hover audio
+            //handle only single text displays 
             if (onlySingleText)
             {
                 singleText.color = Color.Lerp(singleText.color, Color.white, fadeTime * Time.deltaTime);
                 topText.color = Color.Lerp(topText.color, Color.clear, fadeTime * Time.deltaTime);
                 bottomText.color = Color.Lerp(bottomText.color, Color.clear, fadeTime * Time.deltaTime);
-                displayIcon.color = Color.Lerp(displayIcon.color, Color.clear, fadeTime * Time.deltaTime);
+                displayIconImage.color = Color.Lerp(displayIconImage.color, Color.clear, fadeTime * Time.deltaTime);
+                displaySeperatorImage.color = Color.Lerp(displayIconImage.color, Color.clear, fadeTime * Time.deltaTime);
             }
             else
             {
                 topText.color = Color.Lerp(topText.color, Color.white, fadeTime * Time.deltaTime);
                 bottomText.color = Color.Lerp(bottomText.color, Color.white, fadeTime * Time.deltaTime);
-                singleText.color = Color.Lerp(singleText.color, Color.white, fadeTime * Time.deltaTime);
-                displayIcon.color = Color.Lerp(displayIcon.color, Color.white, fadeTime * Time.deltaTime);
-            }            
+                displayIconImage.color = Color.Lerp(displayIconImage.color, Color.white, fadeTime * Time.deltaTime);
+                displaySeperatorImage.color = Color.Lerp(displayIconImage.color, Color.white, fadeTime * Time.deltaTime);
+                singleText.color = Color.Lerp(singleText.color, Color.clear, fadeTime * Time.deltaTime);
+
+            }
         }
+        //else, default case
         else
-        {
-            //fade out display and icons, deactivate hover audio
+        { 
+            //fade out display and icons, deactivate hover audio, default reticle
             topText.color = Color.Lerp(topText.color, Color.clear, fadeTime * Time.deltaTime);
             bottomText.color = Color.Lerp(bottomText.color, Color.clear, fadeTime * Time.deltaTime);
             singleText.color = Color.Lerp(singleText.color, Color.clear, fadeTime * Time.deltaTime);
-            displayIcon.color = Color.Lerp(displayIcon.color, Color.clear, fadeTime * Time.deltaTime);
-            reticle.color = Color.Lerp(reticle.color, new Color32(0, 255, 255, 100), fadeTime * Time.deltaTime);
+            displayIconImage.color = Color.Lerp(displayIconImage.color, Color.clear, fadeTime * Time.deltaTime);
+            reticle.color = Color.Lerp(reticle.color, defaultReticleColor, fadeTime * Time.deltaTime);
+            displaySeperatorImage.color = Color.Lerp(displayIconImage.color, Color.clear, fadeTime * Time.deltaTime);
+            hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, 0f, fadeTime * Time.deltaTime);
 
         }
     }
