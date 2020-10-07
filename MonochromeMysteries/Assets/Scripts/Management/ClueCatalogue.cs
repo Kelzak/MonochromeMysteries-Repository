@@ -34,20 +34,19 @@ public class ClueCatalogue : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        //*this is for automatically populating the clues from the objects that have Item script. commented out until changed in enginge
+        //*this is for automatically populating the clues from the objects that have Item script
+        Item[] items = FindObjectsOfType<Item>();
+        clues = new Clue[items.Length];
+        for (int i = 0; i < items.Length; i++)
+        {
+            Clue newClue = new Clue();
+            newClue.name = items[i].itemName;
+            newClue.description = items[i].itemDescription;
+            newClue.@object = items[i].gameObject;
+            clues[i] = newClue;
+        }
 
-        //Item[] items = FindObjectsOfType<Item>();
-        //clues = new Clue[items.Length];
-        //for (int i = 0; i < items.Length; i++)
-        //{
-        //    Clue newClue = new Clue();
-        //    newClue.name = items[i].itemName;
-        //    newClue.description = items[i].itemDescription;
-        //    newClue.@object = items[i].gameObject;
-        //    clues[i] = newClue;
-        //}
-
-            _instance = this;
+        _instance = this;
             //DontDestroyOnLoad(_instance.transform.parent.gameObject);
 
 

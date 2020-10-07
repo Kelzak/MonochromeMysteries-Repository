@@ -10,19 +10,24 @@ using UnityEngine;
 public class DoorScript : ItemAbs
 {
 
-    private Animator _animator;
-
-    public GameObject OpenPanel = null;
+    public Animator _animator;
 
     private float id;
 
     private bool _isInsideTrigger = false;
 
     private bool isPlayer;
+
+    public Player player;
+
+    [Header("Lock and Key")]
+
     public bool isLocked = false;
+
 
     public GameObject key;
 
+    [Header("Audio Settings")]
     public AudioClip[] openDoor;
     public AudioClip[] closeDoor;
     public AudioClip[] unlockDoor;
@@ -33,19 +38,26 @@ public class DoorScript : ItemAbs
     private int rand;
     private AudioClip sound;
 
+
+    [Header("Door Settings")]
     public bool isOpen;
-    public bool autoClose = true;
+    //public bool autoClose = true;
     public bool stayOpen;
     public bool brokendoor = false;
-    public bool repairing = false;
-    public bool unlocking = false;
+    private bool repairing = false;
 
     public bool personalDoor;
     //match this with the name of the game object for the character whos door it is
-    public string whoDoor;
+    public GameObject whoDoor;
     public bool hasNotBeenRepaired;
 
     public bool hasKey = false;
+
+    [Header("UI Settings")]
+    public Sprite keyIcon;
+    public Sprite repairIcon;
+
+
     private bool waitHitbox;
 
     private void Awake()
@@ -57,18 +69,41 @@ public class DoorScript : ItemAbs
     void Start()
     {
         stayOpen = false;
-        _animator = transform.Find("Hinge").GetComponent<Animator>();
+        //_animator = transform.parent.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+
+        //set values to not contradict each other
         if(key != null)
         {
+            isLocked = true;
             hasKey = true;
+            personalDoor = false;
         }
+        if (whoDoor != null)
+        {
+            isLocked = false;
+            hasKey = false;
+            personalDoor = true;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        player = FindObjectOfType<Player>();
+
+        //attempting to disable hitboxes
+        if (waitHitbox == true)
+            GetComponent<MeshRenderer>().GetComponent<MeshCollider>().enabled = false;
+        else
+            GetComponent<MeshRenderer>().GetComponent<MeshCollider>().enabled = true;
     }
 
     private void FixedUpdate()
     {
 
     }
+
 
     void OnTriggerStay(Collider other)
     {
@@ -80,46 +115,17 @@ public class DoorScript : ItemAbs
             if (other.gameObject.name.Equals(whoDoor))
             {
                 Debug.Log("Should work");
-                //personalDoor = true;
-                //_isInsideTrigger = true;
-                //OpenPanel.SetActive(true);
+
                 isPlayer = true;
             }
             else
             {
-                //personalDoor = false;
-                //_isInsideTrigger = true;
                  isPlayer = false;
             }
         }
-        /*
-        else //if (other.tag == "Person")
-        {
-            if(other.GetComponent<Player>())
-            {
-                _isInsideTrigger = true;
-                //OpenPanel.SetActive(true);
-                isPlayer = true;
-                personalDoor = false;
-
-            }
-            else
-            {
-                _isInsideTrigger = true;
-                isPlayer = false;
-                personalDoor = false;
-
-            }
-        }*/
+        
     }
 
-    private bool IsOpenPanelActive
-    {
-        get
-        {
-            return OpenPanel.activeInHierarchy;
-        }
-    }
     IEnumerator WaitForSound()
     {
         
@@ -137,41 +143,58 @@ public class DoorScript : ItemAbs
     }
     public override void Activate()
     {
-        if (personalDoor && isPlayer && !isOpen)
+        //if player is possessing the correct person for the door, then open 
+        if (personalDoor && !isOpen)
         {
-            Debug.Log("personal door activate");
-            if(whoDoor.Equals("Mechanic") && !repairing) //mechanic branch
+            if(player.gameObject.name.Equals(whoDoor.name))
             {
-                Log.AddEntry("Repairing Door...");
-                repairing = true;
-                audioSource.PlayOneShot(repairClip);
-                StartCoroutine(WaitForSound());
+                //Debug.Log("personal door activate");
+                if (whoDoor.name.Equals("Mechanic") && !repairing) //mechanic branch
+                {
+                    Log.AddEntry("Repairing Door...");
+                    repairing = true;
+                    audioSource.PlayOneShot(repairClip);
+                    StartCoroutine(WaitForSound());
+                }
+                else if (whoDoor.Equals("Manager"))//manager branch
+                {
+                    Debug.Log("manager open");
+                    Log.AddEntry("Unlocked Office");
+                    isLocked = false;
+                    personalDoor = false;
+                    Open();
+                }
+                else
+                {
+                    personalDoor = false;
+                    Open();
+                }
             }
-            else if(whoDoor.Equals("Manager"))//manager branch
+            else
             {
-                Debug.Log("manager open");
-                Log.AddEntry("Unlocked Office");
-                isLocked = false;
-                personalDoor = false;
-                Open();
+                rand = Random.Range(0, lockedDoor.Length);
+                sound = lockedDoor[rand];
+                audioSource.PlayOneShot(sound);
+                Log.AddEntry("The Door requires the " + whoDoor.name);
+
             }
+
 
         }
         //regular open
-        else if (!isLocked && !isOpen)
+        else if (!isLocked && !isOpen && !personalDoor)
         {
             Open();
         }
         //locked open
         else if (isLocked && !isOpen && Player.keys.Contains(key))
         {
-            Log.AddEntry("Used: " + key.name);
+            Log.AddEntry("Used: " + key.GetComponent<Item>().itemName);
             isLocked = false;
 
             int rand = Random.Range(0, unlockDoor.Length);
             AudioClip sound = unlockDoor[rand];
             audioSource.PlayOneShot(sound);
-            unlocking = true;
             Invoke("Open", .75f);
             //Open();
         }
@@ -248,18 +271,10 @@ public class DoorScript : ItemAbs
         AudioClip sound = openDoor[rand];
         audioSource.PlayOneShot(sound);
         hasKey = false;
-        unlocking = false;
         isOpen = true;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (waitHitbox == true)
-            GetComponentInChildren<MeshRenderer>().GetComponent<MeshCollider>().enabled = false;
-        else
-            GetComponentInChildren<MeshRenderer>().GetComponent<MeshCollider>().enabled = true;
-    }
+   
     void DoorShut()
     {
         rand = Random.Range(0, closeDoor.Length);
@@ -284,12 +299,40 @@ public class DoorScript : ItemAbs
         waitHitbox = false;
     }
 
+    //UI managment
     public override void SetItemUI()
     {
-        if(isOpen)
-            GetComponent<Item>().SetUI(null, null, null, "Press F to Open", true);
-        else
+        //lock and key
+        if(isLocked)
+        {
+            if (hasKey)
+            {
+                if (Player.keys.Contains(key))
+                    GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Use" + key.gameObject.GetComponent<Item>().itemName, "", false);
+                else
+                    GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Needs Key", "", false);
+            }
+            else
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Press F to Open", true);
+            }
+        }
+        else if (personalDoor)
+        {
+            if(whoDoor.name.Equals("Mechanic"))
+            {
+                GetComponent<Item>().SetUI(repairIcon, "Press F to Repair", "Needs " + whoDoor.name, "", false);
+            }
+            else
+            {
+                GetComponent<Item>().SetUI(keyIcon, "Press F to Open", "Needs " + whoDoor.name, "", false);
+            }
+        }
+        //default open and close
+        else if (isOpen)
             GetComponent<Item>().SetUI(null, null, null, "Press F to Close", true);
+        else
+            GetComponent<Item>().SetUI(null, null, null, "Press F to Open", true);
 
     }
 }

@@ -108,7 +108,7 @@ public class Player : MonoBehaviour
     public float walkSoundInterval = .5f;
     public static bool isRat;
 
-    //pick up stuff
+    //pick up stuff / inventory
     public static List<GameObject> keys = new List<GameObject>();
 
     //Puzzle Stuff
@@ -257,7 +257,7 @@ public class Player : MonoBehaviour
         //update reticle distance when rat or nah
         if (GetComponent<Rat>())
         {
-            currentReticleDist = reticleDist / 2;
+            currentReticleDist = reticleDist;
         }
         else
         {
@@ -293,16 +293,17 @@ public class Player : MonoBehaviour
             if (target == null)
             {
                 //displayText.color = Color.Lerp(displayText.color, Color.clear, fadeTime * Time.deltaTime);
-                //PlayerHUD.showDisplayUI = false;
+                PlayerHUD.showDisplayUI = false;
                 return;
             }
 
-            //new item overhaul
-            if (target.GetComponent<Item>())
+            //new item UI overhaul
+            if (target.GetComponent<Item>() && shortestDistance < currentReticleDist)
             {
                 //general things
-                print("looking at item");
-                target.GetComponent<Item>().glowWidth = Mathf.Lerp(target.GetComponent<Outline>().OutlineWidth, target.GetComponent<Item>().glowWidth, fadeTime * Time.deltaTime);
+                target.GetComponent<Item>().glowOverride = true;
+                //print("glow witdh: " + target.GetComponent<Item>().glowWidth);
+                //target.GetComponent<Item>().glowWidth = Mathf.Lerp(target.GetComponent<Outline>().OutlineWidth, target.GetComponent<Item>().glowWidth, fadeTime * Time.deltaTime);
 
                 //UI stuffs
                 PlayerHUD.showDisplayUI = true;
@@ -333,7 +334,7 @@ public class Player : MonoBehaviour
                 //PlayerHUD.reticleColor = new Color32(0, 255, 255, 100);
             }
 
-            //do not get rid of below yet, its refference code for now.
+            //do not get rid of below yet, its reference code for now.
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //    //glowing objects

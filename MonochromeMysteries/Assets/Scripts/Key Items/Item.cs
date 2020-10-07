@@ -39,9 +39,9 @@ public class Item : MonoBehaviour
     public string itemDescription;
 
 
-    [Header("Item Settings")]
-    public bool isPickup;
-    public bool isReadable;
+    //[Header("Item Settings")]
+    //public bool isPickup;
+    //public bool isReadable;
 
     [Header("Outline Settings")]
     public float glowWidth = 8f;
@@ -59,10 +59,13 @@ public class Item : MonoBehaviour
         outline = GetComponent<Outline>();
         //set outline wifth to 0 to avoid outlines at start
         outline.OutlineWidth = 0f;
+        outline.OutlineColor = glowColor;
 
         //set item nameif its null
-        itemName = itemName == null ? gameObject.name : this.itemName;
-
+        if(itemName == "" || itemName == null)
+        {
+            itemName = gameObject.name;
+        }
         playerDistGlow = Player.reticleDist;
 
     }
@@ -74,6 +77,8 @@ public class Item : MonoBehaviour
 
 
         playerDistance = Vector3.Distance(this.transform.position, player.transform.position);
+
+        // if() item is in the raycast hit array?
 
         //enables outline when player is ghost and nearby, or when player overrides glow
         if ((StateChecker.isGhost && playerDistance < playerDistGlow) || glowOverride)

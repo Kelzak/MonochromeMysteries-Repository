@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8337086225594022353}
   - component: {fileID: 6085905182668424586}
   - component: {fileID: 922626289094342657}
-  - component: {fileID: 4771938066217671931}
   m_Layer: 0
   m_Name: DoorComponent
   m_TagString: Untagged
@@ -43,7 +42,7 @@ BoxCollider:
   m_GameObject: {fileID: 421481227014227976}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1500, y: 1000, z: 1000}
   m_Center: {x: -100, y: 700, z: -850}
@@ -143,46 +142,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4771938066217671931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 421481227014227976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72280e9adbd8f90458b02466fcbd3375, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OpenPanel: {fileID: 0}
-  isLocked: 0
-  key: {fileID: 0}
-  openDoor:
-  - {fileID: 8300000, guid: 76d9ce6cc2b97fc48ad08c70053eb1dc, type: 3}
-  - {fileID: 8300000, guid: b5d9bfc683ff16649b83917627fa962c, type: 3}
-  - {fileID: 8300000, guid: 983f1d8bd73ca8147957db3905166c63, type: 3}
-  closeDoor:
-  - {fileID: 8300000, guid: 5e1cd9a9d5b966142b59c80a7975d32a, type: 3}
-  - {fileID: 8300000, guid: 34b3722387ea5ea42b44ecd39b0ecbd0, type: 3}
-  - {fileID: 8300000, guid: 6eb6782136f2d8b4287fa849be2e9b8a, type: 3}
-  unlockDoor:
-  - {fileID: 8300000, guid: a01e3f8b4887d9840b35fec448c377bc, type: 3}
-  - {fileID: 8300000, guid: a01e3f8b4887d9840b35fec448c377bc, type: 3}
-  lockedDoor:
-  - {fileID: 8300000, guid: 8d0e67eec8952044eba7784bc2f579e8, type: 3}
-  - {fileID: 8300000, guid: 39c0a8273d0d6fa42926ba8b96d17328, type: 3}
-  repairClip: {fileID: 8300000, guid: 976f6cec4906b29479d9cad0c8fe59d3, type: 3}
-  isOpen: 0
-  autoClose: 0
-  stayOpen: 0
-  brokendoor: 0
-  repairing: 0
-  unlocking: 0
-  personalDoor: 0
-  whoDoor: Exterminator
-  hasNotBeenRepaired: 0
-  hasKey: 0
 --- !u!1 &946832010998203559
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,6 +206,11 @@ GameObject:
   - component: {fileID: 6327081329094522283}
   - component: {fileID: 1480274392565880639}
   - component: {fileID: 1848303131707400899}
+  - component: {fileID: 7887146726728131431}
+  - component: {fileID: 2811880250433400176}
+  - component: {fileID: 6704237095796859907}
+  - component: {fileID: 3569904676022574415}
+  - component: {fileID: 1589046682741848953}
   m_Layer: 0
   m_Name: panel
   m_TagString: door
@@ -324,7 +288,7 @@ BoxCollider:
   m_GameObject: {fileID: 1848303131707400926}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 94.08344, y: 1165.6819, z: 613.58105}
   m_Center: {x: 99.90076, y: 652.27673, z: -206.79051}
@@ -344,3 +308,196 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 0
   m_Center: {x: 99.897, y: 652.27704, z: -206.792}
   m_TimeToStationary: 0.5
+--- !u!114 &7887146726728131431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848303131707400926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 5
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!64 &2811880250433400176
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848303131707400926}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8625290327840942402, guid: f448024464c553940b46f768cec19875, type: 3}
+--- !u!82 &6704237095796859907
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848303131707400926}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &3569904676022574415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848303131707400926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72280e9adbd8f90458b02466fcbd3375, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 366624697930162469}
+  isLocked: 0
+  key: {fileID: 0}
+  openDoor:
+  - {fileID: 8300000, guid: 76d9ce6cc2b97fc48ad08c70053eb1dc, type: 3}
+  - {fileID: 8300000, guid: b5d9bfc683ff16649b83917627fa962c, type: 3}
+  - {fileID: 8300000, guid: 983f1d8bd73ca8147957db3905166c63, type: 3}
+  closeDoor:
+  - {fileID: 8300000, guid: 5e1cd9a9d5b966142b59c80a7975d32a, type: 3}
+  - {fileID: 8300000, guid: 34b3722387ea5ea42b44ecd39b0ecbd0, type: 3}
+  - {fileID: 8300000, guid: 6eb6782136f2d8b4287fa849be2e9b8a, type: 3}
+  unlockDoor:
+  - {fileID: 8300000, guid: a01e3f8b4887d9840b35fec448c377bc, type: 3}
+  - {fileID: 8300000, guid: a01e3f8b4887d9840b35fec448c377bc, type: 3}
+  lockedDoor:
+  - {fileID: 8300000, guid: 8d0e67eec8952044eba7784bc2f579e8, type: 3}
+  - {fileID: 8300000, guid: 39c0a8273d0d6fa42926ba8b96d17328, type: 3}
+  repairClip: {fileID: 8300000, guid: 976f6cec4906b29479d9cad0c8fe59d3, type: 3}
+  isOpen: 0
+  autoClose: 0
+  stayOpen: 0
+  brokendoor: 0
+  repairing: 0
+  unlocking: 0
+  personalDoor: 0
+  whoDoor: Exterminator
+  hasNotBeenRepaired: 0
+  hasKey: 0
+--- !u!114 &1589046682741848953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848303131707400926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef300d362a5f68a48a573a3c5119effa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  topText: 
+  bottomText: 
+  singleText: 
+  onlySingleText: 0
+  itemName: 
+  itemDescription: 
+  isPickup: 0
+  isReadable: 0
+  glowWidth: 8
+  fadeTime: 3
+  glowColor: {r: 1, g: 1, b: 1, a: 1}
+  glowOverride: 0

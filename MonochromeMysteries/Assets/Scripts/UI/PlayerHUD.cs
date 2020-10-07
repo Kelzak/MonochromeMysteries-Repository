@@ -130,7 +130,7 @@ public class PlayerHUD : MonoBehaviour
             hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, hoverAudioVolume, fadeTime * Time.deltaTime);
 
             //set string values to text mesh assets
-            singleText.text = singleString;
+            singleText.text =  singleString;
             topText.text = topString;
             bottomText.text = bottomString;
             displayIconImage.sprite = iconSprite;
@@ -166,8 +166,9 @@ public class PlayerHUD : MonoBehaviour
             reticle.color = Color.Lerp(reticle.color, defaultReticleColor, fadeTime * Time.deltaTime);
             displaySeperatorImage.color = Color.Lerp(displayIconImage.color, Color.clear, fadeTime * Time.deltaTime);
             hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, 0f, fadeTime * Time.deltaTime);
-
+            return;
         }
+
     }
 
     public void SetUI(Image icon, string topText, string bottomText)
