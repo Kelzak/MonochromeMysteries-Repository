@@ -9,23 +9,37 @@ using UnityEngine;
 
 public class DoorScript : ItemAbs
 {
-
+    [Header("Door information")]
     public Animator _animator;
-
     private float id;
-
     private bool _isInsideTrigger = false;
-
     private bool isPlayer;
-
     public Player player;
 
     [Header("Lock and Key")]
-
     public bool isLocked = false;
-
-
     public GameObject key;
+    [HideInInspector]
+    public bool hasKey = false;
+
+
+    [Header("Door Settings")]
+    [HideInInspector]
+    public bool isOpen;
+    //public bool autoClose = true;
+    public bool stayOpen;
+    public bool brokendoor = false;
+    private bool repairing = false;
+    public bool personalDoor;
+    //match this with the name of the game object for the character whos door it is
+    public GameObject whoDoor;
+    private bool unlocking;
+
+    [Header("UI Settings")]
+    public Sprite keyIcon;
+    public Sprite keyIconFlip;
+    public Sprite repairIcon;
+    public Sprite repairIconFlip;
 
     [Header("Audio Settings")]
     public AudioClip[] openDoor;
@@ -39,25 +53,6 @@ public class DoorScript : ItemAbs
     private AudioClip sound;
 
 
-    [Header("Door Settings")]
-    public bool isOpen;
-    //public bool autoClose = true;
-    public bool stayOpen;
-    public bool brokendoor = false;
-    private bool repairing = false;
-
-    public bool personalDoor;
-    //match this with the name of the game object for the character whos door it is
-    public GameObject whoDoor;
-    public bool hasNotBeenRepaired;
-
-    public bool hasKey = false;
-
-    [Header("UI Settings")]
-    public Sprite keyIcon;
-    public Sprite repairIcon;
-
-
     private bool waitHitbox;
 
     private void Awake()
@@ -68,7 +63,13 @@ public class DoorScript : ItemAbs
     // Use this for initialization
     void Start()
     {
-        stayOpen = false;
+        //get icons from sprite manager
+        keyIcon = FindObjectOfType<UIspriteManager>().keySprite;
+        keyIconFlip = FindObjectOfType<UIspriteManager>().keySpriteFlip;
+        repairIcon = FindObjectOfType<UIspriteManager>().repairSprite;
+        repairIconFlip = FindObjectOfType<UIspriteManager>().repairSpriteFlip;
+
+        //stayOpen = false;
         //_animator = transform.parent.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
@@ -99,32 +100,27 @@ public class DoorScript : ItemAbs
             GetComponent<MeshRenderer>().GetComponent<MeshCollider>().enabled = true;
     }
 
-    private void FixedUpdate()
-    {
+    // old way for personal door detection
+    //void OnTriggerStay(Collider other)
+    //{
+    //    //Debug.Log("by door");
+    //    if (personalDoor)
+    //    {
+    //        Debug.Log("by manager door");
 
-    }
+    //        if (other.gameObject.name.Equals(whoDoor))
+    //        {
+    //            Debug.Log("Should work");
 
-
-    void OnTriggerStay(Collider other)
-    {
-        //Debug.Log("by door");
-        if (personalDoor)
-        {
-            Debug.Log("by manager door");
-
-            if (other.gameObject.name.Equals(whoDoor))
-            {
-                Debug.Log("Should work");
-
-                isPlayer = true;
-            }
-            else
-            {
-                 isPlayer = false;
-            }
-        }
+    //            isPlayer = true;
+    //        }
+    //        else
+    //        {
+    //             isPlayer = false;
+    //        }
+    //    }
         
-    }
+    //}
 
     IEnumerator WaitForSound()
     {
@@ -135,7 +131,7 @@ public class DoorScript : ItemAbs
 
         //Auidio has finished playing
         Debug.Log("should open");
-        isLocked = false;
+        //isLocked = false;
         personalDoor = false;
         repairing = false;
         Open();
@@ -160,7 +156,7 @@ public class DoorScript : ItemAbs
                 {
                     Debug.Log("manager open");
                     Log.AddEntry("Unlocked Office");
-                    isLocked = false;
+                    //isLocked = false;
                     personalDoor = false;
                     Open();
                 }
@@ -190,11 +186,12 @@ public class DoorScript : ItemAbs
         else if (isLocked && !isOpen && Player.keys.Contains(key))
         {
             Log.AddEntry("Used: " + key.GetComponent<Item>().itemName);
-            isLocked = false;
+            //isLocked = false;
 
             int rand = Random.Range(0, unlockDoor.Length);
             AudioClip sound = unlockDoor[rand];
             audioSource.PlayOneShot(sound);
+            unlocking = true;
             Invoke("Open", .75f);
             //Open();
         }
@@ -270,6 +267,8 @@ public class DoorScript : ItemAbs
         int rand = Random.Range(0, openDoor.Length);
         AudioClip sound = openDoor[rand];
         audioSource.PlayOneShot(sound);
+        unlocking = false;
+        isLocked = false;
         hasKey = false;
         isOpen = true;
     }
@@ -308,9 +307,13 @@ public class DoorScript : ItemAbs
             if (hasKey)
             {
                 if (Player.keys.Contains(key))
-                    GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Use" + key.gameObject.GetComponent<Item>().itemName, "", false);
+                    GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Use Key", "", false);
                 else
                     GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Needs Key", "", false);
+            }
+            if(unlocking)
+            {
+                GetComponent<Item>().SetUI(keyIconFlip, "Unlocking", "Used Key", "", false);
             }
             else
             {
@@ -322,6 +325,17 @@ public class DoorScript : ItemAbs
             if(whoDoor.name.Equals("Mechanic"))
             {
                 GetComponent<Item>().SetUI(repairIcon, "Press F to Repair", "Needs " + whoDoor.name, "", false);
+            }
+            else
+            {
+                GetComponent<Item>().SetUI(keyIcon, "Press F to Open", "Needs " + whoDoor.name, "", false);
+            }
+        }
+        else if (repairing)
+        {
+            if (whoDoor.name.Equals("Mechanic"))
+            {
+                GetComponent<Item>().SetUI(repairIconFlip, "Repairing", "Needs " + whoDoor.name, "", false);
             }
             else
             {

@@ -171,11 +171,6 @@ public class PlayerHUD : MonoBehaviour
 
     }
 
-    public void SetUI(Image icon, string topText, string bottomText)
-    {
-
-
-    }
     /*
     void Raycast()
     {

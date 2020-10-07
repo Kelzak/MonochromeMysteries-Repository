@@ -55,6 +55,12 @@ public class Item : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //default icon to camera
+        if(icon == null)
+        {
+            icon = FindObjectOfType<UIspriteManager>().cameraSprite;
+        }
+        //outline stuff
         //gameObject.GetComponent<ItemAbs>().Activate();
         outline = GetComponent<Outline>();
         //set outline wifth to 0 to avoid outlines at start

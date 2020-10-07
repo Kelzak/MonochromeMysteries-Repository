@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
-public class Safe : MonoBehaviour
+public class Safe : ItemAbs
 {
     public string code;
 
@@ -19,6 +19,8 @@ public class Safe : MonoBehaviour
     public GameObject symbolPanel;
     public InputField inputField;
     public InputField symbolInputField;
+    public GameObject darkBackground;
+
 
     private SafeAnim animator;
 
@@ -57,9 +59,9 @@ public class Safe : MonoBehaviour
         inputField.characterLimit = 6;
         symbolInputField.characterLimit = 3;
     }
-        // Update is called once per frame
-        void Update()
-    {
+    // Update is called once per frame
+    void Update()
+        {
         //fliping
         if (uiOpen)
         {
@@ -84,7 +86,7 @@ public class Safe : MonoBehaviour
         }
     }
 
-    public void Activate()
+    public override void Activate()
     {
         if (!closeTime && !safeOpened)
         {
@@ -144,6 +146,7 @@ public class Safe : MonoBehaviour
         {
             keypadPanel.SetActive(true);
         }
+        darkBackground.SetActive(true);
         GameController.TogglePause();
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
@@ -169,6 +172,7 @@ public class Safe : MonoBehaviour
             photographer.canTakePhoto = false;
 
         }
+        darkBackground.SetActive(false);
         GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
@@ -224,6 +228,9 @@ public class Safe : MonoBehaviour
             animator = transform.Find("Hinge").GetComponent<SafeAnim>();
             animator.OpenSafe(this.gameObject);
             safeOpened = true;
+            GetComponent<BoxCollider>().enabled = false;
+            Destroy(GetComponent<Item>());
+            Destroy(GetComponent<Outline>());
         }
     }
 
@@ -236,5 +243,35 @@ public class Safe : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(.1f);
         closeTime = false;
+    }
+
+    public override void SetItemUI()
+    {
+        if(ghostSafe)
+        {
+            if(StateChecker.isGhost)
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Press F to Use", true);
+            }
+            else
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Only Spirit can Use", true);
+            }
+        }
+        else
+        {
+            if (StateChecker.isGhost)
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Spirit cant Use", true);
+            }
+            if (player.GetComponent<Rat>())
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Rat cant Use", true);
+            }
+            else
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Press F to Use", true);
+            }
+        }
     }
 }

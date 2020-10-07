@@ -10,29 +10,32 @@ using UnityEngine.UI;
 using TMPro;
 
 [RequireComponent(typeof(AudioSource))]
-public class Read : MonoBehaviour
+public class Read : ItemAbs
 {
     private Photographer photographer;
     private Endings ending;
     private Player player;
 
     public GameObject[] toRead;
+
+
+    [Header("UI settings")]
     private GameObject Background;
     private GameObject pressEscToCloseText;
 
-
     public GameObject flipLeftIcon;
     public GameObject flipRightIcon;
+    public Sprite cameraIcon;
 
     [HideInInspector]
     public bool readTime;
-
     private bool closeTime;
 
     private bool isOpen;
     public static bool isReading;
     private int index;
 
+    [Header("Audio Settings")]
     private AudioSource audioSource;
     public AudioClip[] flipClip;
     public AudioClip openClip;
@@ -69,96 +72,51 @@ public class Read : MonoBehaviour
         flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = false;
         flipRightIcon.GetComponent<Image>().enabled = false;
         flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = false;
+
+        cameraIcon = FindObjectOfType<UIspriteManager>().cameraSprite;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //fliping
-        if(isOpen)
+        player = FindObjectOfType<Player>();
+
+
+        PageFlip();
+        
+    }
+
+    //activated for abstract class, just calls current functionality
+    public override void Activate()
+    {
+        Open();
+
+    }
+
+    //UI management for readable
+    public override void SetItemUI()
+    {
+        if(StateChecker.isGhost)
         {
-            //close readable
-            if ((Input.GetKeyDown(KeyCode.Escape)) || Input.GetKeyDown(KeyCode.F) && readTime)
-            {
-                Debug.Log("close");
-                Close();
-            }
+            GetComponent<Item>().SetUI(cameraIcon, "Ghost Cant Read", "Photographable", "", false);
 
-            //flipping
-            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                toRead[index].SetActive(false);
-                if (index >= toRead.Length - 1)
-                {
-                    foreach (GameObject page in toRead)
-                    {
-                        page.SetActive(false);
-                    }
-                    index = toRead.Length - 1;
-                    toRead[index].SetActive(true);
-                }
-                else
-                {
-                    audioSource.PlayOneShot(flipClip[RandFlip()]);
-                    index++;
-                    toRead[index].SetActive(true);
-                }
-            }
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                toRead[index].SetActive(false);
-                if (index <= 0)
-                {
-                    foreach (GameObject page in toRead)
-                    {
-                        page.SetActive(false);
-                    }
-                    index = 0;
-                    toRead[index].SetActive(true);
-                }
-                else
-                {
-                    audioSource.PlayOneShot(flipClip[RandFlip()]);
-                    index--;
-                    toRead[index].SetActive(true);
-                }
-            }
+        }
+        else if(player.GetComponent<Rat>())
+        {
+            GetComponent<Item>().SetUI(cameraIcon, "Rat Cant Read", "Photographable", "", false);
 
-            //show flip page icons
-            if (toRead.Length >= 1 && index != 0 && isOpen)
-            {
-                flipLeftIcon.GetComponent<Image>().enabled = true;
-                flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = true;
-
-            }
-            //else if(!isOpen)
-            //{
-            //    flipLeftIcon.GetComponent<Image>().enabled = false;
-            //}
-            if (toRead.Length >= 1 && index != toRead.Length-1 && isOpen)
-            {
-                flipRightIcon.GetComponent<Image>().enabled = true;
-                flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = true;
-
-            }
-            //else if(!isOpen)
-            //{
-            //    flipRightIcon.GetComponent<Image>().enabled = false;
-            //}
-
-
+        }
+        else if(player.GetComponent<Photographer>())
+        {
+            GetComponent<Item>().SetUI(cameraIcon, "Press F to Read", "Take Photo", "", false);
         }
         else
         {
-            if(toRead.Length > 1)
-            {
-                //flipLeftIcon.SetActive(false);
-                //flipRightIcon.SetActive(false);
-            }   
+            GetComponent<Item>().SetUI(cameraIcon, "Press F to Read", "Photographable", "", false);
         }
     }
 
-   
+
 
     public void Open()
     {
@@ -227,6 +185,92 @@ public class Read : MonoBehaviour
             StartCoroutine(CloseTime());
         }
 
+    }
+
+    //handles turning pages
+    public void PageFlip()
+    {
+        if (isOpen)
+        {
+            //close readable
+            if ((Input.GetKeyDown(KeyCode.Escape)) || Input.GetKeyDown(KeyCode.F) && readTime)
+            {
+                Debug.Log("close");
+                Close();
+            }
+
+            //flipping
+            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                toRead[index].SetActive(false);
+                if (index >= toRead.Length - 1)
+                {
+                    foreach (GameObject page in toRead)
+                    {
+                        page.SetActive(false);
+                    }
+                    index = toRead.Length - 1;
+                    toRead[index].SetActive(true);
+                }
+                else
+                {
+                    audioSource.PlayOneShot(flipClip[RandFlip()]);
+                    index++;
+                    toRead[index].SetActive(true);
+                }
+            }
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                toRead[index].SetActive(false);
+                if (index <= 0)
+                {
+                    foreach (GameObject page in toRead)
+                    {
+                        page.SetActive(false);
+                    }
+                    index = 0;
+                    toRead[index].SetActive(true);
+                }
+                else
+                {
+                    audioSource.PlayOneShot(flipClip[RandFlip()]);
+                    index--;
+                    toRead[index].SetActive(true);
+                }
+            }
+
+            //show flip page icons
+            if (toRead.Length > 1 && index != 0 && isOpen)
+            {
+                flipLeftIcon.GetComponent<Image>().enabled = true;
+                flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = true;
+
+            }
+            //else if(!isOpen)
+            //{
+            //    flipLeftIcon.GetComponent<Image>().enabled = false;
+            //}
+            if (toRead.Length > 1 && index != toRead.Length - 1 && isOpen)
+            {
+                flipRightIcon.GetComponent<Image>().enabled = true;
+                flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = true;
+
+            }
+            //else if(!isOpen)
+            //{
+            //    flipRightIcon.GetComponent<Image>().enabled = false;
+            //}
+
+
+        }
+        else
+        {
+            if (toRead.Length > 1)
+            {
+                //flipLeftIcon.SetActive(false);
+                //flipRightIcon.SetActive(false);
+            }
+        }
     }
     public IEnumerator ReadTime()
     {

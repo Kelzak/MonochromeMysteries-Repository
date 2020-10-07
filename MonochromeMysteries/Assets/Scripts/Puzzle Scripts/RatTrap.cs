@@ -7,8 +7,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RatTrap : MonoBehaviour
-{ 
+public class RatTrap : ItemAbs
+{
+    public Player player;
+    public Sprite ratTrapIcon;
     public AudioClip disableTrap;
     private AudioSource audioSource;
 
@@ -38,7 +40,7 @@ public class RatTrap : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void Activate()
+    public override void Activate()
     {
         audioSource.PlayOneShot(disableTrap);
         Log.AddEntry("Disabled Rat Trap");
@@ -70,15 +72,22 @@ public class RatTrap : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-    }
-    void OnTriggerEnter(Collider other)
-    {
-        
+        player = FindObjectOfType<Player>();
     }
 
-    void OnTriggerExit(Collider other)
+    public override void SetItemUI()
     {
-        
+        if(player.GetComponent<Rat>())
+        {
+            GetComponent<Item>().SetUI(ratTrapIcon, "Rat Cant Pass", "Needs Exterminator", "", false);
+        }
+        else if (player.gameObject.name.Equals("Exterminator"))
+        {
+            GetComponent<Item>().SetUI(ratTrapIcon, "Press F to Disable", "Needs Exterminator", "", false);
+        }
+        else
+        {
+            GetComponent<Item>().SetUI(ratTrapIcon, "Disable Rat Trap", "Needs Exterminator", "", false);
+        }
     }
 }
