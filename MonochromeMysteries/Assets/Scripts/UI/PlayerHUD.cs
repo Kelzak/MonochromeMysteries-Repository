@@ -147,7 +147,7 @@ public class PlayerHUD : MonoBehaviour
             //set reticle color, reads from glow of object
             reticle.color = Color.Lerp(reticle.color, reticleColor, fadeTime * Time.deltaTime);
 
-            hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, hoverAudioVolume, fadeTime * Time.deltaTime);
+            //hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, hoverAudioVolume, fadeTime * Time.deltaTime);
 
             //set string values to text mesh assets
             singleText.text =  singleString;
@@ -185,9 +185,11 @@ public class PlayerHUD : MonoBehaviour
             displayIconImage.color = Color.Lerp(displayIconImage.color, Color.clear, fadeTime * Time.deltaTime);
             reticle.color = Color.Lerp(reticle.color, defaultReticleColor, fadeTime * Time.deltaTime);
             displaySeperatorImage.color = Color.Lerp(displayIconImage.color, Color.clear, fadeTime * Time.deltaTime);
-            hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, 0f, fadeTime * Time.deltaTime);
+            //hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, 0f, fadeTime * Time.deltaTime);
+            print("hover volume: " + hoverAudio.volume);
             return;
         }
+
 
     }
 

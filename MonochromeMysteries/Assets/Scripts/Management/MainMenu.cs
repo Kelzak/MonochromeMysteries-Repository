@@ -84,7 +84,7 @@ public class MainMenu : MonoBehaviour
         frameCount++;
 
         //Enter/Exit Main Menu
-        if ((Input.GetKeyDown(KeyCode.F) || (Input.GetKeyDown(KeyCode.Escape))) && (MainMenu.GetCurrentMenu() == "MainMenu" && GameController.menuActive))
+        if ((Input.GetKeyDown(KeyCode.F) || (Input.GetKeyDown(KeyCode.Escape))) && (MainMenu.GetCurrentMenu() == "MainMenu" && GameController.menuActive && MainMenu.active))
         {
             print("Trigger main menu");
             TriggerMainMenu();
@@ -238,7 +238,6 @@ public class MainMenu : MonoBehaviour
             OnMainMenuTriggered?.Invoke(false);
             exitText.gameObject.SetActive(false);
         }
-
 
         //Transitioning into TV, store player transform so camera can be returned properly
         if (cam.GetComponentInParent<Player>())

@@ -2,10 +2,7 @@
  * Created by Matt Kirchoff
  * item script for outlining during ghost vision
  */
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Outline))]
 [RequireComponent(typeof(MeshCollider))]
@@ -39,8 +36,8 @@ public class Item : MonoBehaviour
     public string itemDescription;
 
 
-    //[Header("Item Settings")]
-    //public bool isPickup;
+    [Header("Item Settings")]
+    public bool isPickup;
     //public bool isReadable;
 
     [Header("Outline Settings")]
@@ -118,6 +115,21 @@ public class Item : MonoBehaviour
         {
             outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, 0f, fadeTime * Time.deltaTime);
             //GetComponent<Outline>().enabled = false;
+        }
+
+        if(isPickup)
+        {
+            if(player.GetComponent<Rat>())
+            {
+                if (!player.GetComponent<Rat>().hold)
+                {
+                    singleText = "Press F to Drag";
+                }
+                if (!player.GetComponent<Rat>().hold)
+                {
+                    singleText = "Press F to Drop";
+                }
+            }
         }
 
         //sets UI to others items progmatically
