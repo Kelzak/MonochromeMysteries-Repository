@@ -39,7 +39,7 @@ public class PadlockPuzzle : MonoBehaviour
     public bool safe4Open;
 
     public bool safeIsOpen = false;
-   
+
     public GameObject keypadPanel;
     public GameObject symbolPanel;
     public InputField inputField;
@@ -95,7 +95,7 @@ public class PadlockPuzzle : MonoBehaviour
     public void DetermineNumberPressed(string numberPressed)
     {
         audioSource.PlayOneShot(buttonPressedSFX);
-        if(numberPressed != "backspace")
+        if (numberPressed != "backspace")
         {
             if (inputField.text.Length != 3 && Player.safeName == safe2.name)
             {
@@ -125,10 +125,10 @@ public class PadlockPuzzle : MonoBehaviour
         }
         else //when backspace is pressed
         {
-            if(inputField.text.Length > 0)
+            if (inputField.text.Length > 0)
             {
                 inputField.text = inputField.text.Remove(inputField.text.Length - 1, 1);
-               // totalInputs -= 1;
+                // totalInputs -= 1;
             }
             if (symbolInputField.text.Length > 0)
             {
@@ -141,7 +141,7 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void ShowKeypad()
     {
-        if(Player.safeName == safe2.name)
+        if (Player.safeName == safe2.name)
         {
             symbolPanel.SetActive(true);
         }
@@ -172,7 +172,7 @@ public class PadlockPuzzle : MonoBehaviour
         {
             keypadPanel.SetActive(false);
         }
-        if(photographer.GetComponent<Player>())
+        if (photographer.GetComponent<Player>())
         {
             photographer.CameraLensActive = true;
             //photographer.canTakePhoto = false;
@@ -211,7 +211,7 @@ public class PadlockPuzzle : MonoBehaviour
 
     public void CheckifCodeisCorrect()
     {
-        if (Player.safeName == safe1.name  && inputField.text == correctCode1)
+        if (Player.safeName == safe1.name && inputField.text == correctCode1)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
             Debug.Log("Correct!");
@@ -283,185 +283,8 @@ public class PadlockPuzzle : MonoBehaviour
             //totalInputs = 0;
         }
     }
+
+
 }
 
-/*if (Input.GetKeyDown(KeyCode.Alpha1))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "1";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "1";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "1";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha2))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "2";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "2";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "2";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha3))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "3";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "3";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "3";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha4))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "4";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "4";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "4";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha5))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "5";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "5";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "5";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha6))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "6";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "6";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "6";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha7))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "7";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "7";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "7";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha8))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "8";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "8";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "8";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha9))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "9";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "9";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "9";
-    }
-}
-else if (Input.GetKeyDown(KeyCode.Alpha0))
-{
-    if (Player.isAtTheFirstSafe)
-    {
-        totalInputs += 1;
-        enteredCode1 += "0";
-    }
-    if (Player.isAtTheSecondSafe)
-    {
-        totalInputs += 1;
-        enteredCode2 += "0";
-    }
-    if (Player.isAtTheThirdSafe)
-    {
-        totalInputs += 1;
-        enteredCode3 += "0";
-    }
-}*/
+

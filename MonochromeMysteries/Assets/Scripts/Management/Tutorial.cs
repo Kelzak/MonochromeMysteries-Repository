@@ -25,14 +25,18 @@ public class Tutorial : MonoBehaviour
     private TMP_Text objectiveText;
 
     public event TutorialEvent onFirstMovement;
-    public event TutorialEvent onFirstRatPossession;
     public event TutorialEvent onFirstTVEnter;
+    public event TutorialEvent onFirstRatPossession;
     public event TutorialEvent onPhotographerEnter;
     public event TutorialEvent onFirstPhoto;
     public event TutorialEvent onFirstCloseScrapbook;
     public event TutorialEvent onTutorialEnd;
 
     bool photographerEntered = false;
+
+    public bool canEnterTV;
+    public bool canEnterRat;
+    public bool canBringMan;
 
     private IEnumerator DialogueScript()
     {
@@ -86,7 +90,7 @@ public class Tutorial : MonoBehaviour
 
     private void Start()
     {
-
+        Debug.Log("canentertv is " + canEnterTV);
         //DontDestroyOnLoad(instance.transform.parent.gameObject);
         //Load
         if (SaveSystem.gameData != null)
@@ -126,7 +130,6 @@ public class Tutorial : MonoBehaviour
         onPhotographerEnter -= TriggerPhotographerEnter;
         onFirstPhoto -= TriggerFirstPhoto;
         onFirstCloseScrapbook -= TriggerFirstCloseScrapbook;
-
     }
 
 
@@ -189,10 +192,9 @@ public class Tutorial : MonoBehaviour
         {
             yield return null;
         }
-
+        canEnterTV = true;
         Dialogue.ContinueDialogue();
         onFirstMovement -= TriggerFirstMovement;
-
     }
 
     //FIRST TV ENTERED
@@ -207,6 +209,8 @@ public class Tutorial : MonoBehaviour
         {
             yield return null;
         }
+        canEnterTV = false;
+        canEnterRat = true;
         Dialogue.ContinueDialogue();
         onFirstTVEnter -= TriggerTVEnter;
     }
@@ -223,7 +227,8 @@ public class Tutorial : MonoBehaviour
         {
             yield return null;
         }
-
+        canEnterRat = false;
+        canBringMan = true;
         Dialogue.ContinueDialogue();
         onFirstRatPossession -= TriggerFirstRatPossession;
     }
@@ -236,11 +241,11 @@ public class Tutorial : MonoBehaviour
 
     private IEnumerator PhotographerEnter()
     {
-        while (!photographerEntered || !Dialogue.holding || onFirstMovement != null || onFirstRatPossession != null || onFirstTVEnter != null)
+        while (!photographerEntered || !Dialogue.holding || onFirstMovement != null || onFirstTVEnter != null || onFirstRatPossession != null)
         {
             yield return null;
         }
-
+        canBringMan = false;
         Dialogue.ContinueDialogue();
         onPhotographerEnter -= TriggerPhotographerEnter;
     }

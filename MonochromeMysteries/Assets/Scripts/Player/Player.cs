@@ -146,6 +146,8 @@ public class Player : MonoBehaviour
     public GameObject photographersCam;
     public GameObject mustache;
 
+    public Tutorial tutorial;
+
     //private PlayerHUD playerHUD;
 
     private void OnEnable()
@@ -1346,7 +1348,7 @@ public class Player : MonoBehaviour
         EnableControls(true);
 
         //First Rat possession
-        if (target.GetComponent<Rat>() && Dialogue.holding)
+        if (target.GetComponent<Rat>() && Dialogue.holding && tutorial.canEnterRat)
         {
             Tutorial.instance.OnFirstRatPossession();
         }

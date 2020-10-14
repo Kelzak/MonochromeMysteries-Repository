@@ -21,7 +21,6 @@ public class Safe : ItemAbs
     public InputField symbolInputField;
     public GameObject darkBackground;
 
-
     private SafeAnim animator;
 
     [HideInInspector]
@@ -37,6 +36,8 @@ public class Safe : ItemAbs
     public AudioClip incorrectSFX;
     private AudioSource audioSource;
 
+    public Safe[] safes;
+    public List<GameObject> safeGameobjects = new List<GameObject>();
 
     [Range(0.0f, 1.0f)]
     public float soundVolume = .5f;
@@ -44,12 +45,25 @@ public class Safe : ItemAbs
     // Start is called before the first frame update
     void Start()
     {
+        safes = FindObjectsOfType<Safe>();
+        foreach(Safe safe in safes)
+        {
+            safeGameobjects.Add(safe.gameObject);
+        }
+
         photographer = FindObjectOfType<Photographer>();
         player = FindObjectOfType<Player>();
         Background = player.darkBackground;
         audioSource = GetComponent<AudioSource>();
         audioSource.volume = soundVolume;
 
+        keypadPanel = GameObject.Find("HUD").transform.Find("SafeKeypad").gameObject;
+        symbolPanel = GameObject.Find("HUD").transform.Find("SymbolKeypad").gameObject;
+        inputField = keypadPanel.transform.Find("InputtedCode").GetComponent<InputField>();
+        symbolInputField = symbolPanel.transform.Find("InputtedCode").GetComponent<InputField>();
+        darkBackground = GameObject.Find("HUD").transform.Find("Menu").transform.Find("DarkBackground").gameObject;
+
+    
         audioSource.rolloffMode = AudioRolloffMode.Custom;
         audioSource.minDistance = 0f;
         audioSource.maxDistance = 5f;
@@ -58,6 +72,8 @@ public class Safe : ItemAbs
 
         inputField.characterLimit = 6;
         symbolInputField.characterLimit = 3;
+
+        DisableSafes();
     }
     // Update is called once per frame
     void Update()
@@ -84,13 +100,20 @@ public class Safe : ItemAbs
                 GetComponent<BoxCollider>().enabled = false;
                 Destroy(GetComponent<Item>());
                 Destroy(GetComponent<Outline>());
+                Destroy(GetComponent<Safe>());
+                gameObject.GetComponent<Safe>().enabled = false;
                 //safe1.SetActive(false);
             }
         }
+        KeypadInput();
+        
     }
 
     public override void Activate()
     {
+        SelectCurrentSafe();
+        Debug.Log(safeGameobjects);
+
         if (!closeTime && !safeOpened)
         {
             ShowKeypad();
@@ -109,10 +132,34 @@ public class Safe : ItemAbs
             Background.SetActive(true);
             StartCoroutine(ReadTime());
 
-            
+            //gameObject.GetComponent<Safe>().enabled = true;
+
             //audioSource.PlayOneShot(safeOpeningSFX);
         }
 
+    }
+
+    public void SelectCurrentSafe()
+    {
+        foreach(GameObject safe in safeGameobjects)
+        {
+            if(safe != gameObject)
+            {
+                safe.GetComponent<Safe>().enabled = false;
+            }
+            else
+            {
+                safe.GetComponent<Safe>().enabled = true;
+            }
+        }
+    }
+
+    public void DisableSafes()
+    {
+        foreach(GameObject safe in safeGameobjects)
+        {
+            safe.GetComponent<Safe>().enabled = false;
+        }
     }
 
     public void Close()
@@ -134,6 +181,7 @@ public class Safe : ItemAbs
             readTime = false;
             closeTime = true;
             HideKeypadAndReset();
+            DisableSafes();
             StartCoroutine(CloseTime());
         }
        
@@ -188,6 +236,7 @@ public class Safe : ItemAbs
         symbolInputField.text = "";
         symbolInputField.placeholder.GetComponent<Text>().text = "Enter password...";
         Background.SetActive(false);
+        gameObject.GetComponent<Safe>().enabled = false;
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         //totalInputs = 0;
     }
@@ -221,6 +270,55 @@ public class Safe : ItemAbs
 
         }
     }
+
+    public void KeypadInput()
+    {
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            DetermineNumberPressed("1");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            DetermineNumberPressed("2");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            DetermineNumberPressed("3");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            DetermineNumberPressed("4");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            DetermineNumberPressed("5");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            DetermineNumberPressed("6");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            DetermineNumberPressed("7");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            DetermineNumberPressed("8");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            DetermineNumberPressed("9");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            DetermineNumberPressed("0");
+        }
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            DetermineNumberPressed("backspace");
+        }
+    }
+
     public void CheckifCodeisCorrect()
     {
         if(inputField.text == code)

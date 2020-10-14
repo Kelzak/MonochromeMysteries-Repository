@@ -34,6 +34,7 @@ public class MainMenu : MonoBehaviour
 
     public TMP_Text exitText;
 
+    public Tutorial tutorial;
 
     //Says whether the MAIN MENU ONLY is active
     public static bool active = false;
@@ -227,7 +228,7 @@ public class MainMenu : MonoBehaviour
         //Exiting menu so return to static
         else
         {
-            if (Time.time >= 5 && Dialogue.holding)
+            if (Time.time >= 10 && Dialogue.holding && tutorial.canEnterTV)
             {
                 Tutorial.instance.OnFirstTVEnter();
             }

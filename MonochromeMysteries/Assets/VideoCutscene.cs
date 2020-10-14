@@ -22,6 +22,9 @@ public class VideoCutscene : MonoBehaviour
     private AudioSource audioSource;
     private GameObject interactiveCanvas;
 
+    private bool cutsceneTextOn;
+    public GameObject skipCutsceneText;
+
     [Range(0.0f, 1.0f)]
     public float clipVolume = .5f;
 
@@ -44,14 +47,20 @@ public class VideoCutscene : MonoBehaviour
         length = (float)video.length;
         //Invoke("LoadScene", length + 1f);
         StartCoroutine(LoadScene(sceneIndex));
+        cutsceneTextOn = false;
+
     }
 
     private void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape)) && cutsceneTextOn)
         {
             SkipCutscene();
+        }
+        if (Input.anyKey)
+        {
+            ShowCutsceneText();
         }
     }
 
@@ -93,7 +102,17 @@ public class VideoCutscene : MonoBehaviour
     {
        if (SceneManager.GetActiveScene().name.Contains("Opening"))
        {
-           SaveSystem.NewGame(SaveSystem.currentSaveSlot);
+              SaveSystem.NewGame(SaveSystem.currentSaveSlot);
        }
     }
+
+    void ShowCutsceneText()
+    {
+        if (!cutsceneTextOn)
+        {
+            skipCutsceneText.SetActive(true);
+            cutsceneTextOn = true;
+        }
+    }
+        
 }
