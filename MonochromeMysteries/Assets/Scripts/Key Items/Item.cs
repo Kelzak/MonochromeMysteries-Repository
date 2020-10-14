@@ -131,11 +131,6 @@ public class Item : MonoBehaviour
                 bottomText = "Needs Photographer";
             }
         }
-        else if (GetComponent<NavPerson>())
-        {
-            onlySingleText = true;
-            singleText = "Press E To Possess";
-        }
     }
 
     private void FixedUpdate()
