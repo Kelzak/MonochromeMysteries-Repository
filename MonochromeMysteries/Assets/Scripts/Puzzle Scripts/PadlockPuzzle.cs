@@ -78,10 +78,10 @@ public class PadlockPuzzle : MonoBehaviour
             ShowKeypad();
         }*/
 
-        if (Input.GetKeyDown(KeyCode.Escape) && (keypadPanel.activeSelf || symbolPanel.activeSelf))
+        /*if (Input.GetKeyDown(KeyCode.Escape) && (keypadPanel.activeSelf || symbolPanel.activeSelf))
         {
             HideKeypadAndReset();
-        }
+        }*/
 
 
     }
