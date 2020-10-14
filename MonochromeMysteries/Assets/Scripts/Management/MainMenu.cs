@@ -85,7 +85,7 @@ public class MainMenu : MonoBehaviour
         frameCount++;
 
         //Enter/Exit Main Menu
-        if (Input.GetKeyDown(KeyCode.F) || (Input.GetKeyDown(KeyCode.Escape) && MainMenu.GetCurrentMenu() == "MainMenu" && GameController.menuActive))
+        if ((Input.GetKeyDown(KeyCode.F) || (Input.GetKeyDown(KeyCode.Escape))) && (MainMenu.GetCurrentMenu() == "MainMenu" && GameController.menuActive))
         {
             print("Trigger main menu");
             TriggerMainMenu();

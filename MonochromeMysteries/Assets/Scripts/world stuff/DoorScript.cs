@@ -34,6 +34,8 @@ public class DoorScript : ItemAbs
     //match this with the name of the game object for the character whos door it is
     public GameObject whoDoor;
     private bool unlocking;
+    [HideInInspector]
+    public bool doorSaveOpen = false;
 
     [Header("UI Settings")]
     public Sprite keyIcon;
@@ -73,19 +75,19 @@ public class DoorScript : ItemAbs
         //_animator = transform.parent.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
-        //set values to not contradict each other
-        if(key != null)
-        {
-            isLocked = true;
-            hasKey = true;
-            personalDoor = false;
-        }
-        if (whoDoor != null)
-        {
-            isLocked = false;
-            hasKey = false;
-            personalDoor = true;
-        }
+        //set values to not contradict each other - commented out for save testing purposes
+        //if(key != null)
+        //{
+        //    isLocked = true;
+        //    hasKey = true;
+        //    personalDoor = false;
+        //}
+        //if (whoDoor != null)
+        //{
+        //    isLocked = false;
+        //    hasKey = false;
+        //    personalDoor = true;
+        //}
     }
 
     // Update is called once per frame
@@ -271,6 +273,8 @@ public class DoorScript : ItemAbs
         isLocked = false;
         hasKey = false;
         isOpen = true;
+
+        doorSaveOpen = true;
     }
 
    

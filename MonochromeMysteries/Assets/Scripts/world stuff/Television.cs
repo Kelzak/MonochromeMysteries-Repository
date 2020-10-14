@@ -12,7 +12,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class Television : MonoBehaviour
+public class Television : ItemAbs
 {
     public GameObject screen;
     public GameObject mainMenu, tvStatic, howToPlay, saveSelect, creditsMenu;
@@ -294,6 +294,15 @@ public class Television : MonoBehaviour
         }
     }
 
+    public override void Activate()
+    {
+        MainMenu.TriggerMainMenu();
+    }
+
+    public override void SetItemUI()
+    {
+        GetComponent<Item>().SetUI(null, "", "", "Press F to Use", true);
+    }
 }
 
 
