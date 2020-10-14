@@ -274,8 +274,9 @@ public class Player : MonoBehaviour
 
     void Interact()
     {
+
         GameObject target = null;
-        bool photoUI = false;
+        //bool photoUI = false;
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit[] hit;
         if ((hit = Physics.RaycastAll(ray, currentReticleDist)).Length > 0)
@@ -315,9 +316,13 @@ public class Player : MonoBehaviour
                     //updates ui variables if needed off abstract item class
                     target.GetComponent<ItemAbs>().SetItemUI();
 
-                    //input to activate item
-                    if (Input.GetKeyDown(KeyCode.F))
-                        target.GetComponent<ItemAbs>().Activate();
+                    if(!GameController.menuActive)
+                    {
+                        //input to activate item
+                        if (Input.GetKeyDown(KeyCode.F))
+                            target.GetComponent<ItemAbs>().Activate();
+                    }
+                    
 
                 }
 

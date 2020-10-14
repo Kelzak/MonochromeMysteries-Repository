@@ -91,7 +91,27 @@ public class PlayerHUD : MonoBehaviour
     void Update()
     {
         LocationUI();
-        DisplayUI();
+
+        if(!GameController.menuActive && !MainMenu.active)
+        {
+            topText.gameObject.SetActive(true);
+            bottomText.gameObject.SetActive(true);
+            singleText.gameObject.SetActive(true);
+            displayIconImage.gameObject.SetActive(true);
+            reticle.gameObject.SetActive(true);
+            displaySeperatorImage.gameObject.SetActive(true);
+            DisplayUI();
+        }
+        else
+        {
+            topText.gameObject.SetActive(false);
+            bottomText.gameObject.SetActive(false);
+            singleText.gameObject.SetActive(false);
+            displayIconImage.gameObject.SetActive(false);
+            reticle.gameObject.SetActive(false);
+            displaySeperatorImage.gameObject.SetActive(false);
+            hoverAudio.volume = 0f;
+        }
 
         player = FindObjectOfType<Player>();
 

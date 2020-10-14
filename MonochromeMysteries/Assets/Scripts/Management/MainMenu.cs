@@ -74,6 +74,7 @@ public class MainMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        print(MainMenu.GetCurrentMenu());
         //TV UPDATE
         //Check each tv to see if player is in range
         if (frameCount % triggerFrame == 0)
@@ -85,6 +86,7 @@ public class MainMenu : MonoBehaviour
         //Enter/Exit Main Menu
         if (Input.GetKeyDown(KeyCode.F) || (Input.GetKeyDown(KeyCode.Escape) && MainMenu.GetCurrentMenu() == "MainMenu" && GameController.menuActive))
         {
+            print("Trigger main menu");
             TriggerMainMenu();
         }
         else if (Input.GetKeyDown(KeyCode.Escape) && GameController.menuActive)
@@ -127,6 +129,8 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
+            MainMenu._instance.StartCoroutine(MainMenu._instance.TriggerTV());
+
             Debug.Log("tvTransitition: " + !MainMenu._instance.tvTransitionInProgress + " | In Range: " + IsInRange() + " | Etc: " + (!GameController.menuActive || MainMenu.active) + " | vis: " + (Player.tv_Visible || Time.timeSinceLevelLoad < 5));
 
         }
@@ -206,6 +210,7 @@ public class MainMenu : MonoBehaviour
         GameController.TogglePause();
         //If true, this function handles the transition INTO the main menu, if false, this function handles the exit
         active = GameController.paused;
+        print("tv active: " + active);
         //This variable is static and lets the game know that there is now a menu up (So another menu shouldn't be able to pop up on top of it)
         if(active == true)
         GameController.menuActive = GameController.paused;
