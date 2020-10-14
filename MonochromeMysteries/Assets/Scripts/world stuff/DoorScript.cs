@@ -248,8 +248,6 @@ public class DoorScript : ItemAbs
         {
             if(GameController._instance.doors[i].GetID() == this.id)
             {
-                this.isLocked = data.locked[i]; 
-
                 //if door is not open, and saved data is, open it
                 if(!this.isOpen & data.open[i])
                 {

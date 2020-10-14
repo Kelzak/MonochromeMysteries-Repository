@@ -231,6 +231,7 @@ public static class Data
             DoorScript currentDoor;
 
             doorIDs = new float[numDoors];
+
             open = new bool[numDoors];
             saveOpen = new bool[numDoors];
 
