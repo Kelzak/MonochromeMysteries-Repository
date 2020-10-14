@@ -116,6 +116,21 @@ public class Item : MonoBehaviour
             outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, 0f, fadeTime * Time.deltaTime);
             //GetComponent<Outline>().enabled = false;
         }
+
+        if(!GetComponent<ItemAbs>())
+        {
+            icon = FindObjectOfType<UIspriteManager>().cameraSprite;
+            if(player.GetComponent<Photographer>())
+            {
+                topText = "Photographable";
+                bottomText = "Take Photo";
+            }
+            else
+            {
+                topText = "Photographable";
+                bottomText = "Needs Photographer";
+            }
+        }
     }
 
     private void FixedUpdate()
