@@ -77,11 +77,11 @@ public class Endings : MonoBehaviour
     public void ShowKnifeInstructions()
     {
         isUsingKnife = true;
+        GameController.TogglePause();
         Readables.isReadingLetter = true;
         Read.isReading = true;
         darkBackground.SetActive(true);
         knifeInstructions.SetActive(true);
-        GameController.TogglePause();
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
         if (photographer.GetComponent<Player>())
