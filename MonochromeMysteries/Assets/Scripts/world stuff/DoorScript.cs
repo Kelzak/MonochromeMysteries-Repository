@@ -19,8 +19,6 @@ public class DoorScript : ItemAbs
     [Header("Lock and Key")]
     public bool isLocked = false;
     public GameObject key;
-    [HideInInspector]
-    public bool hasKey = false;
 
 
     [Header("Door Settings")]
@@ -75,17 +73,25 @@ public class DoorScript : ItemAbs
         //_animator = transform.parent.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
+        if(!isLocked && !personalDoor)
+        {
+            doorSaveOpen = true;
+        }
+        if(doorSaveOpen)
+        {
+            isLocked = false;
+            personalDoor = false;
+        }
+
         //set values to not contradict each other - commented out for save testing purposes
         //if(key != null)
         //{
         //    isLocked = true;
-        //    hasKey = true;
         //    personalDoor = false;
         //}
         //if (whoDoor != null)
         //{
         //    isLocked = false;
-        //    hasKey = false;
         //    personalDoor = true;
         //}
     }
@@ -212,7 +218,7 @@ public class DoorScript : ItemAbs
             rand = Random.Range(0, lockedDoor.Length);
             sound = lockedDoor[rand];
             audioSource.PlayOneShot(sound);
-            if (hasKey)
+            if (key != null)
             {
                 Log.AddEntry("The Door needs a Key");
             }
@@ -243,15 +249,20 @@ public class DoorScript : ItemAbs
             if(GameController._instance.doors[i].GetID() == this.id)
             {
                 this.isLocked = data.locked[i]; 
+
+                //if door is not open, and saved data is, open it
                 if(!this.isOpen & data.open[i])
                 {
                     Open();
                 }
                 this.isOpen = data.open[i];
-                if (!isLocked)
+                //if door save data is open, set restrictive bools off
+                if(data.saveOpen[i])
                 {
-                    personalDoor = false;
+                    this.isLocked = false;
+                    this.personalDoor = false;
                 }
+                this.doorSaveOpen = data.saveOpen[i];
                 return;
             }
         }
@@ -271,8 +282,8 @@ public class DoorScript : ItemAbs
         audioSource.PlayOneShot(sound);
         unlocking = false;
         isLocked = false;
-        hasKey = false;
         isOpen = true;
+        personalDoor = false;
 
         doorSaveOpen = true;
     }
@@ -311,7 +322,7 @@ public class DoorScript : ItemAbs
             //lock and key
             if (isLocked)
             {
-                if (hasKey)
+                if (key != null)
                 {
                     if (Player.keys.Contains(key))
                         GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Use Key", "", false);

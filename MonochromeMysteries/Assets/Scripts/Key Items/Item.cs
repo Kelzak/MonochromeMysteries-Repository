@@ -85,6 +85,9 @@ public class Item : MonoBehaviour
         {
             itemName = gameObject.name;
         }
+
+        
+
         playerDistGlow = Player.reticleDist;
 
         if (noOutline)
@@ -116,6 +119,28 @@ public class Item : MonoBehaviour
             outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, 0f, fadeTime * Time.deltaTime);
             //GetComponent<Outline>().enabled = false;
         }
+
+        //sets UI to others items progmatically
+        if (!GetComponent<ItemAbs>())
+        {
+            icon = FindObjectOfType<UIspriteManager>().cameraSprite;
+            if (player.GetComponent<Photographer>())
+            {
+                topText = "Photographable";
+                bottomText = "Take Photo";
+            }
+            else
+            {
+                topText = "Photographable";
+                bottomText = "Needs Photographer";
+            }
+        }
+        else if (GetComponent<NavPerson>())
+        {
+            onlySingleText = true;
+            singleText = "Press E To Possess";
+        }
+
     }
 
     private void FixedUpdate()
