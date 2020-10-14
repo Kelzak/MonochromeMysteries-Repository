@@ -61,7 +61,7 @@ public class Safe : ItemAbs
         symbolPanel = GameObject.Find("HUD").transform.Find("SymbolKeypad").gameObject;
         inputField = keypadPanel.transform.Find("InputtedCode").GetComponent<InputField>();
         symbolInputField = symbolPanel.transform.Find("InputtedCode").GetComponent<InputField>();
-        darkBackground = GameObject.Find("HUD").transform.Find("Menu").transform.Find("DarkBackground").gameObject;
+        darkBackground = GameObject.Find("HUD").transform.Find("DarkBackground").gameObject;
 
     
         audioSource.rolloffMode = AudioRolloffMode.Custom;
@@ -73,8 +73,15 @@ public class Safe : ItemAbs
         inputField.characterLimit = 6;
         symbolInputField.characterLimit = 3;
 
+        StartCoroutine(DisableSafesInTime());
+    }
+
+    public IEnumerator DisableSafesInTime()
+    {
+        yield return new WaitForSecondsRealtime(2f);
         DisableSafes();
     }
+
     // Update is called once per frame
     void Update()
         {
@@ -100,8 +107,8 @@ public class Safe : ItemAbs
                 GetComponent<BoxCollider>().enabled = false;
                 Destroy(GetComponent<Item>());
                 Destroy(GetComponent<Outline>());
-                Destroy(GetComponent<Safe>());
-                gameObject.GetComponent<Safe>().enabled = false;
+                //Destroy(GetComponent<Safe>());
+                //gameObject.GetComponent<Safe>().enabled = false;
                 //safe1.SetActive(false);
             }
         }

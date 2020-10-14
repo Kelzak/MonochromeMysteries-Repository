@@ -75,7 +75,6 @@ public class MainMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print(MainMenu.GetCurrentMenu());
         //TV UPDATE
         //Check each tv to see if player is in range
         if (frameCount % triggerFrame == 0)
