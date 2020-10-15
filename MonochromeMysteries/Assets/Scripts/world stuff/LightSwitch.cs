@@ -43,41 +43,44 @@ public class LightSwitch : ItemAbs
 
     public override void Activate()
     {
-        if(!player.GetComponent<Rat>() && !StateChecker.isGhost)
+        if(!StateChecker.isGhost && !player.GetComponent<Rat>())
         {
-            for (int i = 0; i < lights.Length; i++)
+            if (!player.GetComponent<Rat>() && !StateChecker.isGhost)
             {
-                if (off)
+                for (int i = 0; i < lights.Length; i++)
                 {
-                    if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                    if (off)
                     {
-                        lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
+                        if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                        {
+                            lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
 
-                        if (bulb != null)
-                            bulb.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
-                        //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
+                            if (bulb != null)
+                                bulb.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                            //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.yellow);
+                        }
+                        lights[i].enabled = true;
+                        off = false;
+                        PlaySound(sounds[0]);
                     }
-                    lights[i].enabled = true;
-                    off = false;
-                    PlaySound(sounds[0]);
-                }
-                else
-                {
-                    lights[i].enabled = false;
-                    off = true;
-                    PlaySound(sounds[1]);
-                    if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                    else
                     {
-                        lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
+                        lights[i].enabled = false;
+                        off = true;
+                        PlaySound(sounds[1]);
+                        if (lights[i].gameObject.GetComponentInParent<CeilingFan>())
+                        {
+                            lights[i].gameObject.GetComponentInParent<CeilingFan>().Activate();
 
-                        if (bulb != null)
-                            bulb.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
-                        //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+                            if (bulb != null)
+                                bulb.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+                            //bulb.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+                        }
                     }
                 }
+
             }
-
-        }
+        }    
         
     }
 

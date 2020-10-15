@@ -321,8 +321,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 5
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
@@ -449,8 +447,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 366624697930162469}
+  player: {fileID: 0}
   isLocked: 0
   key: {fileID: 0}
+  isOpen: 0
+  stayOpen: 0
+  brokendoor: 0
+  personalDoor: 0
+  whoDoor: {fileID: 0}
+  doorSaveOpen: 0
+  keyIcon: {fileID: 0}
+  keyIconFlip: {fileID: 0}
+  repairIcon: {fileID: 0}
+  repairIconFlip: {fileID: 0}
   openDoor:
   - {fileID: 8300000, guid: 76d9ce6cc2b97fc48ad08c70053eb1dc, type: 3}
   - {fileID: 8300000, guid: b5d9bfc683ff16649b83917627fa962c, type: 3}
@@ -466,16 +475,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8d0e67eec8952044eba7784bc2f579e8, type: 3}
   - {fileID: 8300000, guid: 39c0a8273d0d6fa42926ba8b96d17328, type: 3}
   repairClip: {fileID: 8300000, guid: 976f6cec4906b29479d9cad0c8fe59d3, type: 3}
-  isOpen: 0
-  autoClose: 0
-  stayOpen: 0
-  brokendoor: 0
-  repairing: 0
-  unlocking: 0
-  personalDoor: 0
-  whoDoor: Exterminator
-  hasNotBeenRepaired: 0
-  hasKey: 0
 --- !u!114 &1589046682741848953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -496,8 +495,9 @@ MonoBehaviour:
   itemName: 
   itemDescription: 
   isPickup: 0
-  isReadable: 0
   glowWidth: 8
   fadeTime: 3
   glowColor: {r: 1, g: 1, b: 1, a: 1}
   glowOverride: 0
+  noOutline: 1
+  dontChangeReticleColor: 0

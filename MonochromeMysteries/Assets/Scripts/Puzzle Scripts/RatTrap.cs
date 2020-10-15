@@ -37,6 +37,7 @@ public class RatTrap : ItemAbs
     // Start is called before the first frame update
     void Start()
     {
+        ratTrapIcon = FindObjectOfType<UIspriteManager>().ratSprite;
         audioSource = GetComponent<AudioSource>();
     }
 

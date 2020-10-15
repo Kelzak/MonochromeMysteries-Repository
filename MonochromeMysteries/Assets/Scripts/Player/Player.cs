@@ -334,6 +334,7 @@ public class Player : MonoBehaviour
                 PlayerHUD.iconSprite = target.GetComponent<Item>().icon;
                 PlayerHUD.singleString = target.GetComponent<Item>().singleText;
                 PlayerHUD.onlySingleText = target.GetComponent<Item>().onlySingleText;
+                PlayerHUD.noOutline = target.GetComponent<Item>().noOutline;
 
                 if(!target.GetComponent<Item>().dontChangeReticleColor)
                     PlayerHUD.reticleColor = target.GetComponent<Item>().glowColor;

@@ -30,6 +30,7 @@ public class Item : MonoBehaviour
     public string bottomText;
     public string singleText;
     public bool onlySingleText;
+    public bool dontAutoSetUI;
 
     [Header("Photo clue Settings")]
     public string itemName;
@@ -62,15 +63,31 @@ public class Item : MonoBehaviour
             singleText = "Press E to Possess";
             itemName = "Rat";
             itemDescription = "Big o'l Rat";
+            dontAutoSetUI = true;
         }
-        
+
+        if(GetComponent<ItemAbs>())
+        {
+            dontAutoSetUI = true;
+        }
+
+        //set glow colors 
+        if (GetComponent<Possessable>())
+        {
+            glowColor = Color.blue;
+        }
+        else
+        {
+            glowColor = Color.white;
+        }
+
 
         //default icon to camera
-        if(icon == null)
+        if (icon == null)
         {
             icon = FindObjectOfType<UIspriteManager>().cameraSprite;
         }
-        //outline stuff
+        //set outline stuff
         //gameObject.GetComponent<ItemAbs>().Activate();
         outline = GetComponent<Outline>();
         //set outline wifth to 0 to avoid outlines at start
@@ -84,6 +101,8 @@ public class Item : MonoBehaviour
         }
 
         
+
+
 
         playerDistGlow = Player.reticleDist;
 
@@ -104,7 +123,7 @@ public class Item : MonoBehaviour
         // if() item is in the raycast hit array?
 
         //enables outline when player is ghost and nearby, or when player overrides glow
-        if ((StateChecker.isGhost && playerDistance < playerDistGlow) || glowOverride)
+        if (((StateChecker.isGhost && playerDistance < playerDistGlow) || glowOverride) && !noOutline)
         {
             //GetComponent<Outline>().enabled = true;
             outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, glowWidth, fadeTime * Time.deltaTime);
@@ -117,53 +136,59 @@ public class Item : MonoBehaviour
             //GetComponent<Outline>().enabled = false;
         }
 
-        if(isPickup)
+        if(!dontAutoSetUI)
         {
-            if(player.GetComponent<Rat>())
+            if (isPickup)
             {
-                if (!player.GetComponent<Rat>().hold)
+                if (player.GetComponent<Rat>())
                 {
-                    singleText = "Press F to Drag";
-                    onlySingleText = true;
+                    if (!player.GetComponent<Rat>().hold)
+                    {
+                        singleText = "Press F to Drag";
+                        onlySingleText = true;
+                    }
+                    if (player.GetComponent<Rat>().hold)
+                    {
+                        singleText = "Press F to Drop";
+                        onlySingleText = true;
+                    }
                 }
-                if (player.GetComponent<Rat>().hold)
+                else if (!StateChecker.isGhost)
                 {
-                    singleText = "Press F to Drop";
                     onlySingleText = true;
+                    singleText = "Press F to Pick up";
+                }
+                else
+                {
+                    onlySingleText = true;
+                    singleText = "Ghost Cant Pick up";
                 }
             }
-            else if (!StateChecker.isGhost)
-            {
-                onlySingleText = true;
-                singleText = "Press F to Pick up";
-            }
-            else
-            {
-                onlySingleText = true;
-                singleText = "Ghost Cant Pick up";
-            }
-        }
 
-        //sets UI to others items progmatically
-        if (!GetComponent<ItemAbs>())
-        {
-            icon = FindObjectOfType<UIspriteManager>().cameraSprite;
-            if (player.GetComponent<Photographer>())
+            //sets UI to others items progmatically
+            if (!GetComponent<ItemAbs>())
             {
-                topText = "Photographable";
-                bottomText = "Take Photo";
+                icon = FindObjectOfType<UIspriteManager>().cameraSprite;
+                if (player.GetComponent<Photographer>())
+                {
+                    topText = "Photographable";
+                    bottomText = "Take Photo";
+                }
+                else
+                {
+                    topText = "Photographable";
+                    bottomText = "Needs Photographer";
+                }
             }
-            else
+            else if (GetComponent<NavPerson>())
             {
-                topText = "Photographable";
-                bottomText = "Needs Photographer";
+                onlySingleText = true;
+                singleText = "Press E To Possess";
             }
         }
-        else if (GetComponent<NavPerson>())
-        {
-            onlySingleText = true;
-            singleText = "Press E To Possess";
-        }
+        
+
+        
 
     }
 

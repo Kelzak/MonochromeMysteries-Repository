@@ -89,7 +89,8 @@ public class Read : ItemAbs
     //activated for abstract class, just calls current functionality
     public override void Activate()
     {
-        Open();
+        if(!StateChecker.isGhost && !player.GetComponent<Rat>())
+            Open();
 
     }
 
@@ -101,7 +102,7 @@ public class Read : ItemAbs
             GetComponent<Item>().SetUI(cameraIcon, "Ghost Cant Read", "Photographable", "", false);
 
         }
-        else if(player.GetComponent<Rat>())
+        else if(player.GetComponent<Rat>() && !GetComponent<Item>().isPickup)
         {
             GetComponent<Item>().SetUI(cameraIcon, "Rat Cant Read", "Photographable", "", false);
 

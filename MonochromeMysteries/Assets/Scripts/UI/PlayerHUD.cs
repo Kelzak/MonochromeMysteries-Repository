@@ -67,6 +67,8 @@ public class PlayerHUD : MonoBehaviour
     public static bool onlySingleText;
     [HideInInspector]
     public static Color reticleColor;
+    [HideInInspector]
+    public static bool noOutline;
 
     // Start is called before the first frame update
     void Start()
@@ -152,8 +154,15 @@ public class PlayerHUD : MonoBehaviour
             //set reticle color, reads from glow of object
             reticle.color = Color.Lerp(reticle.color, reticleColor, fadeTime * Time.deltaTime);
 
+            if(noOutline)
+            {
+                hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, 0f, fadeTime * Time.deltaTime);
+            }
+            else
+            {
+                hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, hoverAudioVolume, fadeTime * Time.deltaTime);
 
-            hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, hoverAudioVolume, fadeTime * Time.deltaTime);
+            }
 
             //set string values to text mesh assets
             singleText.text =  singleString;

@@ -19,6 +19,9 @@ public abstract class Possessable : MonoBehaviour
     protected Vector3 camOffset = Vector3.zero;
     public float verticalClamp = 60;
 
+    private Color highlightColor = new Color(0 / 255f, 0 / 255f, 140 / 255f);
+
+
     [SerializeField]
     protected static GameObject possessionVignette;
     private static bool hudActive;
@@ -81,6 +84,17 @@ public abstract class Possessable : MonoBehaviour
 
     protected virtual void Start()
     {
+        //try to get color from item and set it to be the highlight color
+        try
+        {
+            highlightColor = GetComponent<Item>().glowColor;
+        }
+        catch
+        {
+
+        }
+        
+
         if (possessionVignette == null)
             possessionVignette = GameObject.Find("HUD").transform.Find("PossessionVignette").gameObject;
 
@@ -140,7 +154,6 @@ public abstract class Possessable : MonoBehaviour
         Material mat = GetComponent<MeshRenderer>().material;
         mat.EnableKeyword("_EMISSION");
         Color baseColor = Color.black;
-        Color highlightColor = new Color(0 / 255f, 0 / 255f, 140 / 255f);
 
         mat.SetColor("_EmissionColor", baseColor);
         while (this == highlightedObject)
