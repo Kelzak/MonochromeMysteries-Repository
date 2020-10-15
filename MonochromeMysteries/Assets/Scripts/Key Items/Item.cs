@@ -132,9 +132,10 @@ public class Item : MonoBehaviour
                     onlySingleText = true;
                 }
             }
-            else
+            else if (!StateChecker.isGhost)
             {
-                onlySingleText = false;
+                onlySingleText = true;
+                singleText = "Press F to Pick up";
             }
         }
 

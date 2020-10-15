@@ -147,98 +147,102 @@ public class DoorScript : ItemAbs
     }
     public override void Activate()
     {
-        //if player is possessing the correct person for the door, then open 
-        if (personalDoor && !isOpen)
+        if(!StateChecker.isGhost && !player.GetComponent<Rat>())
         {
-            if(player.gameObject.name.Equals(whoDoor.name))
+            //if player is possessing the correct person for the door, then open 
+            if (personalDoor && !isOpen)
             {
-                //Debug.Log("personal door activate");
-                if (whoDoor.name.Equals("Mechanic") && !repairing) //mechanic branch
+                if (player.gameObject.name.Equals(whoDoor.name))
                 {
-                    Log.AddEntry("Repairing Door...");
-                    repairing = true;
-                    audioSource.PlayOneShot(repairClip);
-                    StartCoroutine(WaitForSound());
-                }
-                else if (whoDoor.Equals("Manager"))//manager branch
-                {
-                    Debug.Log("manager open");
-                    Log.AddEntry("Unlocked Office");
-                    //isLocked = false;
-                    personalDoor = false;
-                    Open();
+                    //Debug.Log("personal door activate");
+                    if (whoDoor.name.Equals("Mechanic") && !repairing) //mechanic branch
+                    {
+                        Log.AddEntry("Repairing Door...");
+                        repairing = true;
+                        audioSource.PlayOneShot(repairClip);
+                        StartCoroutine(WaitForSound());
+                    }
+                    else if (whoDoor.Equals("Manager"))//manager branch
+                    {
+                        Debug.Log("manager open");
+                        Log.AddEntry("Unlocked Office");
+                        //isLocked = false;
+                        personalDoor = false;
+                        Open();
+                    }
+                    else
+                    {
+                        personalDoor = false;
+                        Open();
+                    }
                 }
                 else
                 {
-                    personalDoor = false;
-                    Open();
+                    rand = Random.Range(0, lockedDoor.Length);
+                    sound = lockedDoor[rand];
+                    audioSource.PlayOneShot(sound);
+                    Log.AddEntry("The Door requires the " + whoDoor.name);
+
                 }
+
+
             }
-            else
+            //regular open
+            else if (!isLocked && !isOpen && !personalDoor)
+            {
+                Open();
+            }
+            //locked open
+            else if (isLocked && !isOpen && Player.keys.Contains(key))
+            {
+                Log.AddEntry("Used: " + key.GetComponent<Item>().itemName);
+                //isLocked = false;
+
+                int rand = Random.Range(0, unlockDoor.Length);
+                AudioClip sound = unlockDoor[rand];
+                audioSource.PlayOneShot(sound);
+                unlocking = true;
+                Invoke("Open", .75f);
+                //Open();
+            }
+            //close door if able
+            else if (isOpen && !stayOpen)
+            {
+                _animator.SetBool("open", false);
+
+                Invoke("DoorShut", 1.5f);
+
+                isOpen = false;
+            }
+            //door locked
+            else if (isLocked && !isOpen)
             {
                 rand = Random.Range(0, lockedDoor.Length);
                 sound = lockedDoor[rand];
                 audioSource.PlayOneShot(sound);
-                Log.AddEntry("The Door requires the " + whoDoor.name);
-
-            }
-
-
-        }
-        //regular open
-        else if (!isLocked && !isOpen && !personalDoor)
-        {
-            Open();
-        }
-        //locked open
-        else if (isLocked && !isOpen && Player.keys.Contains(key))
-        {
-            Log.AddEntry("Used: " + key.GetComponent<Item>().itemName);
-            //isLocked = false;
-
-            int rand = Random.Range(0, unlockDoor.Length);
-            AudioClip sound = unlockDoor[rand];
-            audioSource.PlayOneShot(sound);
-            unlocking = true;
-            Invoke("Open", .75f);
-            //Open();
-        }
-        //close door if able
-        else if (isOpen && !stayOpen)
-        {
-            _animator.SetBool("open", false);
-
-            Invoke("DoorShut", 1.5f);
-
-            isOpen = false;
-        }
-        //door locked
-        else if (isLocked && !isOpen)
-        {
-            rand = Random.Range(0, lockedDoor.Length);
-            sound = lockedDoor[rand];
-            audioSource.PlayOneShot(sound);
-            if (key != null)
-            {
-                Log.AddEntry("The Door needs a Key");
-            }
-            else if (personalDoor)
-            {
-                if(whoDoor.Equals("Mechanic"))
+                if (key != null)
                 {
-                    Log.AddEntry("The Door needs Repairs");
+                    Log.AddEntry("The Door needs a Key");
+                }
+                else if (personalDoor)
+                {
+                    if (whoDoor.Equals("Mechanic"))
+                    {
+                        Log.AddEntry("The Door needs Repairs");
+                    }
+                    else
+                    {
+                        Log.AddEntry("The Door needs the " + whoDoor);
+                    }
                 }
                 else
                 {
-                    Log.AddEntry("The Door needs the " + whoDoor);
+                    Log.AddEntry("The Door wont budge");
                 }
-            }
-            else
-            {
-                Log.AddEntry("The Door wont budge");
-            }
 
+            }
         }
+        
 
     }
 
