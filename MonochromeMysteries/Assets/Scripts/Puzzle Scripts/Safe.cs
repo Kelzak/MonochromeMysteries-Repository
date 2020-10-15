@@ -435,7 +435,7 @@ public class Safe : ItemAbs
 
     public void CheckifCodeisCorrect()
     {
-        if(ghostSafe)
+        /*if(ghostSafe)
         {
             if(symbolInputField.text == code)
             {
@@ -449,8 +449,8 @@ public class Safe : ItemAbs
                 Destroy(GetComponent<Item>());
                 Destroy(GetComponent<Outline>());
             }
-        }
-        else if(inputField.text == code)
+        }*/
+        if(inputField.text == code || symbolInputField.text == code)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
             Debug.Log("Correct!");
