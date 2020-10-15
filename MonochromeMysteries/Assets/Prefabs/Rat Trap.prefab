@@ -65,6 +65,7 @@ MonoBehaviour:
   player: {fileID: 0}
   ratTrapIcon: {fileID: 0}
   disableTrap: {fileID: 8300000, guid: 444ff922491f6b340a744ec860998402, type: 3}
+  exterminator: {fileID: 0}
 --- !u!82 &7168793217853607293
 AudioSource:
   m_ObjectHideFlags: 0
@@ -217,7 +218,7 @@ NavMeshObstacle:
   m_Extents: {x: 0.5, y: 0.5, z: 0.5}
   m_MoveThreshold: 0.1
   m_Carve: 1
-  m_CarveOnlyStationary: 1
+  m_CarveOnlyStationary: 0
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
 --- !u!1 &5589904574008865901

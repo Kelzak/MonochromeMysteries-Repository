@@ -73,15 +73,15 @@ public class DoorScript : ItemAbs
         //_animator = transform.parent.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
-        if(!isLocked && !personalDoor)
-        {
-            doorSaveOpen = true;
-        }
-        if(doorSaveOpen)
-        {
-            isLocked = false;
-            personalDoor = false;
-        }
+        //if(!isLocked && !personalDoor)
+        //{
+        //    doorSaveOpen = true;
+        //}
+        //if(doorSaveOpen)
+        //{
+        //    isLocked = false;
+        //    personalDoor = false;
+        //}
 
         //set values to not contradict each other - commented out for save testing purposes
         //if(key != null)
@@ -331,13 +331,13 @@ public class DoorScript : ItemAbs
                     else
                         GetComponent<Item>().SetUI(keyIcon, "Press F to Unlock", "Needs Key", "", false);
                 }
-                else if (unlocking)
-                {
-                    GetComponent<Item>().SetUI(keyIconFlip, "Unlocking", "Used Key", "", false);
-                }
+                //else if (unlocking)
+                //{
+                //    GetComponent<Item>().SetUI(keyIconFlip, "Unlocking", "Used Key", "", false);
+                //}
                 else
                 {
-                    GetComponent<Item>().SetUI(null, null, null, "Press F to Open", true);
+                    GetComponent<Item>().SetUI(keyIcon, null, null, "Press F to Open", true);
                 }
             }
             else if (personalDoor)

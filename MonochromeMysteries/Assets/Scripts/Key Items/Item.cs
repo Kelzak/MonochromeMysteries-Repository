@@ -180,7 +180,7 @@ public class Item : MonoBehaviour
                     bottomText = "Needs Photographer";
                 }
             }
-            else if (GetComponent<NavPerson>())
+            if (GetComponent<NavPerson>())
             {
                 onlySingleText = true;
                 singleText = "Press E To Possess";

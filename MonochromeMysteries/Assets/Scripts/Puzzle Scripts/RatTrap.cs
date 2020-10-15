@@ -13,6 +13,7 @@ public class RatTrap : ItemAbs
     public Sprite ratTrapIcon;
     public AudioClip disableTrap;
     private AudioSource audioSource;
+    public GameObject exterminator;
 
     private AudioClip sound;
 
@@ -37,15 +38,19 @@ public class RatTrap : ItemAbs
     // Start is called before the first frame update
     void Start()
     {
+        exterminator = GameObject.Find("Exterminator");
         ratTrapIcon = FindObjectOfType<UIspriteManager>().ratSprite;
         audioSource = GetComponent<AudioSource>();
     }
 
     public override void Activate()
     {
-        audioSource.PlayOneShot(disableTrap);
-        Log.AddEntry("Disabled Rat Trap");
-        Invoke("Disable", .1f);
+        if (player.gameObject.Equals(exterminator))
+        {
+            audioSource.PlayOneShot(disableTrap);
+            Log.AddEntry("Disabled Rat Trap");
+            Invoke("Disable", .1f);
+        }
     }
 
     public float GetID()

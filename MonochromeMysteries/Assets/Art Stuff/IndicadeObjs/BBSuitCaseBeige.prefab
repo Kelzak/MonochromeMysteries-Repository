@@ -247,7 +247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 304578887439550317}
   m_Layer: 0
-  m_Name: BBSuitCaseMM
+  m_Name: BBSuitCaseBeige
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -442,6 +442,7 @@ GameObject:
   - component: {fileID: 7338450003554692286}
   - component: {fileID: 4206236875834989848}
   - component: {fileID: 5378084888853129660}
+  - component: {fileID: 1676932951189485591}
   m_Layer: 0
   m_Name: pCube1
   m_TagString: Untagged
@@ -510,3 +511,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &1676932951189485591
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5872311192065040100}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4068373912626513877, guid: 59740eb4a0911594d8a48dcc07382641, type: 3}

@@ -107,6 +107,16 @@ public class Read : ItemAbs
             GetComponent<Item>().SetUI(cameraIcon, "Rat Cant Read", "Photographable", "", false);
 
         }
+        else if (player.GetComponent<Rat>() && GetComponent<Item>().isPickup && player.GetComponent<Rat>().hold)
+        {
+            GetComponent<Item>().SetUI(null, "", "", "Press F to Drop", true);
+
+        }
+        else if (player.GetComponent<Rat>() && GetComponent<Item>().isPickup && !player.GetComponent<Rat>().hold)
+        {
+            GetComponent<Item>().SetUI(null, "", "", "Press F to Drag", true);
+
+        }
         else if(player.GetComponent<Photographer>())
         {
             GetComponent<Item>().SetUI(cameraIcon, "Press F to Read", "Take Photo", "", false);
