@@ -207,7 +207,7 @@ public class NavPerson : MonoBehaviour
             }
             if (target.name.Equals("Bass"))
             {
-                Debug.Log("nav person on Graass");
+                //Debug.Log("nav person on Graass");
                 onGrass = true;
             }
             else

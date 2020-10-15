@@ -28,6 +28,7 @@ TagManager:
   - light
   - Location
   - Reticle
+  - keypadButton
   layers:
   - Default
   - TransparentFX

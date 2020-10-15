@@ -20,6 +20,7 @@ public class Safe : ItemAbs
     public InputField inputField;
     public InputField symbolInputField;
     public GameObject darkBackground;
+    public GameObject pressEscToClose;
 
     private SafeAnim animator;
 
@@ -29,7 +30,7 @@ public class Safe : ItemAbs
 
     private bool uiOpen;
     private bool safeOpened;
-    private bool ghostSafe;
+    public bool ghostSafe;
 
     public AudioClip safeOpeningSFX;
     public AudioClip buttonPressedSFX;
@@ -38,6 +39,9 @@ public class Safe : ItemAbs
 
     public Safe[] safes;
     public List<GameObject> safeGameobjects = new List<GameObject>();
+
+    //public GameObject[] buttons;
+    //public List<Button> keypadButtons = new List<Button>();
 
     [Range(0.0f, 1.0f)]
     public float soundVolume = .5f;
@@ -51,8 +55,20 @@ public class Safe : ItemAbs
             safeGameobjects.Add(safe.gameObject);
         }
 
+        /*buttons = GameObject.FindGameObjectsWithTag("keypadButtons");
+        foreach(GameObject button in buttons)
+        {
+            keypadButtons.Add(button.GetComponent<Button>());
+        }
+        foreach (Button button in keypadButtons)
+        {
+            button.onClick.RemoveAllListeners();
+        }
+        keypadPanel.gameObject.SetActive(false);
+        Debug.Log(keypadButtons);*/
+
         photographer = FindObjectOfType<Photographer>();
-        player = FindObjectOfType<Player>();
+        
         Background = player.darkBackground;
         audioSource = GetComponent<AudioSource>();
         audioSource.volume = soundVolume;
@@ -62,7 +78,7 @@ public class Safe : ItemAbs
         inputField = keypadPanel.transform.Find("InputtedCode").GetComponent<InputField>();
         symbolInputField = symbolPanel.transform.Find("InputtedCode").GetComponent<InputField>();
         darkBackground = GameObject.Find("HUD").transform.Find("DarkBackground").gameObject;
-
+        pressEscToClose = GameObject.Find("HUD").transform.Find("PressEscToClose").gameObject;
     
         audioSource.rolloffMode = AudioRolloffMode.Custom;
         audioSource.minDistance = 0f;
@@ -85,14 +101,16 @@ public class Safe : ItemAbs
     // Update is called once per frame
     void Update()
         {
+        player = FindObjectOfType<Player>();
         //fliping
         if (uiOpen)
         {
             //close readable
-            if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Escape) || /*Input.GetKeyDown(KeyCode.Tab) */ Input.GetKeyDown(KeyCode.F) && readTime))
+            if ((Input.GetKeyDown(KeyCode.Escape) && readTime))
             {
                 Debug.Log("close");
-                Close();
+                //Close();
+                HideKeypadAndReset();
             }
 
             //is right?
@@ -113,37 +131,38 @@ public class Safe : ItemAbs
             }
         }
         KeypadInput();
-        
     }
 
     public override void Activate()
     {
-        SelectCurrentSafe();
-        Debug.Log(safeGameobjects);
-
-        if (!closeTime && !safeOpened)
+        if(!StateChecker.isGhost && !player.GetComponent<Rat>())
         {
-            ShowKeypad();
-            uiOpen = true;
+            SelectCurrentSafe();
+            Debug.Log(safeGameobjects);
 
-            if (gameObject.GetComponent<Photographer>())
+            if (!closeTime && !safeOpened)
             {
-                photographer.CameraLensActive = false;
-                photographer.canTakePhoto = false;
+                ShowKeypad();
+                uiOpen = true;
+
+                if (gameObject.GetComponent<Photographer>())
+                {
+                    photographer.CameraLensActive = false;
+                    photographer.canTakePhoto = false;
+                }
+
+                //GameController.TogglePause();
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = true;
+                Player.EnableControls(false);
+                Background.SetActive(true);
+                StartCoroutine(ReadTime());
+
+                //gameObject.GetComponent<Safe>().enabled = true;
+
+                //audioSource.PlayOneShot(safeOpeningSFX);
             }
-
-            //GameController.TogglePause();
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
-            Player.EnableControls(false);
-            Background.SetActive(true);
-            StartCoroutine(ReadTime());
-
-            //gameObject.GetComponent<Safe>().enabled = true;
-
-            //audioSource.PlayOneShot(safeOpeningSFX);
         }
-
     }
 
     public void SelectCurrentSafe()
@@ -159,6 +178,13 @@ public class Safe : ItemAbs
                 safe.GetComponent<Safe>().enabled = true;
             }
         }
+
+
+
+        /*foreach (Button button in keypadButtons)
+        {
+            button.onClick.AddListener(() => DetermineNumberPressed(button.gameObject.name));
+        }*/
     }
 
     public void DisableSafes()
@@ -167,9 +193,13 @@ public class Safe : ItemAbs
         {
             safe.GetComponent<Safe>().enabled = false;
         }
+        /*foreach (Button button in keypadButtons)
+        {
+            button.onClick.RemoveAllListeners();
+        }*/
     }
 
-    public void Close()
+    /*public void Close()
     {
         if (readTime)
         {
@@ -182,7 +212,7 @@ public class Safe : ItemAbs
             Cursor.lockState = CursorLockMode.Locked;
             Player.EnableControls(true);
             Background.SetActive(false);
-            //GameController.TogglePause();
+            GameController.TogglePause();
             uiOpen = false;
             audioSource.PlayOneShot(incorrectSFX);
             readTime = false;
@@ -192,7 +222,7 @@ public class Safe : ItemAbs
             StartCoroutine(CloseTime());
         }
        
-    }
+    }*/
 
     public void ShowKeypad()
     {
@@ -213,9 +243,11 @@ public class Safe : ItemAbs
         Player.canLook = false;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-    }
+        pressEscToClose.SetActive(true);
+}
     public void HideKeypadAndReset()
     {
+        Debug.Log("IT GOES TO HIDEKEYAD");
         if (ghostSafe)
         {
             symbolPanel.SetActive(false);
@@ -227,9 +259,9 @@ public class Safe : ItemAbs
         if (photographer.GetComponent<Player>())
         {
             photographer.CameraLensActive = true;
-            photographer.canTakePhoto = false;
-
+            photographer.canTakePhoto = true;
         }
+        pressEscToClose.SetActive(false);
         darkBackground.SetActive(false);
         GameController.TogglePause();
         Time.timeScale = 1;
@@ -242,13 +274,40 @@ public class Safe : ItemAbs
         inputField.placeholder.GetComponent<Text>().text = "Enter password...";
         symbolInputField.text = "";
         symbolInputField.placeholder.GetComponent<Text>().text = "Enter password...";
-        Background.SetActive(false);
-        gameObject.GetComponent<Safe>().enabled = false;
+        //Background.SetActive(false);
+        readTime = false;
+        DisableSafes();
+        StartCoroutine(WaitToTurnOnCamera());
+        StartCoroutine(WaitToBeAbleToPause());
+        StartCoroutine(CloseTime());
         //enteredCode1 = enteredCode2 = enteredCode3 = "";
         //totalInputs = 0;
     }
 
-    public void DetermineNumberPressed(string numberPressed)
+    public IEnumerator WaitToBeAbleToPause()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        uiOpen = false;
+    }
+
+    public IEnumerator WaitToTurnOnCamera()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        photographer.canTakePhoto = true;
+    }
+    public IEnumerator ReadTime()
+    {
+        yield return new WaitForSecondsRealtime(.1f);
+        readTime = true;
+    }
+    public IEnumerator CloseTime()
+    {
+        yield return new WaitForSecondsRealtime(.1f);
+        closeTime = false;
+        gameObject.GetComponent<Safe>().enabled = false;
+    }
+
+        public void DetermineNumberPressed(string numberPressed)
     {
         audioSource.PlayOneShot(buttonPressedSFX);
         if (numberPressed != "backspace")
@@ -328,7 +387,22 @@ public class Safe : ItemAbs
 
     public void CheckifCodeisCorrect()
     {
-        if(inputField.text == code)
+        if(ghostSafe)
+        {
+            if(symbolInputField.text == code)
+            {
+                audioSource.PlayOneShot(safeOpeningSFX);
+                Debug.Log("Correct!");
+                HideKeypadAndReset();
+                animator = transform.Find("Hinge").GetComponent<SafeAnim>();
+                animator.OpenSafe(this.gameObject);
+                safeOpened = true;
+                GetComponent<BoxCollider>().enabled = false;
+                Destroy(GetComponent<Item>());
+                Destroy(GetComponent<Outline>());
+            }
+        }
+        else if(inputField.text == code)
         {
             audioSource.PlayOneShot(safeOpeningSFX);
             Debug.Log("Correct!");
@@ -340,17 +414,6 @@ public class Safe : ItemAbs
             Destroy(GetComponent<Item>());
             Destroy(GetComponent<Outline>());
         }
-    }
-
-    public IEnumerator ReadTime()
-    {
-        yield return new WaitForSecondsRealtime(.1f);
-        readTime = true;
-    }
-    public IEnumerator CloseTime()
-    {
-        yield return new WaitForSecondsRealtime(.1f);
-        closeTime = false;
     }
 
     public override void SetItemUI()

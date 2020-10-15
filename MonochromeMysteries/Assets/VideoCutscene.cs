@@ -42,12 +42,13 @@ public class VideoCutscene : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        cutsceneTextOn = false;
         audioSource.volume = clipVolume;
         video = GetComponent<VideoPlayer>().clip;
         length = (float)video.length;
         //Invoke("LoadScene", length + 1f);
         StartCoroutine(LoadScene(sceneIndex));
-        cutsceneTextOn = false;
+        
 
     }
 
