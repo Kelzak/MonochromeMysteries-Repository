@@ -206,7 +206,7 @@ public class Player : MonoBehaviour
         if (!possessionInProgress)
             PossessionCheck();
 
-        if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress && !Read.isReading /*&& !PadlockPuzzle.keypadisUp*/ && !Endings.isUsingKnife)
+        if (Input.GetKeyDown(KeyCode.Q) && gameObject != mainPlayer && !possessionInProgress && !Read.isReading && !Safe.uiOpen && !Endings.isUsingKnife)
         {
             canPickup = false;
             audioSource.PlayOneShot(depossessClip);

@@ -12,8 +12,7 @@ public class Safe : ItemAbs
 
     private Photographer photographer;
     private Player player;
-
-    private GameObject Background;
+    
 
     public GameObject keypadPanel;
     public GameObject symbolPanel;
@@ -28,7 +27,7 @@ public class Safe : ItemAbs
     public bool readTime;
     private bool closeTime;
 
-    private bool uiOpen;
+    public static bool uiOpen;
     private bool safeOpened;
     public bool ghostSafe;
 
@@ -40,8 +39,10 @@ public class Safe : ItemAbs
     public Safe[] safes;
     public List<GameObject> safeGameobjects = new List<GameObject>();
 
-    //public GameObject[] buttons;
-    //public List<Button> keypadButtons = new List<Button>();
+    public GameObject[] buttons;
+    public GameObject[] spiritButtons;
+    public List<Button> keypadButtons = new List<Button>();
+    public List<Button> spiritKeypadButtons = new List<Button>();
 
     [Range(0.0f, 1.0f)]
     public float soundVolume = .5f;
@@ -49,13 +50,16 @@ public class Safe : ItemAbs
     // Start is called before the first frame update
     void Start()
     {
+        //player = FindObjectOfType<Player>();
         safes = FindObjectsOfType<Safe>();
         foreach(Safe safe in safes)
         {
             safeGameobjects.Add(safe.gameObject);
         }
 
-        /*buttons = GameObject.FindGameObjectsWithTag("keypadButtons");
+        buttons = GameObject.FindGameObjectsWithTag("keypadButton");
+        spiritButtons = GameObject.FindGameObjectsWithTag("spiritButton");
+
         foreach(GameObject button in buttons)
         {
             keypadButtons.Add(button.GetComponent<Button>());
@@ -64,12 +68,20 @@ public class Safe : ItemAbs
         {
             button.onClick.RemoveAllListeners();
         }
-        keypadPanel.gameObject.SetActive(false);
-        Debug.Log(keypadButtons);*/
+        foreach (GameObject button in spiritButtons)
+        {
+            spiritKeypadButtons.Add(button.GetComponent<Button>());
+        }
+        foreach (Button button in spiritKeypadButtons)
+        {
+            button.onClick.RemoveAllListeners();
+        }
+
+        Debug.Log(keypadButtons);
 
         photographer = FindObjectOfType<Photographer>();
         
-        Background = player.darkBackground;
+        //Background = player.darkBackground;
         audioSource = GetComponent<AudioSource>();
         audioSource.volume = soundVolume;
 
@@ -89,24 +101,27 @@ public class Safe : ItemAbs
         inputField.characterLimit = 6;
         symbolInputField.characterLimit = 3;
 
+        //keypadPanel.SetActive(false);
         StartCoroutine(DisableSafesInTime());
     }
 
     public IEnumerator DisableSafesInTime()
     {
-        yield return new WaitForSecondsRealtime(2f);
-        DisableSafes();
+        yield return new WaitForSecondsRealtime(.1f);
+        keypadPanel.SetActive(false);
+        symbolPanel.SetActive(false);
+        //DisableSafes();
     }
 
     // Update is called once per frame
     void Update()
-        {
+    {
         player = FindObjectOfType<Player>();
         //fliping
         if (uiOpen)
         {
             //close readable
-            if ((Input.GetKeyDown(KeyCode.Escape) && readTime))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Debug.Log("close");
                 //Close();
@@ -130,46 +145,51 @@ public class Safe : ItemAbs
                 //safe1.SetActive(false);
             }
         }
-        KeypadInput();
+        //KeypadInput();
     }
 
     public override void Activate()
     {
-        if(!StateChecker.isGhost && !player.GetComponent<Rat>())
+        if(!player.GetComponent<Rat>())
         {
-            SelectCurrentSafe();
-            Debug.Log(safeGameobjects);
-
-            if (!closeTime && !safeOpened)
+            if((ghostSafe && StateChecker.isGhost) || (!ghostSafe && !StateChecker.isGhost))
             {
-                ShowKeypad();
-                uiOpen = true;
+                //SelectCurrentSafe();
+                Debug.Log(safeGameobjects);
 
-                if (gameObject.GetComponent<Photographer>())
+                if (!closeTime && !safeOpened)
                 {
-                    photographer.CameraLensActive = false;
-                    photographer.canTakePhoto = false;
+                    ShowKeypad();
+                    uiOpen = true;
+
+                    if (gameObject.GetComponent<Photographer>())
+                    {
+                        photographer.CameraLensActive = false;
+                        photographer.canTakePhoto = false;
+                    }
+
+                    //GameController.TogglePause();
+                    Cursor.lockState = CursorLockMode.Confined;
+                    Cursor.visible = true;
+                    Player.EnableControls(false);
+                    //Background.SetActive(true);
+                    StartCoroutine(ReadTime());
+
+                    //gameObject.GetComponent<Safe>().enabled = true;
+
+                    //audioSource.PlayOneShot(safeOpeningSFX);
                 }
-
-                //GameController.TogglePause();
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = true;
-                Player.EnableControls(false);
-                Background.SetActive(true);
-                StartCoroutine(ReadTime());
-
-                //gameObject.GetComponent<Safe>().enabled = true;
-
-                //audioSource.PlayOneShot(safeOpeningSFX);
             }
+
         }
+        
     }
 
     public void SelectCurrentSafe()
     {
-        foreach(GameObject safe in safeGameobjects)
+        foreach (GameObject safe in safeGameobjects)
         {
-            if(safe != gameObject)
+            if (safe != gameObject)
             {
                 safe.GetComponent<Safe>().enabled = false;
             }
@@ -177,14 +197,37 @@ public class Safe : ItemAbs
             {
                 safe.GetComponent<Safe>().enabled = true;
             }
+
         }
+    }
 
-
-
-        /*foreach (Button button in keypadButtons)
+    public void SelectButtonsinSafe()
+    {
+        if(!ghostSafe)
         {
-            button.onClick.AddListener(() => DetermineNumberPressed(button.gameObject.name));
-        }*/
+            foreach (Button button in keypadButtons)
+            {
+                button.onClick.AddListener(() => DetermineNumberPressed(button.gameObject.name));
+            }
+        }
+        else
+            foreach (Button button in spiritKeypadButtons)
+            {
+                button.onClick.AddListener(() => DetermineNumberPressed(button.gameObject.name));
+            }
+
+    }
+
+    public void DeselectButtonsinSafe()
+    {
+        foreach (Button button in keypadButtons)
+        {
+            button.onClick.RemoveAllListeners();
+        }
+        foreach (Button button in spiritKeypadButtons)
+        {
+            button.onClick.RemoveAllListeners();
+        }
     }
 
     public void DisableSafes()
@@ -193,10 +236,7 @@ public class Safe : ItemAbs
         {
             safe.GetComponent<Safe>().enabled = false;
         }
-        /*foreach (Button button in keypadButtons)
-        {
-            button.onClick.RemoveAllListeners();
-        }*/
+
     }
 
     /*public void Close()
@@ -234,8 +274,9 @@ public class Safe : ItemAbs
         {
             keypadPanel.SetActive(true);
         }
+        SelectButtonsinSafe();
         darkBackground.SetActive(true);
-        GameController.TogglePause();
+        //GameController.TogglePause();
         photographer.CameraLensActive = false;
         photographer.canTakePhoto = false;
         Time.timeScale = 0;
@@ -259,11 +300,12 @@ public class Safe : ItemAbs
         if (photographer.GetComponent<Player>())
         {
             photographer.CameraLensActive = true;
-            photographer.canTakePhoto = true;
+            //photographer.canTakePhoto = true;
         }
+        DeselectButtonsinSafe();
         pressEscToClose.SetActive(false);
         darkBackground.SetActive(false);
-        GameController.TogglePause();
+        //GameController.TogglePause();
         Time.timeScale = 1;
         audioSource.PlayOneShot(buttonPressedSFX);
         Player.canMove = true;
@@ -276,7 +318,7 @@ public class Safe : ItemAbs
         symbolInputField.placeholder.GetComponent<Text>().text = "Enter password...";
         //Background.SetActive(false);
         readTime = false;
-        DisableSafes();
+        //DisableSafes();
         StartCoroutine(WaitToTurnOnCamera());
         StartCoroutine(WaitToBeAbleToPause());
         StartCoroutine(CloseTime());
@@ -304,13 +346,18 @@ public class Safe : ItemAbs
     {
         yield return new WaitForSecondsRealtime(.1f);
         closeTime = false;
-        gameObject.GetComponent<Safe>().enabled = false;
+        //gameObject.GetComponent<Safe>().enabled = false;
     }
 
-        public void DetermineNumberPressed(string numberPressed)
+    public void DetermineNumberPressed(string numberPressed)
     {
         audioSource.PlayOneShot(buttonPressedSFX);
-        if (numberPressed != "backspace")
+
+        if (numberPressed == "enter")
+        {
+            CheckifCodeisCorrect();
+        }
+        else if (numberPressed != "backspace")
         {
             if (inputField.text.Length != 3 && ghostSafe)
             {
@@ -337,6 +384,7 @@ public class Safe : ItemAbs
         }
     }
 
+    /*
     public void KeypadInput()
     {
         if(Input.GetKeyDown(KeyCode.Alpha1))
@@ -383,7 +431,7 @@ public class Safe : ItemAbs
         {
             DetermineNumberPressed("backspace");
         }
-    }
+    }*/
 
     public void CheckifCodeisCorrect()
     {
@@ -413,6 +461,15 @@ public class Safe : ItemAbs
             GetComponent<BoxCollider>().enabled = false;
             Destroy(GetComponent<Item>());
             Destroy(GetComponent<Outline>());
+        }
+        else
+        {
+            audioSource.PlayOneShot(incorrectSFX);
+            inputField.placeholder.GetComponent<Text>().text = "Incorrect";
+            symbolInputField.placeholder.GetComponent<Text>().text = "Incorrect";
+            //inputCodeText.text = "";
+            inputField.text = "";
+            symbolInputField.text = "";
         }
     }
 
