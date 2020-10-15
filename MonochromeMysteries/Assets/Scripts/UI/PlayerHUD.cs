@@ -102,6 +102,7 @@ public class PlayerHUD : MonoBehaviour
             reticle.gameObject.SetActive(true);
             displaySeperatorImage.gameObject.SetActive(true);
             DisplayUI();
+
         }
         else
         {
@@ -111,6 +112,7 @@ public class PlayerHUD : MonoBehaviour
             displayIconImage.gameObject.SetActive(false);
             reticle.gameObject.SetActive(false);
             displaySeperatorImage.gameObject.SetActive(false);
+
             //hoverAudio.volume = 0f;
         }
 
@@ -142,7 +144,7 @@ public class PlayerHUD : MonoBehaviour
     //manges display UI
     public void DisplayUI()
     {
-        print("hover volume: " + hoverAudio.volume);
+        //print("hover volume: " + hoverAudio.volume);
 
         //if showing, read values and display
         if (showDisplayUI)
@@ -150,7 +152,8 @@ public class PlayerHUD : MonoBehaviour
             //set reticle color, reads from glow of object
             reticle.color = Color.Lerp(reticle.color, reticleColor, fadeTime * Time.deltaTime);
 
-            hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, .5F, fadeTime * Time.deltaTime);
+
+            hoverAudio.volume = Mathf.Lerp(hoverAudio.volume, hoverAudioVolume, fadeTime * Time.deltaTime);
 
             //set string values to text mesh assets
             singleText.text =  singleString;

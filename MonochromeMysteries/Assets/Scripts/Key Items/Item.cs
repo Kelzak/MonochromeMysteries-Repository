@@ -123,12 +123,12 @@ public class Item : MonoBehaviour
             {
                 if (!player.GetComponent<Rat>().hold)
                 {
-                    singleText = "Press F to Drop";
+                    singleText = "Press F to Drag";
                     onlySingleText = true;
                 }
                 if (player.GetComponent<Rat>().hold)
                 {
-                    singleText = "Press F to Drag";
+                    singleText = "Press F to Drop";
                     onlySingleText = true;
                 }
             }
@@ -136,6 +136,11 @@ public class Item : MonoBehaviour
             {
                 onlySingleText = true;
                 singleText = "Press F to Pick up";
+            }
+            else
+            {
+                onlySingleText = true;
+                singleText = "Ghost Cant Pick up";
             }
         }
 
