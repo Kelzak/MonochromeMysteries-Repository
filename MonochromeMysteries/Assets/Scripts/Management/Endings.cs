@@ -26,7 +26,7 @@ public class Endings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !menu.activeSelf && !Readables.isReadingLetter && !PadlockPuzzle.keypadisUp && !StateChecker.isGhost && !Player.isRat)
+        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !menu.activeSelf && !Read.isReading && !Safe.uiOpen && !StateChecker.isGhost && !Player.isRat)
         {
             knifeConfirmation.SetActive(true);
             isUsingKnife = true;
