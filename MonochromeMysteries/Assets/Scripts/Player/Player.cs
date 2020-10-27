@@ -1232,6 +1232,7 @@ public class Player : MonoBehaviour
         if (target != null && !target.GetComponent<Possessable>().IsHighlighted())
             target.GetComponent<Possessable>().TriggerHighlight();
 
+        //possession input
         //If target is still in range and button is pressed, start the possession
         if (Input.GetKeyDown(KeyCode.E) && !possessionInProgress && target != null)
         {
@@ -1241,6 +1242,8 @@ public class Player : MonoBehaviour
         }
 
     }
+
+   
 
     static bool possessionInProgress = false;
     private RaycastHit hit;
