@@ -57,7 +57,7 @@ public class DoorScript : ItemAbs
 
     private void Awake()
     {
-        id = (1000 * transform.position.x) + transform.position.y + (0.001f * transform.position.z);
+        id = (1000 * transform.localPosition.x) + transform.localPosition.y + (0.001f * transform.localPosition.z);
     }
 
     // Use this for initialization
@@ -250,20 +250,27 @@ public class DoorScript : ItemAbs
     {
         for(int i = 0; i < GameController._instance.doors.Length; i++)
         {
-            if(GameController._instance.doors[i].GetID() == this.id)
+
+            if (GameController._instance.doors[i].GetID() == this.id)
             {
-                //if door is not open, and saved data is, open it
-                if(!this.isOpen & data.open[i])
-                {
-                    Open();
-                }
-                this.isOpen = data.open[i];
-                //if door save data is open, set restrictive bools off
-                if(data.saveOpen[i])
+                Debug.Log("Door data");
+
+                //if door has been opened before, set restrictive bools off
+                if (data.saveOpen[i])
                 {
                     this.isLocked = false;
                     this.personalDoor = false;
                 }
+                Debug.Log("door stuff: " + this.isOpen + " " + data.open[i]);
+
+                //if door is not open, and saved data is, open it
+                if (!this.isOpen && data.open[i])
+                {
+                    Debug.Log("Door being opened from save");
+                    Open();
+                }
+                this.isOpen = data.open[i];
+                
                 this.doorSaveOpen = data.saveOpen[i];
                 return;
             }
