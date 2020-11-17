@@ -49,6 +49,9 @@ public class PhotoLibrary : MonoBehaviour
     private Button prevPageButton, nextPageButton;
     private int currentPage = 0;
 
+    public Button readContentsButton;
+    public GameObject readableImage;
+
     private delegate void ScrapbookEvent();
     //Called anytime a photo is taken/deleted/or page is changed
     private event ScrapbookEvent OnScrapbookChange;
@@ -64,8 +67,9 @@ public class PhotoLibrary : MonoBehaviour
         public string image_path;
         public int[] cluesFeatured;
         public string labelText, detailsText;
+        public GameObject[] readableImage;
 
-        public PhotoInfo(Sprite image, string image_path, params int[] cluesFeatured)
+        public PhotoInfo(Sprite image, string image_path, params int[] cluesFeatured) : this()
         {
             this.image = image;
             this.image_path = image_path;
@@ -78,7 +82,7 @@ public class PhotoLibrary : MonoBehaviour
             labelText = detailsText = "";
 
 
-            foreach(int x in cluesFeatured)
+            foreach (int x in cluesFeatured)
             {
 
                 if (labelText != "")
@@ -88,7 +92,11 @@ public class PhotoLibrary : MonoBehaviour
                 detailsText += ClueCatalogue._instance.clues[x].name + ":\n";
                 detailsText += ClueCatalogue._instance.clues[x].description + "\n\n";
 
+                if (ClueCatalogue._instance.clues[x].@object.GetComponent<Read>())
+                    readableImage = ClueCatalogue._instance.clues[x].@object.GetComponent<Read>().toRead;
             }
+
+            
         }
 
         public void Deconstruct()
@@ -111,6 +119,27 @@ public class PhotoLibrary : MonoBehaviour
     public static List<PhotoInfo> GetPhotoInfo()
     {
         return _instance.photoInfo;
+    }
+
+
+    bool isReadingContents = false;
+    public void ReadContents()
+    {
+        if(!isReadingContents)
+        {
+            isReadingContents = true;
+            readableImage.gameObject.SetActive(true);
+            examinePhotoMenu.transform.Find("Description").gameObject.SetActive(false);
+            readContentsButton.GetComponentInChildren<Text>().text = "Read Description";
+            //examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = false;
+        }
+        else
+        {
+            isReadingContents = false;
+            readableImage.gameObject.SetActive(false);
+            examinePhotoMenu.transform.Find("Description").gameObject.SetActive(true);
+            readContentsButton.GetComponentInChildren<Text>().text = "Read Contents";
+        }
     }
 
     /// <summary>
@@ -204,9 +233,13 @@ public class PhotoLibrary : MonoBehaviour
         photoGrid = photoCollectionMenu.transform.Find("Grid").gameObject;
         prevPageButton = photoCollectionMenu.transform.Find("PreviousButton").GetComponent<Button>();
         nextPageButton = photoCollectionMenu.transform.Find("NextButton").GetComponent<Button>();
+        readContentsButton = examinePhotoMenu.transform.Find("ReadContents").GetComponent<Button>();
 
         prevPageButton.onClick.AddListener(() => { pageNum--; OnScrapbookChange?.Invoke(); });
         nextPageButton.onClick.AddListener(() => { pageNum++; OnScrapbookChange?.Invoke(); });
+
+        //readContentsButton.onClick.AddListener(() =>  ReadContents());
+        readableImage = examinePhotoMenu.transform.Find("PhotoSlot").transform.Find("ReadableImage").gameObject;
 
         prevPageButton.gameObject.SetActive(false);
         nextPageButton.gameObject.SetActive(false);
@@ -274,10 +307,18 @@ public class PhotoLibrary : MonoBehaviour
             examinePhotoMenu.transform.Find("Description").GetComponent<Text>().text = photo.detailsText;
             GameController._instance.tabs.SetActive(false);
 
-            //If no details, then there are no clues featured, no need to have description so just center the picture
-            if(photo.detailsText == "")
+            //If readable is attatched show readable image
+            if(photo.readableImage != null)
             {
-                examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = true;
+                readContentsButton.gameObject.SetActive(true);
+                readableImage.GetComponent<Image>().sprite = photo.readableImage[0].GetComponent<Image>().sprite;
+            }
+            
+
+            //If no details, then there are no clues featured, no need to have description so just center the picture
+            if (photo.detailsText == "" && isReadingContents)
+            {
+                //examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = true;
             }
 
             examinePhotoMenu.SetActive(true);
@@ -299,8 +340,13 @@ public class PhotoLibrary : MonoBehaviour
             //if the description was removed, put it back
             if (photo.detailsText == "")
             {
-                examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = false;
+                //examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = false;
             }
+            readContentsButton.GetComponentInChildren<Text>().text = "Read Contents";
+            isReadingContents = false;
+            examinePhotoMenu.transform.Find("Description").gameObject.SetActive(true);
+            readContentsButton.gameObject.SetActive(false);
+            readableImage.SetActive(false);
             examinePhotoMenu.SetActive(false);
             photoGrid.SetActive(true);
         }
