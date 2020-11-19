@@ -36,7 +36,7 @@ public class Endings : MonoBehaviour
             photographer.CameraLensActive = false;
             photographer.canTakePhoto = false;
         }
-        else if(Input.GetKeyDown(KeyCode.Escape) && (knifeConfirmation.activeInHierarchy || knifeInstructions.activeInHierarchy))
+        else if((Input.GetKeyDown(KeyCode.Escape) || (Input.GetKeyDown(KeyCode.H)) && (knifeConfirmation.activeInHierarchy || knifeInstructions.activeInHierarchy)))
         {
             HideKnifeInstructions();
         }
@@ -95,7 +95,10 @@ public class Endings : MonoBehaviour
 
     public void HideKnifeInstructions()
     {
+        Debug.Log("hid knife");
         isUsingKnife = false;
+        Readables.isReadingLetter = false;
+        Read.isReading = false;
         darkBackground.SetActive(false);
         Cursor.visible = false;
         knifeInstructions.SetActive(false);
@@ -106,8 +109,7 @@ public class Endings : MonoBehaviour
             photographer.CameraLensActive = true;
             StartCoroutine(WaitToTurnOnCamera());
         }
-        Readables.isReadingLetter = false;
-        Read.isReading = false;
+        Debug.Log("got through it all");
     }
 
     public IEnumerator WaitToTurnOnCamera()
