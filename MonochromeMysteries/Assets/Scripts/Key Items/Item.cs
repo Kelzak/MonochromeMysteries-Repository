@@ -100,22 +100,24 @@ public class Item : MonoBehaviour
             itemName = gameObject.name;
         }
 
-        
-
-
-
         playerDistGlow = Player.reticleDist;
 
         if (noOutline)
             glowWidth = 0f;
 
+        player = FindObjectOfType<Player>().gameObject;
+
+        if (!GetComponent<ItemAbs>())
+        {
+            icon = FindObjectOfType<UIspriteManager>().cameraSprite;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        player = FindObjectOfType<Player>().gameObject;
+        
 
 
         playerDistance = Vector3.Distance(this.transform.position, player.transform.position);
@@ -168,7 +170,7 @@ public class Item : MonoBehaviour
             //sets UI to others items progmatically
             if (!GetComponent<ItemAbs>())
             {
-                icon = FindObjectOfType<UIspriteManager>().cameraSprite;
+                //icon = FindObjectOfType<UIspriteManager>().cameraSprite;
                 if (player.GetComponent<Photographer>())
                 {
                     topText = "Photographable";

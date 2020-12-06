@@ -190,6 +190,8 @@ public class Player : MonoBehaviour
         InvokeRepeating("WalkAudio", 0f, walkSoundInterval);
         initialized = true;
 
+        audioSource = GetComponent<AudioSource>();
+
     }
 
 
@@ -197,7 +199,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        audioSource = GetComponent<AudioSource>();
+        
         if (canLook)
             Look();
         if (canMove)

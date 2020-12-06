@@ -73,6 +73,7 @@ public class DoorScript : ItemAbs
         //_animator = transform.parent.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
+        player = FindObjectOfType<Player>();
         //if(!isLocked && !personalDoor)
         //{
         //    doorSaveOpen = true;
@@ -99,7 +100,7 @@ public class DoorScript : ItemAbs
     // Update is called once per frame
     void Update()
     {
-        player = FindObjectOfType<Player>();
+        
 
         //attempting to disable hitboxes
         if (waitHitbox == true)

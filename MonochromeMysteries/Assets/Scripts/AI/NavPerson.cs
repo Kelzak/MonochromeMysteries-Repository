@@ -81,14 +81,14 @@ public class NavPerson : MonoBehaviour
         if (!canSeeGhost)
             InvokeRepeating("LookAround", 0f, lookInterval);
 
+        player = GameObject.FindObjectOfType<Player>();
 
-        
     }
 
     [System.Obsolete]
     private void Update()
     {
-        player = GameObject.FindObjectOfType<Player>();
+        
         if (this.gameObject.GetComponent<Player>())
         {
             isPossessed = true;

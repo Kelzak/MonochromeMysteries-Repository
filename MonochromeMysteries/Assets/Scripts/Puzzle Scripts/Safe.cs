@@ -50,6 +50,7 @@ public class Safe : ItemAbs
     // Start is called before the first frame update
     void Start()
     {
+        player = FindObjectOfType<Player>();
         //player = FindObjectOfType<Player>();
         safes = FindObjectsOfType<Safe>();
         foreach(Safe safe in safes)
@@ -116,7 +117,7 @@ public class Safe : ItemAbs
     // Update is called once per frame
     void Update()
     {
-        player = FindObjectOfType<Player>();
+        
         //fliping
         if (uiOpen)
         {

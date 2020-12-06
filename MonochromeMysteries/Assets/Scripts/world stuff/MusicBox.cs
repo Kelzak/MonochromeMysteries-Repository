@@ -25,8 +25,9 @@ public class MusicBox : ItemAbs
     void Start()
     {
         MusicSource = this.gameObject.GetComponent<AudioSource>();
+        player = FindObjectOfType<Player>();
 
-        if(playFirst)
+        if (playFirst)
         {
             PlayMusic(music[0]);
             index = 0;
@@ -42,7 +43,7 @@ public class MusicBox : ItemAbs
     // Update is called once per frame
     void Update()
     {
-        player = FindObjectOfType<Player>();
+        
 
         if (_isInsideTrigger)
         {

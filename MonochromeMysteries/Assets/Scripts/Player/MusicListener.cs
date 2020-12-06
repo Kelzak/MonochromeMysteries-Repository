@@ -24,13 +24,14 @@ public class MusicListener : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindObjectOfType<Player>().gameObject;
     }
 
     // Update is called once per frame
     void Update()
     {
-        player = GameObject.FindObjectOfType<Player>().gameObject;
+        
         for (int i = 0; i < musicBoxes.Length; i++)
         {
             dist = Vector3.Distance(player.transform.position, musicBoxes[index].transform.position);

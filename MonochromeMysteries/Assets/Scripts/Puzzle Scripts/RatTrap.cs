@@ -41,6 +41,7 @@ public class RatTrap : ItemAbs
         exterminator = GameObject.Find("Exterminator");
         ratTrapIcon = FindObjectOfType<UIspriteManager>().ratSprite;
         audioSource = GetComponent<AudioSource>();
+        player = FindObjectOfType<Player>();
     }
 
     public override void Activate()
@@ -78,7 +79,7 @@ public class RatTrap : ItemAbs
     // Update is called once per frame
     void Update()
     {
-        player = FindObjectOfType<Player>();
+        
     }
 
     public override void SetItemUI()

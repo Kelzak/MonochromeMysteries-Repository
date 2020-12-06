@@ -19,6 +19,8 @@ public class LightSwitch : ItemAbs
 
     void Start()
     {
+        player = FindObjectOfType<Player>();
+
         audioSource = this.gameObject.GetComponent<AudioSource>();
 
         if (lights.Length == 0)
@@ -38,7 +40,7 @@ public class LightSwitch : ItemAbs
     // Update is called once per frame
     void Update()
     {
-        player = FindObjectOfType<Player>();   
+        
     }
 
     public override void Activate()

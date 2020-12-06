@@ -74,12 +74,14 @@ public class Read : ItemAbs
         flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = false;
 
         cameraIcon = FindObjectOfType<UIspriteManager>().cameraSprite;
+
+        player = FindObjectOfType<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        player = FindObjectOfType<Player>();
+        
 
 
         PageFlip();

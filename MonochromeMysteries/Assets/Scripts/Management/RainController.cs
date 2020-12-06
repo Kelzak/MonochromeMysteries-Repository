@@ -26,12 +26,14 @@ public class RainController : MonoBehaviour
         audioSources[0].Play();
         audioSources[1].Play();
         InvokeRepeating("Thunder", 5f, thunderInterval);
+
+        player = GameObject.FindObjectOfType<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        player = GameObject.FindObjectOfType<Player>();
+        
         //Debug.Log(player.gameObject.name);
 
         if (player.IsInside() == true || navInside == true)

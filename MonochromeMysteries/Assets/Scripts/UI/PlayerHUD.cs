@@ -87,6 +87,7 @@ public class PlayerHUD : MonoBehaviour
         hoverAudio.volume = 0f;
         hoverAudio.clip = hoverClip;
 
+        player = FindObjectOfType<Player>();
     }
 
 
@@ -118,7 +119,7 @@ public class PlayerHUD : MonoBehaviour
             //hoverAudio.volume = 0f;
         }
 
-        player = FindObjectOfType<Player>();
+        
 
     }
 

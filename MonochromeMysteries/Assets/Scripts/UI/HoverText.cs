@@ -34,6 +34,7 @@ public class HoverText : MonoBehaviour
         text.SetText(myString);
         text.font = font;
         //text.color = Color.white;
+        player = GameObject.FindObjectOfType<Player>();
     }
 
     // Update is called once per frame
@@ -50,7 +51,7 @@ public class HoverText : MonoBehaviour
         }
 
         //display = false;
-        player = GameObject.FindObjectOfType<Player>();
+        
         dist = Vector3.Distance(this.transform.position, player.transform.position);
 
         if (dist < displayDist)
