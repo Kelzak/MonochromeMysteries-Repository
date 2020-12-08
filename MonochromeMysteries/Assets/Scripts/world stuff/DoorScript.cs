@@ -14,7 +14,7 @@ public class DoorScript : ItemAbs
     private float id;
     private bool _isInsideTrigger = false;
     private bool isPlayer;
-    public Player player;
+    public GameObject player;
 
     [Header("Lock and Key")]
     public bool isLocked = false;
@@ -73,7 +73,8 @@ public class DoorScript : ItemAbs
         //_animator = transform.parent.Find("Hinge").GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
-        player = FindObjectOfType<Player>();
+        //player = FindObjectOfType<Player>();
+        
         //if(!isLocked && !personalDoor)
         //{
         //    doorSaveOpen = true;
@@ -100,7 +101,7 @@ public class DoorScript : ItemAbs
     // Update is called once per frame
     void Update()
     {
-        
+        player = Player.possessedObj;
 
         //attempting to disable hitboxes
         if (waitHitbox == true)
@@ -148,6 +149,7 @@ public class DoorScript : ItemAbs
     }
     public override void Activate()
     {
+        print("Door Activated: " + player.gameObject.name);
         if(!StateChecker.isGhost && !player.GetComponent<Rat>())
         {
             //if player is possessing the correct person for the door, then open 

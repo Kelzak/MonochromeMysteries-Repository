@@ -148,6 +148,7 @@ public class Player : MonoBehaviour
 
     public Tutorial tutorial;
 
+    public static GameObject possessedObj = null;
     //private PlayerHUD playerHUD;
 
     private void OnEnable()
@@ -1382,7 +1383,7 @@ public class Player : MonoBehaviour
 
             Destroy(GetComponent<Player>());
         }
-
+        possessedObj = target;
         possessionInProgress = false;
 
 
@@ -1647,6 +1648,7 @@ public class Player : MonoBehaviour
             Destroy(GetComponent<Player>());
         }
 
+        possessedObj = null;
         possessionInProgress = false;
     }
 
