@@ -52,6 +52,10 @@ public class PhotoLibrary : MonoBehaviour
     public Button readContentsButton;
     public GameObject readableImage;
 
+    public Button nextImageButton;
+    public Button prevImageButton;
+    public bool hasMultiplePages;
+
     private delegate void ScrapbookEvent();
     //Called anytime a photo is taken/deleted/or page is changed
     private event ScrapbookEvent OnScrapbookChange;
@@ -122,25 +126,7 @@ public class PhotoLibrary : MonoBehaviour
     }
 
 
-    bool isReadingContents = false;
-    public void ReadContents()
-    {
-        if(!isReadingContents)
-        {
-            isReadingContents = true;
-            readableImage.gameObject.SetActive(true);
-            examinePhotoMenu.transform.Find("Description").gameObject.SetActive(false);
-            readContentsButton.GetComponentInChildren<Text>().text = "Read Description";
-            //examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = false;
-        }
-        else
-        {
-            isReadingContents = false;
-            readableImage.gameObject.SetActive(false);
-            examinePhotoMenu.transform.Find("Description").gameObject.SetActive(true);
-            readContentsButton.GetComponentInChildren<Text>().text = "Read Contents";
-        }
-    }
+
 
     /// <summary>
     /// The Photo Slot Prefab and the various parts associated with it
@@ -240,6 +226,8 @@ public class PhotoLibrary : MonoBehaviour
 
         //readContentsButton.onClick.AddListener(() =>  ReadContents());
         readableImage = examinePhotoMenu.transform.Find("PhotoSlot").transform.Find("ReadableImage").gameObject;
+        nextImageButton = examinePhotoMenu.transform.Find("PhotoSlot").transform.Find("NextPage").GetComponent<Button>();
+        prevImageButton = examinePhotoMenu.transform.Find("PhotoSlot").transform.Find("PrevPage").GetComponent<Button>();
 
         prevPageButton.gameObject.SetActive(false);
         nextPageButton.gameObject.SetActive(false);
@@ -260,14 +248,13 @@ public class PhotoLibrary : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-
         //Save
         if (SaveSystem.gameData != null)
             Load(SaveSystem.gameData.libraryData);
 
         OnScrapbookChange?.Invoke();
 
+        hasMultiplePages = false;
     }
 
     private void OnEnable()
@@ -285,6 +272,57 @@ public class PhotoLibrary : MonoBehaviour
         if (examining && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)))
             ExaminePhoto(photoBeingExamined);
     }
+
+    bool isReadingContents = false;
+    public void ReadContents()
+    {
+        if (!isReadingContents)
+        {
+            if(hasMultiplePages)
+            {
+                nextImageButton.gameObject.SetActive(true);
+                prevImageButton.gameObject.SetActive(true);
+            }
+            isReadingContents = true;
+            readableImage.gameObject.SetActive(true);
+            examinePhotoMenu.transform.Find("Description").gameObject.SetActive(false);
+            readContentsButton.GetComponentInChildren<Text>().text = "Read Description";
+    
+        }
+        else
+        {
+            if (hasMultiplePages)
+            {
+                nextImageButton.gameObject.SetActive(false);
+                prevImageButton.gameObject.SetActive(false);
+            }
+            isReadingContents = false;
+            readableImage.gameObject.SetActive(false);
+            examinePhotoMenu.transform.Find("Description").gameObject.SetActive(true);
+            readContentsButton.GetComponentInChildren<Text>().text = "Read Contents";
+        }
+    }
+
+    public void NextImage()
+    {
+        int index = 0;
+        //if (!photoBeingExamined.readableImage[photoBeingExamined.readableImage.Length - 1])
+        //{
+            readableImage.GetComponent<Image>().sprite = photoBeingExamined.readableImage[index + 1].GetComponent<Image>().sprite;
+            index += 1;
+        //}
+    }
+
+    public void PrevImage()
+    {
+        int index = 0;
+        if (!photoBeingExamined.readableImage[0])
+        {
+            readableImage.GetComponent<Image>().sprite = photoBeingExamined.readableImage[index - 1].GetComponent<Image>().sprite;
+            index -= 1;
+        }
+    }
+
 
     bool examining = false;
     PhotoInfo photoBeingExamined;
@@ -310,6 +348,14 @@ public class PhotoLibrary : MonoBehaviour
             //If readable is attatched show readable image
             if(photo.readableImage != null)
             {
+                if(photo.readableImage.Length > 0)
+                {
+                    hasMultiplePages = true;
+                }
+                else
+                {
+                    hasMultiplePages = false;
+                }
                 readContentsButton.gameObject.SetActive(true);
                 readableImage.GetComponent<Image>().sprite = photo.readableImage[0].GetComponent<Image>().sprite;
             }
@@ -341,6 +387,13 @@ public class PhotoLibrary : MonoBehaviour
             if (photo.detailsText == "")
             {
                 //examinePhotoMenu.transform.Find("Description").GetComponent<LayoutElement>().ignoreLayout = false;
+            }
+
+            if (hasMultiplePages)
+            {
+                nextImageButton.gameObject.SetActive(false);
+                prevImageButton.gameObject.SetActive(false);
+                hasMultiplePages = false;
             }
             readContentsButton.GetComponentInChildren<Text>().text = "Read Contents";
             isReadingContents = false;
