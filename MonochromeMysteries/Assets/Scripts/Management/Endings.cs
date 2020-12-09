@@ -26,7 +26,7 @@ public class Endings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !menu.activeSelf && !Read.isReading && !Safe.uiOpen && !StateChecker.isGhost && !Player.isRat)
+        if (Input.GetKeyDown(KeyCode.K) && Player.hasKnife && !Read.isReading && !Safe.uiOpen && !StateChecker.isGhost && !Player.isRat && menu.activeSelf == false)
         {
             knifeConfirmation.SetActive(true);
             isUsingKnife = true;
@@ -36,7 +36,7 @@ public class Endings : MonoBehaviour
             photographer.CameraLensActive = false;
             photographer.canTakePhoto = false;
         }
-        else if((Input.GetKeyDown(KeyCode.Escape) || (Input.GetKeyDown(KeyCode.H)) && (knifeConfirmation.activeInHierarchy || knifeInstructions.activeInHierarchy)))
+        else if((Input.GetKeyDown(KeyCode.Escape)) && (knifeConfirmation.activeInHierarchy || knifeInstructions.activeInHierarchy))
         {
             HideKnifeInstructions();
         }
@@ -78,8 +78,8 @@ public class Endings : MonoBehaviour
     {
         isUsingKnife = true;
         GameController.TogglePause();
-        Readables.isReadingLetter = true;
-        Read.isReading = true;
+        //Readables.isReadingLetter = true;
+        //Read.isReading = true;
         darkBackground.SetActive(true);
         knifeInstructions.SetActive(true);
         Cursor.lockState = CursorLockMode.Confined;
@@ -97,8 +97,8 @@ public class Endings : MonoBehaviour
     {
         Debug.Log("hid knife");
         isUsingKnife = false;
-        Readables.isReadingLetter = false;
-        Read.isReading = false;
+        //Readables.isReadingLetter = false;
+        //Read.isReading = false;
         darkBackground.SetActive(false);
         Cursor.visible = false;
         knifeInstructions.SetActive(false);

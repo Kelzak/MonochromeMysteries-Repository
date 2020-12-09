@@ -271,6 +271,11 @@ public class PhotoLibrary : MonoBehaviour
     {
         if (examining && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)))
             ExaminePhoto(photoBeingExamined);
+
+        if(hasMultiplePages)
+        {
+
+        }
     }
 
     bool isReadingContents = false;
@@ -278,11 +283,11 @@ public class PhotoLibrary : MonoBehaviour
     {
         if (!isReadingContents)
         {
-            if(hasMultiplePages)
-            {
-                nextImageButton.gameObject.SetActive(true);
-                prevImageButton.gameObject.SetActive(true);
-            }
+            //if (hasMultiplePages)
+            //{
+            //    nextImageButton.gameObject.SetActive(true);
+            //    prevImageButton.gameObject.SetActive(true);
+            //}
             isReadingContents = true;
             readableImage.gameObject.SetActive(true);
             examinePhotoMenu.transform.Find("Description").gameObject.SetActive(false);
@@ -291,11 +296,8 @@ public class PhotoLibrary : MonoBehaviour
         }
         else
         {
-            if (hasMultiplePages)
-            {
-                nextImageButton.gameObject.SetActive(false);
-                prevImageButton.gameObject.SetActive(false);
-            }
+            nextImageButton.gameObject.SetActive(false);
+            prevImageButton.gameObject.SetActive(false);
             isReadingContents = false;
             readableImage.gameObject.SetActive(false);
             examinePhotoMenu.transform.Find("Description").gameObject.SetActive(true);
@@ -303,23 +305,22 @@ public class PhotoLibrary : MonoBehaviour
         }
     }
 
+    int imageIndex = 0;
     public void NextImage()
     {
-        int index = 0;
-        //if (!photoBeingExamined.readableImage[photoBeingExamined.readableImage.Length - 1])
-        //{
-            readableImage.GetComponent<Image>().sprite = photoBeingExamined.readableImage[index + 1].GetComponent<Image>().sprite;
-            index += 1;
-        //}
+        if (!photoBeingExamined.readableImage[photoBeingExamined.readableImage.Length - 1])
+        {
+            readableImage.GetComponent<Image>().sprite = photoBeingExamined.readableImage[imageIndex + 1].GetComponent<Image>().sprite;
+            imageIndex++;
+        }
     }
 
     public void PrevImage()
     {
-        int index = 0;
         if (!photoBeingExamined.readableImage[0])
         {
-            readableImage.GetComponent<Image>().sprite = photoBeingExamined.readableImage[index - 1].GetComponent<Image>().sprite;
-            index -= 1;
+            readableImage.GetComponent<Image>().sprite = photoBeingExamined.readableImage[imageIndex - 1].GetComponent<Image>().sprite;
+            imageIndex--;
         }
     }
 
@@ -330,7 +331,7 @@ public class PhotoLibrary : MonoBehaviour
     /// Toggle the examining of a specific photo
     /// </summary>
     /// <param name="photo">The Photo in scrapbook to be examined</param>
-    private void ExaminePhoto(PhotoInfo photo)
+    public void ExaminePhoto(PhotoInfo photo)
     {
         photoBeingExamined = photo;
         //If not examining, start examining
@@ -348,16 +349,40 @@ public class PhotoLibrary : MonoBehaviour
             //If readable is attatched show readable image
             if(photo.readableImage != null)
             {
-                if(photo.readableImage.Length > 0)
-                {
-                    hasMultiplePages = true;
-                }
-                else
+                readableImage.GetComponent<Image>().sprite = photo.readableImage[0].GetComponent<Image>().sprite;
+                //if (photo.readableImage.Length > 0)
+                //{
+                //    Debug.Log("HAS MULTIPLE PAGES");
+                //    hasMultiplePages = true;
+
+                //    readableImage.GetComponent<Image>().sprite = photo.readableImage[0].GetComponent<Image>().sprite;
+                //    if (Input.GetKeyDown(KeyCode.LeftBracket))
+                //    {
+                //        Debug.Log("you pressed 1");
+                //        if (photo.readableImage[photo.readableImage.Length - 1].GetComponent<Image>().sprite != readableImage.GetComponent<Image>().sprite)
+                //        {
+                //            readableImage.GetComponent<Image>().sprite = photo.readableImage[imageIndex + 1].GetComponent<Image>().sprite;
+                //            imageIndex++;
+                //        }
+                //    }
+                //    else if (Input.GetKeyDown(KeyCode.RightBracket))
+                //    {
+                //        if (photo.readableImage[0].GetComponent<Image>().sprite != readableImage.GetComponent<Image>().sprite)
+                //        {
+                //            readableImage.GetComponent<Image>().sprite = photo.readableImage[imageIndex - 1].GetComponent<Image>().sprite;
+                //            imageIndex--;
+                //        }
+                //    }
+                //}
+                if (photo.readableImage.Length == 0)
                 {
                     hasMultiplePages = false;
+                    //nextImageButton.gameObject.SetActive(true);
+                    //prevImageButton.gameObject.SetActive(true);
+                    
                 }
                 readContentsButton.gameObject.SetActive(true);
-                readableImage.GetComponent<Image>().sprite = photo.readableImage[0].GetComponent<Image>().sprite;
+                
             }
             
 
@@ -402,6 +427,7 @@ public class PhotoLibrary : MonoBehaviour
             readableImage.SetActive(false);
             examinePhotoMenu.SetActive(false);
             photoGrid.SetActive(true);
+            imageIndex = 0;
         }
 
     }
