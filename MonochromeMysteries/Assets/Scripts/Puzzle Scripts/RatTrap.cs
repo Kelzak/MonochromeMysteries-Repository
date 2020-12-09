@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class RatTrap : ItemAbs
 {
-    public Player player;
+    public GameObject player;
     public Sprite ratTrapIcon;
     public AudioClip disableTrap;
     private AudioSource audioSource;
@@ -41,7 +41,7 @@ public class RatTrap : ItemAbs
         exterminator = GameObject.Find("Exterminator");
         ratTrapIcon = FindObjectOfType<UIspriteManager>().ratSprite;
         audioSource = GetComponent<AudioSource>();
-        player = FindObjectOfType<Player>();
+        player = Player.possessedObj;
     }
 
     public override void Activate()
@@ -79,7 +79,7 @@ public class RatTrap : ItemAbs
     // Update is called once per frame
     void Update()
     {
-        
+        player = Player.possessedObj;
     }
 
     public override void SetItemUI()
