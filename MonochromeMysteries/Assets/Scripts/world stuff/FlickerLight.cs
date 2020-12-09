@@ -13,6 +13,7 @@ public class FlickerLight : MonoBehaviour
     public float minWaitTime;
     public float maxWaitTime;
     public int maxFlickers = 4;
+    public AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +43,7 @@ public class FlickerLight : MonoBehaviour
                     else
                     {
                         GetComponentInParent<MeshRenderer>().material.DisableKeyword("_EMISSION");
+                        audioSource.Play();
                     }
                 }
                 yield return new WaitForSeconds(.1f);

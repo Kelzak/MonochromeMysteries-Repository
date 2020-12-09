@@ -25,13 +25,15 @@ public class MusicListener : MonoBehaviour
     void Start()
     {
         //player = GameObject.FindGameObjectWithTag("Player");
-        player = GameObject.FindObjectOfType<Player>().gameObject;
+        player = Player.possessedObj;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        player = Player.possessedObj;
+
         for (int i = 0; i < musicBoxes.Length; i++)
         {
             dist = Vector3.Distance(player.transform.position, musicBoxes[index].transform.position);
@@ -45,12 +47,12 @@ public class MusicListener : MonoBehaviour
             if (i == index)
             {
                 audioSource = musicBoxes[i].GetComponentInChildren<AudioSource>();
-                audioSource.volume = Mathf.Lerp(audioSource.volume, musicVolume, 5f * Time.deltaTime);
+                audioSource.volume = Mathf.Lerp(audioSource.volume, musicVolume, .5f * Time.deltaTime);
             }
             else
             {
                 audioSource = musicBoxes[i].GetComponentInChildren<AudioSource>();
-                audioSource.volume = Mathf.Lerp(audioSource.volume, 0f, 5f * Time.deltaTime);
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 0f, .5f * Time.deltaTime);
             }
 
         }
