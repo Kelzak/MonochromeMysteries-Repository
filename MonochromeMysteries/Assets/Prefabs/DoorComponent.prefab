@@ -459,7 +459,7 @@ MonoBehaviour:
   keyIcon: {fileID: 0}
   keyIconFlip: {fileID: 0}
   repairIcon: {fileID: 0}
-  repairIconFlip: {fileID: 0}
+  repairIconFlip: {fileID: 21300000, guid: 9a95ba6425be2f64fac5d226faf065cd, type: 3}
   openDoor:
   - {fileID: 8300000, guid: 76d9ce6cc2b97fc48ad08c70053eb1dc, type: 3}
   - {fileID: 8300000, guid: b5d9bfc683ff16649b83917627fa962c, type: 3}
@@ -492,6 +492,7 @@ MonoBehaviour:
   bottomText: 
   singleText: 
   onlySingleText: 0
+  dontAutoSetUI: 0
   itemName: 
   itemDescription: 
   isPickup: 0
