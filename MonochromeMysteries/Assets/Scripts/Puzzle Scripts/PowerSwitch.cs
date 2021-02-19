@@ -69,7 +69,7 @@ public class PowerSwitch : ItemAbs
     {
         if (player.GetComponent<Technician>())
         {
-            if (!correctCodeInputted && !isFlipped)
+            if (!correctCodeInputted && !isFlipped && PowerBox.switchesOn)
             {
                 Debug.Log("turned on switch");
                 numOfPulledSwitches += 1;
