@@ -364,7 +364,7 @@ public class GameController : MonoBehaviour
 
         while (MainMenu._instance.TVs.Length == 0 || SaveSystem.loading || Player.GetPossessionInProgress() || !MainMenu._instance.loadComplete)
         {
-            Debug.Log("TVS: " + MainMenu._instance.TVs.Length + " | Loading: " + SaveSystem.loading + " | PossessionInProgress: " + Player.GetPossessionInProgress() + " | MainmenuLoad: " + (MainMenu._instance.loadComplete == false));
+            //Debug.Log("TVS: " + MainMenu._instance.TVs.Length + " | Loading: " + SaveSystem.loading + " | PossessionInProgress: " + Player.GetPossessionInProgress() + " | MainmenuLoad: " + (MainMenu._instance.loadComplete == false));
             yield return null;
         }
         Debug.Log("!SaveExists: " + !SaveSystem.SaveExists(SaveSystem.currentSaveSlot) + " | CurrentTV: " + MainMenu._instance.GetCurrentTV() == null);

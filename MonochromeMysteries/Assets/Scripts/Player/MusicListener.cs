@@ -24,8 +24,8 @@ public class MusicListener : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //player = GameObject.FindGameObjectWithTag("Player");
-        player = Player.possessedObj;
+        player = GameObject.FindGameObjectWithTag("Player");
+        //player = Player.possessedObj;
 
     }
 

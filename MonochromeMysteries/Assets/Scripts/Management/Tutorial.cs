@@ -85,7 +85,7 @@ public class Tutorial : MonoBehaviour
 
         isCompleted = false;
         objectives = new Queue<string>();
-        objectiveText = GameController._instance.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
+        //objectiveText = GameController._instance.mainHUD.transform.Find("Objective").GetComponent<TMP_Text>();
     }
 
     private void Start()

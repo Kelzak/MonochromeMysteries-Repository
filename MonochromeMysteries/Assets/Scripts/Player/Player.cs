@@ -110,6 +110,7 @@ public class Player : MonoBehaviour
 
     //pick up stuff / inventory
     public static List<GameObject> keys = new List<GameObject>();
+    public static List<GameObject> fuses = new List<GameObject>();
 
     //Puzzle Stuff
     public PadlockPuzzle safeManager;
@@ -239,7 +240,7 @@ public class Player : MonoBehaviour
         }
 
         //photohraphers cam disable on possession
-        if (GetComponent<Photographer>())
+        /*if (GetComponent<Photographer>())
         {
             photographersCam.GetComponent<Renderer>().enabled = false;
         }
@@ -247,9 +248,9 @@ public class Player : MonoBehaviour
         {
             photographersCam.GetComponent<Renderer>().enabled = true;
 
-        }
+        }*/
         //hunter mustache disable on possession
-        if (GetComponent<Player>().gameObject.name.Equals("Hunter"))
+        /*if (GetComponent<Player>().gameObject.name.Equals("Hunter"))
         {
             mustache.GetComponent<Renderer>().enabled = false;
 
@@ -258,7 +259,7 @@ public class Player : MonoBehaviour
         {
             mustache.GetComponent<Renderer>().enabled = true;
 
-        }
+        }*/
 
         //update reticle distance when rat or nah
         if (GetComponent<Rat>())
@@ -952,6 +953,26 @@ public class Player : MonoBehaviour
             characterName.text = "Ahab Sergei";
             isRat = false;
         }
+        else if (gameObject.name == "Conductor")
+        {
+            itemImage.transform.parent.gameObject.SetActive(false);
+            characterImage.sprite = hunterImage;
+            characterRole.text = "\"The Conductor\"";
+            characterRole.color = new Color32(220, 20, 60, 255); //red
+            characterRoleForEnding = "Conductor";
+            characterName.text = "Boris Johnson";
+            isRat = false;
+        }
+        else if (gameObject.name == "Technician")
+        {
+            itemImage.transform.parent.gameObject.SetActive(false);
+            characterImage.sprite = exterminatorImage;
+            characterRole.text = "\"The Technician\"";
+            characterRole.color = new Color32(255, 182, 163, 255); //violet
+            characterRoleForEnding = "Technician";
+            characterName.text = "Scatman John";
+            isRat = false;
+        }
         else
         {
             itemImage.transform.parent.gameObject.SetActive(false);
@@ -1069,7 +1090,17 @@ public class Player : MonoBehaviour
                         {
                             Log.AddEntry("Picked up: " + selection.gameObject.name);
                             audioSource.PlayOneShot(obtainClip);
-                            keys.Add(selection.gameObject);
+                            if(selection.gameObject.name.Contains("Fuse"))
+                            {
+                                fuses.Add(selection.gameObject);
+                                Debug.Log("added fuse");
+                            }
+                            else
+                            {
+                                keys.Add(selection.gameObject);
+                                Debug.Log("added key");
+                            }
+
                             selection.gameObject.SetActive(false);
                         }
                         else if (selection.gameObject.CompareTag("Knife") && StateChecker.isGhost)
