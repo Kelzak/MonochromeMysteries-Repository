@@ -58,6 +58,11 @@ public class PowerSwitch : ItemAbs
                 numOfPulledSwitches = 0;
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.Y))
+        {
+            stationPowerOn = true;
+        }
     }
 
     public override void Activate()
