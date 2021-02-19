@@ -101,11 +101,13 @@ public class NavPerson : MonoBehaviour
         //Debug.Log(agent.isStopped);
         if (agent.isStopped && move == true && !waitAfterPossess)
         {
-            if(randWaitTime == true)
+            Debug.Log("move");
+
+            if (randWaitTime == true)
             {
                 waitTime = Random.Range(randWaitTimeMin, randWaitTimeMax);
             }
-            //Debug.Log("move");
+            Debug.Log("move");
             move = false;
             Invoke("Move", waitTime);
         }
