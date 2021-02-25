@@ -33,6 +33,7 @@ TagManager:
   - powerswitch
   - nextlevel
   - powerbox
+  - switchlight
   layers:
   - Default
   - TransparentFX
