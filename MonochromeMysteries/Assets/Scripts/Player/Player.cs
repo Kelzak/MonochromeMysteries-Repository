@@ -27,9 +27,10 @@ public class Player : MonoBehaviour
     public GameObject mainPlayer = null;
 
     [Header("Aiming")]
-    public float lookSensitivity = 10f;
+    public float lookSensitivity = 5f;
     [HideInInspector]
     public static bool canLook = true;
+    public bool lookDebug;
 
     [HideInInspector]
     public float lookHorizontal;
@@ -202,6 +203,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            lookDebug = !lookDebug;
+        }
+
         
         if (canLook)
             Look();
@@ -1157,10 +1163,14 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Look()
     {
-        lookHorizontal += Input.GetAxis("Mouse X") * lookSensitivity;
-        lookVertical = Mathf.Clamp(lookVertical - Input.GetAxis("Mouse Y") * lookSensitivity, -verticalClamp, verticalClamp);
-        transform.localRotation = Quaternion.Euler(0, lookHorizontal, 0);
-        cam.transform.localRotation = Quaternion.Euler(lookVertical, 0, 0);
+        if(!lookDebug)
+        {
+            lookHorizontal += Input.GetAxis("Mouse X") * lookSensitivity;
+            lookVertical = Mathf.Clamp(lookVertical - Input.GetAxis("Mouse Y") * lookSensitivity, -verticalClamp, verticalClamp);
+            transform.localRotation = Quaternion.Euler(0, lookHorizontal, 0);
+            cam.transform.localRotation = Quaternion.Euler(lookVertical, 0, 0);
+        }
+        
     }
 
     /// <summary>
