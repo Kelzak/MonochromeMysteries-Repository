@@ -25,7 +25,7 @@ public class MusicListener : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        //player = Player.possessedObj;
+        player = Player.possessedObj;
 
     }
 

@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
     public GameObject cam;
 
     [Header("Movement")]
-    private float moveSpeed = 7f;
+    public float moveSpeed = 7f;
     [HideInInspector]
     private float sprintModifier = 1.75f;
     [HideInInspector]
