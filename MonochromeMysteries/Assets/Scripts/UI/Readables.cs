@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Readables : MonoBehaviour
 {
-    public Photographer photographer;
+    //public Photographer photographer;
     public Endings endingManager;
 
     public GameObject passwordLetter1;
@@ -54,7 +54,7 @@ public class Readables : MonoBehaviour
                     GameController.TogglePause();
                     Cursor.lockState = CursorLockMode.Confined;
                     Cursor.visible = false;
-                    photographer.CameraLensActive = false;
+                    //photographer.CameraLensActive = false;
 
                     if (letterHit.collider.gameObject.name == "Manager's Safe Code")
                     {
@@ -100,11 +100,11 @@ public class Readables : MonoBehaviour
         {
 
             GameController.TogglePause();
-            if (photographer.GetComponent<Player>())
+            /*if (photographer.GetComponent<Player>())
             {
                 photographer.CameraLensActive = true;
                 photographer.canTakePhoto = true;
-            }
+            }*/
             isReadingLetter = false;
             endingManager.knifeInstructions.SetActive(false);
             passwordLetter1.SetActive(false);

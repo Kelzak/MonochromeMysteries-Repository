@@ -54,7 +54,7 @@ public class Read : ItemAbs
     {
         //flipLeftIcon = GameController.mainHUD.transform.Find("LeftMouseIcon").GetComponent<GameObject>();
         //flipRightIcon = GameController.mainHUD.transform.Find("RightMouseIcon").GetComponent<GameObject>();
-        photographer = FindObjectOfType<Photographer>();
+        //photographer = FindObjectOfType<Photographer>();
         ending = FindObjectOfType<Endings>();
         player = FindObjectOfType<Player>();
         Background = player.darkBackground;
@@ -133,13 +133,13 @@ public class Read : ItemAbs
 
     public void Open()
     {
-        if(!closeTime)
+        if (!closeTime)
         {
-            if(photographer.GetComponent<Player>())
+            /*if(photographer.GetComponent<Player>())
             {
                 photographer.CameraLensActive = false;
                 photographer.canTakePhoto = false;
-            }
+            }*/
             isReading = true;
             isOpen = true;
             index = 0;
@@ -173,11 +173,11 @@ public class Read : ItemAbs
             {
                 page.SetActive(false);
             }
-            if (photographer.GetComponent<Player>())
+            /*if (photographer.GetComponent<Player>())
             {
                 photographer.CameraLensActive = true;
                 StartCoroutine(WaitToTurnOnCamera());
-            }
+            }*/
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Player.EnableControls(true);
