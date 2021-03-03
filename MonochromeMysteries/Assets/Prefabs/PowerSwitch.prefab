@@ -111,7 +111,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orderNumber: 1
+  isFlipped: 0
   correctCodeInputted: 0
+  powerSwitches: []
+  player: {fileID: 0}
+  switchLights:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  audioSource: {fileID: 0}
+  switchTurnedOn: {fileID: 0}
+  switchesTurnedOff: {fileID: 0}
 --- !u!114 &8552218995285939780
 MonoBehaviour:
   m_ObjectHideFlags: 0

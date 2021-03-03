@@ -18,6 +18,12 @@ public class PowerBox : ItemAbs
     void Update()
     {
         player = Player.possessedObj;
+
+        if(Input.GetKeyDown(KeyCode.F1))
+        {
+            switchesOn = true;
+        }
+
     }
 
     public override void Activate()

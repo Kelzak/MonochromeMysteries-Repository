@@ -34,6 +34,7 @@ TagManager:
   - nextlevel
   - powerbox
   - switchlight
+  - suitcase
   layers:
   - Default
   - TransparentFX
