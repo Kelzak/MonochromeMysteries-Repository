@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class PowerSwitch : ItemAbs
 {
@@ -19,11 +20,19 @@ public class PowerSwitch : ItemAbs
     public GameObject[] powerSwitches;
     public GameObject player;
 
+    public GameObject[] switchLights;
+
+    public AudioSource audioSource;
+    public AudioClip switchTurnedOn;
+    public AudioClip switchesTurnedOff;
+
     // Start is called before the first frame update
     void Start()
     {
         //player = FindObjectOfType<Player>();
+        audioSource = GetComponent<AudioSource>();
         powerSwitches = GameObject.FindGameObjectsWithTag("powerswitch");
+        switchLights = GameObject.FindGameObjectsWithTag("switchlight");
         stationPowerOn = false;
         correctCodeInputted = false;
         numOfPulledSwitches = 0;
@@ -41,6 +50,10 @@ public class PowerSwitch : ItemAbs
         {
             if (inputtedCode == correctOrder)
             {
+                foreach (GameObject switchLight in switchLights)
+                {
+                    switchLight.GetComponent<MeshRenderer>().material.color = Color.green;
+                }
                 stationPowerOn = true;
                 correctCodeInputted = true;
                 gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
@@ -53,6 +66,7 @@ public class PowerSwitch : ItemAbs
                     powerSwitch.GetComponent<MeshRenderer>().material.color = Color.yellow;
                     powerSwitch.GetComponent<PowerSwitch>().isFlipped = false;
                 }
+                audioSource.PlayOneShot(switchesTurnedOff);
                 Debug.Log("Incorrect!");
                 inputtedCode = "";
                 numOfPulledSwitches = 0;
@@ -71,6 +85,7 @@ public class PowerSwitch : ItemAbs
         {
             if (!correctCodeInputted && !isFlipped && PowerBox.switchesOn)
             {
+                audioSource.PlayOneShot(switchTurnedOn);
                 Debug.Log("turned on switch");
                 numOfPulledSwitches += 1;
                 Debug.Log("number of pulled switches: " + numOfPulledSwitches);
