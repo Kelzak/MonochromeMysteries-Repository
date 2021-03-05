@@ -13,9 +13,9 @@ public class Suitcase : ItemAbs
     public TMP_Text slot2Text;
     public int slot3;
     public TMP_Text slot3Text;
-    private static int correctNum1 = 3;
-    private static int correctNum2 = 6;
-    private static int correctNum3 = 9;
+    private static int correctNum1 = 6;
+    private static int correctNum2 = 2;
+    private static int correctNum3 = 4;
     //private static string inputtedCode = "";
 
     public static bool puzzleActivated;
@@ -52,7 +52,7 @@ public class Suitcase : ItemAbs
                 HidePadlock();
             }
             
-            if(Input.GetKeyDown(KeyCode.Return))
+            if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             {
                 CheckIfCodeisCorrect();
             }
@@ -104,7 +104,8 @@ public class Suitcase : ItemAbs
             Debug.Log("suitcase opened");
             puzzleComplete = true;
             HidePadlock();
-            gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+            //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+            Destroy(this.gameObject);
         }
         else
         {

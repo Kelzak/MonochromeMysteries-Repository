@@ -60,7 +60,7 @@ public class Player : MonoBehaviour
     public bool hasKey = false;
     public PPSettings ppvToggle;
     public static bool hasCamera;
-    public Photographer photographer;
+    //public Photographer photographer;
     public static bool isAtTheFirstSafe;
     public static bool isAtTheSecondSafe;
     public static bool isAtTheThirdSafe;
@@ -145,7 +145,7 @@ public class Player : MonoBehaviour
     public AudioSource glowSource;
 
     private bool ratWalk;
-    public GameObject photographersCam;
+    //public GameObject photographersCam;
     public GameObject mustache;
 
     public Tutorial tutorial;
@@ -837,7 +837,7 @@ public class Player : MonoBehaviour
                     if (Input.GetKeyDown(KeyCode.F) && !PadlockPuzzle.keypadisUp)
                     {
                         safeName = hit.collider.name;
-                        if (!safeManager.safe1Open && safeName == "LockedSafe1")
+                        /*if (!safeManager.safe1Open && safeName == "LockedSafe1")
                         {
                             if (gameObject.GetComponent<Photographer>())
                             {
@@ -860,7 +860,7 @@ public class Player : MonoBehaviour
                                 photographer.CameraLensActive = false;
                             }
                             safeManager.ShowKeypad();
-                        }
+                        }*/
                     }
                 }
                 else if (StateChecker.isGhost)

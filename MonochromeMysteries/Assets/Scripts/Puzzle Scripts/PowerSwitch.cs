@@ -41,7 +41,7 @@ public class PowerSwitch : ItemAbs
         numOfPulledSwitches = 0;
         inputtedCode = "";
         isFlipped = false;
-        gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
+        //gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
     }
 
     // Update is called once per frame
