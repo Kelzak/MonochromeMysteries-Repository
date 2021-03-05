@@ -5,6 +5,8 @@ using UnityEngine.Audio;
 
 public class PowerSwitch : ItemAbs
 {
+    public Animator _animator;
+
 
     public int orderNumber;
     private static string correctOrder = "12345";
@@ -100,6 +102,10 @@ public class PowerSwitch : ItemAbs
             gameObject.GetComponent<Item>().enabled = false;
             isFlipped = true;
             inputtedCode += orderNumber.ToString();
+
+            _animator.SetBool("flip", true);
+            //set this bool ^ to false to make the animation return to the other way *should
+
             //Debug.Log("Inputted Code is: " + inputtedCode);
         }
         //}

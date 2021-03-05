@@ -73,6 +73,8 @@ public class BombingTrigger : MonoBehaviour
             clip = bombClips[temp];
             audioSource.clip = clip;
             audioSource.Play();
+
+            audioSource.PlayOneShot(clip);
         }
 
     }
