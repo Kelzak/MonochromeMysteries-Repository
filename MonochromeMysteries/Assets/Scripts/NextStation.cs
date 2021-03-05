@@ -1,11 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class NextStation : ItemAbs
 {
 
     public GameObject player;
+
+    public AudioSource audioSource;
+    public AudioClip choochoo;
+
+    public GameObject fadeToBlack;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +32,7 @@ public class NextStation : ItemAbs
         {
             if(PowerSwitch.stationPowerOn)
             {
+
                 gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
                 Debug.Log("You win!");
             }

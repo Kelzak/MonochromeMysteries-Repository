@@ -72,7 +72,7 @@ public class PowerSwitch : ItemAbs
                 {
                     switchLight.GetComponent<MeshRenderer>().material.color = Color.white;
                 }
-                //audioSource.PlayOneShot(switchesTurnedOff);
+                audioSource.PlayOneShot(switchesTurnedOff);
                 Debug.Log("Incorrect!");
                 inputtedCode = "";
                 numOfPulledSwitches = 0;
@@ -92,7 +92,7 @@ public class PowerSwitch : ItemAbs
         if (!correctCodeInputted && !isFlipped && PowerBox.switchesOn)
         {
             ActivateLight();
-            //audioSource.PlayOneShot(switchTurnedOn);
+            audioSource.PlayOneShot(switchTurnedOn);
             Debug.Log("turned on switch");
             numOfPulledSwitches += 1;
             //Debug.Log("number of pulled switches: " + numOfPulledSwitches);
