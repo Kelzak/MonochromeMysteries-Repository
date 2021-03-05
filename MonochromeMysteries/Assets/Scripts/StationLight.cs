@@ -8,11 +8,13 @@ public class StationLight : MonoBehaviour
     private Light light;
 
     private bool stationPower = false;
+    public bool emergencyLight = false;
     // Start is called before the first frame update
     void Start()
     {
         light = this.GetComponent<Light>();
         light.enabled = stationPower;
+        light.enabled = emergencyLight;
     }
 
     // Update is called once per frame
@@ -27,6 +29,13 @@ public class StationLight : MonoBehaviour
 
     void ActivateLight()
     {
-        light.enabled = true;
+        if(emergencyLight)
+        {
+            light.enabled = false;
+        }
+        else
+        {
+            light.enabled = true;
+        }
     }
 }
