@@ -122,8 +122,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   audioSource: {fileID: 0}
-  switchTurnedOn: {fileID: 0}
-  switchesTurnedOff: {fileID: 0}
+  generatorAudioSource: {fileID: 0}
+  switchTurnedOn: {fileID: 8300000, guid: 3330a868264143547ab1d62a5086337f, type: 3}
+  switchesTurnedOff: {fileID: 8300000, guid: f5af5993d9359d645a57579f9ba4a171, type: 3}
 --- !u!114 &8552218995285939780
 MonoBehaviour:
   m_ObjectHideFlags: 0

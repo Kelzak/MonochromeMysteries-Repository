@@ -9,7 +9,7 @@ public class PowerSwitch : ItemAbs
 
 
     public int orderNumber;
-    private static string correctOrder = "12345";
+    private static string correctOrder = "43521";
     private static string inputtedCode = "";
     public bool isFlipped;
 
@@ -25,6 +25,7 @@ public class PowerSwitch : ItemAbs
     public GameObject[] switchLights;
 
     public AudioSource audioSource;
+    public AudioSource generatorAudioSource;
     public AudioClip switchTurnedOn;
     public AudioClip switchesTurnedOff;
 
@@ -58,17 +59,16 @@ public class PowerSwitch : ItemAbs
                 }
                 stationPowerOn = true;
                 correctCodeInputted = true;
-                Destroy(gameObject.GetComponent<Item>());
-                gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+                generatorAudioSource.Play();
+                //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
                 Debug.Log("Correct!");
+                Destroy(gameObject.GetComponent<Item>());
             }
             else
             {
                 foreach (GameObject powerSwitch in powerSwitches)
                 {
-                    powerSwitch.GetComponent<MeshRenderer>().material.color = Color.yellow;
                     powerSwitch.GetComponent<PowerSwitch>().isFlipped = false;
-                    gameObject.GetComponent<Item>().enabled = true;
                 }
                 foreach (GameObject switchLight in switchLights)
                 {
@@ -78,6 +78,8 @@ public class PowerSwitch : ItemAbs
                 Debug.Log("Incorrect!");
                 inputtedCode = "";
                 numOfPulledSwitches = 0;
+                _animator.SetBool("flip", false);
+
             }
         }
 
@@ -98,11 +100,11 @@ public class PowerSwitch : ItemAbs
             Debug.Log("turned on switch");
             numOfPulledSwitches += 1;
             //Debug.Log("number of pulled switches: " + numOfPulledSwitches);
-            gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
+            //gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
             gameObject.GetComponent<Item>().enabled = false;
             isFlipped = true;
             inputtedCode += orderNumber.ToString();
-
+            
             _animator.SetBool("flip", true);
             //set this bool ^ to false to make the animation return to the other way *should
 
