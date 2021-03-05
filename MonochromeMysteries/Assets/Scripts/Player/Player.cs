@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
     CharacterController character;
 
     [Header("Possession")]
-    private float possess_Distance = 10;
+    private float possess_Distance = 3;
     public Vector3 camOffset;
 
     //KEVON'S ADDITION TO CODE//
@@ -86,7 +86,7 @@ public class Player : MonoBehaviour
     public Text itemName;
     public GameObject keyImage;
     public Image reticle;
-    public static float reticleDist = 7;
+    public static float reticleDist = 3;
     private float currentReticleDist;
     public AudioClip obtainClip;
     public AudioClip possessClip;

@@ -167,21 +167,22 @@ public class Item : MonoBehaviour
                 }
             }
 
+            //commented out on for train level
             //sets UI to others items progmatically
-            if (!GetComponent<ItemAbs>())
-            {
-                //icon = FindObjectOfType<UIspriteManager>().cameraSprite;
-                if (player.GetComponent<Photographer>())
-                {
-                    topText = "Photographable";
-                    bottomText = "Take Photo";
-                }
-                else
-                {
-                    topText = "Photographable";
-                    bottomText = "Needs Photographer";
-                }
-            }
+            //if (!GetComponent<ItemAbs>())
+            //{
+            //    //icon = FindObjectOfType<UIspriteManager>().cameraSprite;
+            //    if (player.GetComponent<Photographer>())
+            //    {
+            //        topText = "Photographable";
+            //        bottomText = "Take Photo";
+            //    }
+            //    else
+            //    {
+            //        topText = "Photographable";
+            //        bottomText = "Needs Photographer";
+            //    }
+            //}
             if (GetComponent<NavPerson>())
             {
                 onlySingleText = true;

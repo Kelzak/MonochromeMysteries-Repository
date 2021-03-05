@@ -96,17 +96,18 @@ public class Read : ItemAbs
 
     }
 
+    //changed for train
     //UI management for readable
     public override void SetItemUI()
     {
         if(StateChecker.isGhost)
         {
-            GetComponent<Item>().SetUI(cameraIcon, "Ghost Cant Read", "Photographable", "", false);
+            GetComponent<Item>().SetUI(cameraIcon, "", "", "Ghost Cant Read", true);
 
         }
         else if(player.GetComponent<Rat>() && !GetComponent<Item>().isPickup)
         {
-            GetComponent<Item>().SetUI(cameraIcon, "Rat Cant Read", "Photographable", "", false);
+            GetComponent<Item>().SetUI(cameraIcon, "", "", "Rat Cant Read", true);
 
         }
         else if (player.GetComponent<Rat>() && GetComponent<Item>().isPickup && player.GetComponent<Rat>().hold)
@@ -125,7 +126,7 @@ public class Read : ItemAbs
         }
         else
         {
-            GetComponent<Item>().SetUI(cameraIcon, "Press F to Read", "Photographable", "", false);
+            GetComponent<Item>().SetUI(cameraIcon, "", "", "Press F to Read", true);
         }
     }
 
