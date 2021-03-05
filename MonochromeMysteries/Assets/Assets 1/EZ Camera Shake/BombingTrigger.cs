@@ -80,6 +80,22 @@ public class BombingTrigger : MonoBehaviour
     void CancelCoroutine()
     {
         StopAllCoroutines();
+        //after flicker, reset to normal
+        if (PowerSwitch.stationPowerOn)
+        {
+            foreach (Light light in regularLights)
+            {
+                light.enabled = true;
+
+            }
+        }
+        else
+        {
+            foreach (Light light in emergencyLights)
+            {
+                light.enabled = true;
+            }
+        }
     }
 
     IEnumerator Flashing()
@@ -126,26 +142,11 @@ public class BombingTrigger : MonoBehaviour
                         //audioSource.Play();
                     }
                 }
-                yield return new WaitForSeconds(.2f);
+                yield return new WaitForSeconds(.1f);
 
             }
 
-            //after flicker, reset to normal
-            if (PowerSwitch.stationPowerOn)
-            {
-                foreach (Light light in regularLights)
-                {
-                    light.enabled = true;
-
-                }
-            }
-            else
-            {
-                foreach (Light light in emergencyLights)
-                {
-                        light.enabled = true;
-                }
-            }
+            
         }
     }
 }
