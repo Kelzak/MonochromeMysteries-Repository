@@ -18,7 +18,7 @@ public class Suitcase : ItemAbs
     private static int correctNum3 = 9;
     //private static string inputtedCode = "";
 
-    public bool puzzleActivated;
+    public static bool puzzleActivated;
 
     public Button number1Up;
     public Button number1Down;
@@ -29,10 +29,13 @@ public class Suitcase : ItemAbs
 
     public GameObject suitcaseUI;
 
+    public bool puzzleComplete;
+
     // Start is called before the first frame update
     void Start()
     {
         puzzleActivated = false;
+        puzzleComplete = false;
     }
 
     // Update is called once per frame
@@ -49,7 +52,7 @@ public class Suitcase : ItemAbs
                 HidePadlock();
             }
             
-            if(Input.GetKeyDown(KeyCode.F2))
+            if(Input.GetKeyDown(KeyCode.Return))
             {
                 CheckIfCodeisCorrect();
             }
@@ -99,6 +102,9 @@ public class Suitcase : ItemAbs
         if(correctNum1 == slot1 && correctNum2 == slot2 && correctNum3 == slot3)
         {
             Debug.Log("suitcase opened");
+            puzzleComplete = true;
+            HidePadlock();
+            gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
         }
         else
         {
@@ -108,7 +114,10 @@ public class Suitcase : ItemAbs
 
     public override void Activate()
     {
-        ShowPadlock();
+        if(!puzzleComplete)
+        {
+            ShowPadlock();
+        }
     }
 
     private void ShowPadlock()

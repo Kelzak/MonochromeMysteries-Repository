@@ -28,6 +28,7 @@ public class GameController : MonoBehaviour
     public GameObject playerSpawn;
 
     public PadlockPuzzle padlocks;
+    public Suitcase inPuzzle;
 
 
     public static bool paused = false;
@@ -221,7 +222,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         //Open/Close Menu
-        if( ( (Input.GetKeyDown(KeyCode.Tab)) && !Read.isReading && !Safe.uiOpen && !Endings.isUsingKnife && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Tab) && menuActive && pauseMenu.activeSelf == true))
+        if( ( (Input.GetKeyDown(KeyCode.Tab)) && !Read.isReading && !Safe.uiOpen && !Suitcase.puzzleActivated && !Endings.isUsingKnife && (!menuActive || pauseMenu.activeSelf == true)) || (Input.GetKeyDown(KeyCode.Tab) && menuActive && pauseMenu.activeSelf == true))
         {
             TogglePause();
             pauseMenu.SetActive(paused);
