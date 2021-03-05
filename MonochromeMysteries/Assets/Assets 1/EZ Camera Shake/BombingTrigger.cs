@@ -129,10 +129,22 @@ public class BombingTrigger : MonoBehaviour
                 yield return new WaitForSeconds(.2f);
 
             }
-            foreach (Light light in regularLights)
-            {
-                light.enabled = true; ;
 
+            //after flicker, reset to normal
+            if (PowerSwitch.stationPowerOn)
+            {
+                foreach (Light light in regularLights)
+                {
+                    light.enabled = true;
+
+                }
+            }
+            else
+            {
+                foreach (Light light in emergencyLights)
+                {
+                        light.enabled = true;
+                }
             }
         }
     }
