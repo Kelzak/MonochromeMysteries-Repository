@@ -51,7 +51,14 @@ public class PowerBox : ItemAbs
         }
         else if(player.GetComponent<Technician>())
         {
-            GetComponent<Item>().SetUI(null, null, null, "Press F to put in fuses", true);
+            if(Player.fuses.Count == 3)
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Press F to put in fuses", true);
+            }
+            else
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Needs 3 Fuses", true);
+            }
         }
         else
         {

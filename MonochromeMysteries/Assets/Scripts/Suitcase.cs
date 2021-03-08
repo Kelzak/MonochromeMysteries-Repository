@@ -31,11 +31,15 @@ public class Suitcase : ItemAbs
 
     public bool puzzleComplete;
 
+    public Animator animator;
+
     // Start is called before the first frame update
     void Start()
     {
         puzzleActivated = false;
         puzzleComplete = false;
+        animator.SetBool("Open", false);
+
     }
 
     // Update is called once per frame
@@ -104,8 +108,11 @@ public class Suitcase : ItemAbs
             Debug.Log("suitcase opened");
             puzzleComplete = true;
             HidePadlock();
+            animator.SetBool("Open", true);
+            Destroy(gameObject.GetComponent<BoxCollider>());
+            Destroy(gameObject.GetComponent<Outline>());
+            Destroy(gameObject.GetComponent<Item>());
             //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
-            Destroy(this.gameObject);
         }
         else
         {

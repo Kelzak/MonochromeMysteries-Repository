@@ -63,13 +63,14 @@ public class PowerSwitch : ItemAbs
                 //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
                 Debug.Log("Correct!");
                 Destroy(gameObject.GetComponent<Item>());
+                Destroy(gameObject.GetComponent<Outline>());
             }
             else
             {
                 foreach (GameObject powerSwitch in powerSwitches)
                 {
                     powerSwitch.GetComponent<PowerSwitch>().isFlipped = false;
-                    _animator.SetBool("flip", false);
+                    powerSwitch.GetComponent<PowerSwitch>()._animator.SetBool("flip", false);
                 }
                 foreach (GameObject switchLight in switchLights)
                 {

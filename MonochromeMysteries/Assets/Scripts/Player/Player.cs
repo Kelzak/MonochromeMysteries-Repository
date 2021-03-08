@@ -1094,15 +1094,17 @@ public class Player : MonoBehaviour
                     {
                         if (selection.gameObject.CompareTag("pickup") && !StateChecker.isGhost && !gameObject.GetComponent<Rat>())
                         {
-                            Log.AddEntry("Picked up: " + selection.gameObject.name);
+                            
                             audioSource.PlayOneShot(obtainClip);
                             if(selection.gameObject.name.Contains("Fuse"))
                             {
                                 fuses.Add(selection.gameObject);
+                                Log.AddEntry("Picked up: " + selection.gameObject.name + " (" + fuses.Count + "/3)");
                                 Debug.Log("added fuse");
                             }
                             else
                             {
+                                Log.AddEntry("Picked up: " + selection.gameObject.name);
                                 keys.Add(selection.gameObject);
                                 Debug.Log("added key");
                             }

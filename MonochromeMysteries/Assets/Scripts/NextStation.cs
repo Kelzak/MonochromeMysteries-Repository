@@ -70,9 +70,18 @@ public class NextStation : ItemAbs
         {
             GetComponent<Item>().SetUI(null, null, null, "Spirit can't use", true);
         }
-        else
+        
+        if(PowerSwitch.stationPowerOn && player.GetComponent<Conductor>())
         {
-            GetComponent<Item>().SetUI(null, null, null, "Press F to go to the next station", true);
+            GetComponent<Item>().SetUI(null, null, null, "Press F to go to the Next Station", true);
+        }
+        else if(!PowerSwitch.stationPowerOn && player.GetComponent<Conductor>())
+        {
+            GetComponent<Item>().SetUI(null, null, null, "Needs Station Power on", true);
+        }
+        else if(!PowerSwitch.stationPowerOn && !player.GetComponent<Conductor>())
+        {
+            GetComponent<Item>().SetUI(null, null, null, "Needs Conductor", true);
         }
     }
 }
