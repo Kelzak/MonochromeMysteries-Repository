@@ -1412,7 +1412,7 @@ public class Player : MonoBehaviour
             if (GetComponent<Rat>())
             {
                 //GetComponent<Rat>().hold = false;
-                GetComponent<Rat>().GrabOrDropObj(null);
+                GetComponent<Rat>().hold = false ;
             }
 
 

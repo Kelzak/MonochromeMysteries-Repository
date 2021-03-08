@@ -156,11 +156,6 @@ public class Item : MonoBehaviour
                     {
                         singleText = "Press F to Drag";
                         onlySingleText = true;
-                        if (Input.GetKeyDown(KeyCode.F) && !player.GetComponent<Rat>().hold)
-                        {
-                            print("grab thing");
-                            player.GetComponent<Rat>().GrabOrDropObj(gameObject);
-                        }
                     }
                 }
                 else if (!StateChecker.isGhost)
