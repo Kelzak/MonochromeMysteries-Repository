@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1205193179641703776
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: music.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: music.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 67bcf27fdb77e094bb0178ddfe52a765, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: music.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 161cafea93b640742ab976f8e541af4a, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: music.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: 145b51d7bed358c408beee1a0455b952, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: music.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 369c2d08d275047449148cdad00d9852, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: music.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 98a4a03c8a4aa964b9678ae7602f7321, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: music.Array.data[5]
+      value: 
+      objectReference: {fileID: 8300000, guid: 580952ea25827c1428e6f2ec5e0071c9, type: 3}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.89211404
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10.328322
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -45.52404
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952661449728837647, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: m_Name
+      value: Train Music Box Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2922489905712729828, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: MaxDistance
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2922489905712729828, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a8239003fe3c1fe48ad59441391fb8f2, type: 3}

@@ -117,7 +117,8 @@ public class Item : MonoBehaviour
     void Update()
     {
 
-        
+        player = Player.possessedObj;
+
 
 
         playerDistance = Vector3.Distance(this.transform.position, player.transform.position);
@@ -144,15 +145,22 @@ public class Item : MonoBehaviour
             {
                 if (player.GetComponent<Rat>())
                 {
+                    
+                    if (player.GetComponent<Rat>().hold)
+                    {
+                        singleText = "Press F to Drop";
+                        onlySingleText = true;                        
+
+                    }
                     if (!player.GetComponent<Rat>().hold)
                     {
                         singleText = "Press F to Drag";
                         onlySingleText = true;
-                    }
-                    if (player.GetComponent<Rat>().hold)
-                    {
-                        singleText = "Press F to Drop";
-                        onlySingleText = true;
+                        if (Input.GetKeyDown(KeyCode.F) && !player.GetComponent<Rat>().hold)
+                        {
+                            print("grab thing");
+                            player.GetComponent<Rat>().GrabOrDropObj(gameObject);
+                        }
                     }
                 }
                 else if (!StateChecker.isGhost)

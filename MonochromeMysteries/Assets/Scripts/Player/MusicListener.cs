@@ -16,7 +16,10 @@ public class MusicListener : MonoBehaviour
 
     private float dist;
 
-    public GameObject[] musicBoxes;
+    List<GameObject> soundObjects = null;
+
+
+    private MusicBox[] musicBoxes;
 
     private GameObject temp;
     private GameObject player;
@@ -27,35 +30,45 @@ public class MusicListener : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         player = Player.possessedObj;
 
+        //find and add all music boxes
+        musicBoxes = FindObjectsOfType<MusicBox>();
+        foreach(MusicBox musicBox in musicBoxes)
+        {
+            soundObjects.Add(musicBox.gameObject);
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
         player = Player.possessedObj;
-
-        for (int i = 0; i < musicBoxes.Length; i++)
+        if(soundObjects != null)
         {
-            dist = Vector3.Distance(player.transform.position, musicBoxes[index].transform.position);
-            if (dist > Vector3.Distance(player.transform.position, musicBoxes[i].transform.position))
+            for (int i = 0; i < soundObjects.Count; i++)
             {
-                index = i;
+                dist = Vector3.Distance(player.transform.position, soundObjects[index].transform.position);
+                if (dist > Vector3.Distance(player.transform.position, soundObjects[i].transform.position))
+                {
+                    index = i;
+                }
+            }
+            for (int i = 0; i < soundObjects.Count; i++)
+            {
+                if (i == index)
+                {
+                    audioSource = soundObjects[i].GetComponentInChildren<AudioSource>();
+                    audioSource.volume = Mathf.Lerp(audioSource.volume, musicVolume, .5f * Time.deltaTime);
+                }
+                else
+                {
+                    audioSource = soundObjects[i].GetComponentInChildren<AudioSource>();
+                    audioSource.volume = Mathf.Lerp(audioSource.volume, 0f, .5f * Time.deltaTime);
+                }
+
             }
         }
-        for (int i = 0; i < musicBoxes.Length; i++)
-        {
-            if (i == index)
-            {
-                audioSource = musicBoxes[i].GetComponentInChildren<AudioSource>();
-                audioSource.volume = Mathf.Lerp(audioSource.volume, musicVolume, .5f * Time.deltaTime);
-            }
-            else
-            {
-                audioSource = musicBoxes[i].GetComponentInChildren<AudioSource>();
-                audioSource.volume = Mathf.Lerp(audioSource.volume, 0f, .5f * Time.deltaTime);
-            }
-
-        }
+        
 
 
     }

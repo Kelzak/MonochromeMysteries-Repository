@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     private AudioSource[] audioSources;
     private AudioSource audioSource;
 
-    [HideInInspector]
+    //[HideInInspector]
     public GameObject mainPlayer = null;
 
     [Header("Aiming")]
@@ -1411,7 +1411,8 @@ public class Player : MonoBehaviour
             //if rat, drop item
             if (GetComponent<Rat>())
             {
-                GetComponent<Rat>().hold = false;
+                //GetComponent<Rat>().hold = false;
+                GetComponent<Rat>().GrabOrDropObj(null);
             }
 
 
