@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using TMPro;
+using System;
 
 public class NextStation : ItemAbs
 {
@@ -12,11 +14,14 @@ public class NextStation : ItemAbs
     public AudioSource audioSource;
     public AudioClip choochoo;
 
-    public GameObject fadeToBlack;
+    public Image fadeToBlackScreen;
+    public TextMeshProUGUI toBeContinued;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        fadeToBlackScreen.canvasRenderer.SetAlpha(0.0f);
         //player = FindObjectOfType<Player>();
     }
 
@@ -24,6 +29,10 @@ public class NextStation : ItemAbs
     void Update()
     {
         player = Player.possessedObj;
+        if(Input.GetKeyDown(KeyCode.F4))
+        {
+            FadeToBlackScreen();
+        }
     }
 
     public override void Activate()
@@ -32,11 +41,27 @@ public class NextStation : ItemAbs
         {
             if(PowerSwitch.stationPowerOn)
             {
-
+                audioSource.PlayOneShot(choochoo);
+                FadeToBlackScreen();
                 gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
                 Debug.Log("You win!");
             }
         }
+    }
+
+    private void FadeToBlackScreen()
+    {
+        fadeToBlackScreen.gameObject.SetActive(true);
+        fadeToBlackScreen.CrossFadeAlpha(1, 3, false);
+        StartCoroutine(ShowText());
+    }
+
+    IEnumerator ShowText()
+    {
+        yield return new WaitForSecondsRealtime(3f);
+        toBeContinued.gameObject.SetActive(true);
+        toBeContinued.CrossFadeAlpha(1, 2, false);
+        
     }
 
     public override void SetItemUI()

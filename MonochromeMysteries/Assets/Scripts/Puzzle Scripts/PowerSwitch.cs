@@ -69,6 +69,7 @@ public class PowerSwitch : ItemAbs
                 foreach (GameObject powerSwitch in powerSwitches)
                 {
                     powerSwitch.GetComponent<PowerSwitch>().isFlipped = false;
+                    _animator.SetBool("flip", false);
                 }
                 foreach (GameObject switchLight in switchLights)
                 {
@@ -78,8 +79,6 @@ public class PowerSwitch : ItemAbs
                 Debug.Log("Incorrect!");
                 inputtedCode = "";
                 numOfPulledSwitches = 0;
-                _animator.SetBool("flip", false);
-
             }
         }
 
@@ -112,6 +111,11 @@ public class PowerSwitch : ItemAbs
         }
         //}
 
+    }
+
+    public static void SwitchOff()
+    {
+        //_animator.SetBool("flip", false);
     }
 
     public void ActivateLight()

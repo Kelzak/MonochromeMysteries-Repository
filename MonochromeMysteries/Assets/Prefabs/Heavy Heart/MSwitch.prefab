@@ -154,8 +154,8 @@ Animation:
   m_Animation: {fileID: 7400000, guid: a03d551ba523c7f43bdffcc85da331ee, type: 2}
   m_Animations:
   - {fileID: 7400000, guid: a03d551ba523c7f43bdffcc85da331ee, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
+  m_WrapMode: 1
+  m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
 --- !u!95 &1653764422
@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 2451367760678237667}
   - component: {fileID: 2451367760678237692}
   - component: {fileID: 2451367760678237695}
+  - component: {fileID: 8296172668159491692}
   m_Layer: 0
   m_Name: MSwitch
   m_TagString: powerswitch
@@ -448,8 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68733502f8546da4daf36d76911d0a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 8296172668159491692, guid: c1bf7d9fccec3c343a4bf2708c96b339,
-    type: 3}
+  _animator: {fileID: 1653764422}
   orderNumber: 1
   isFlipped: 0
   correctCodeInputted: 0
@@ -492,6 +492,22 @@ MonoBehaviour:
   glowOverride: 0
   noOutline: 0
   dontChangeReticleColor: 0
+--- !u!54 &8296172668159491692
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5398510817927062027}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &7034391127806075082
 GameObject:
   m_ObjectHideFlags: 0
