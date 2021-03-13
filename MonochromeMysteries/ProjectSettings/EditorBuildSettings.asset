@@ -17,7 +17,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Opening Cutscene.unity
     guid: ded92678eb8a209419cd6c34c21aaa32
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Kevon Train.unity
     guid: 811a44f94b78bf644a193831bc320d4c
+  - enabled: 1
+    path: Assets/Scenes/Matt Train.unity
+    guid: 42d0d3cd3f4e37245bdcd574103b397f
   m_configObjects: {}
