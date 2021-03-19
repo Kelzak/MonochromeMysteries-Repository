@@ -44,7 +44,8 @@ public class NextStation : ItemAbs
             {
                 audioSource.PlayOneShot(choochoo);
                 FadeToBlackScreen();
-                gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+                _animator.SetBool("flip", true);
+                //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
                 Debug.Log("You win!");
             }
         }

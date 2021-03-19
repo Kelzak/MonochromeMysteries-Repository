@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,12 @@ public class PowerBox : ItemAbs
     public GameObject player;
 
     public static bool switchesOn;
+
+    public GameObject fuseObject;
+
+    public Transform fuse1Position;
+    public Transform fuse2Position;
+    public Transform fuse3Position;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +28,7 @@ public class PowerBox : ItemAbs
 
         if(Input.GetKeyDown(KeyCode.F1))
         {
-            switchesOn = true;
+            PowerBoxOn();
         }
 
     }
@@ -32,15 +39,24 @@ public class PowerBox : ItemAbs
         {
             if (Player.fuses.Count == 3 && !switchesOn)
             {
-                Debug.Log("Switches on!");
-                gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
-                switchesOn = true;
+                PowerBoxOn();
             }
             else
             {
                 Debug.Log("Need more fuses");
             }
         }
+    }
+
+    private void PowerBoxOn()
+    {
+        Debug.Log("Switches on!");
+        //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+        switchesOn = true;
+        Instantiate(fuseObject, fuse1Position.position, Quaternion.identity);
+        Instantiate(fuseObject, fuse2Position.position, Quaternion.identity);
+        Instantiate(fuseObject, fuse3Position.position, Quaternion.identity);
+
     }
 
     public override void SetItemUI()
@@ -66,3 +82,4 @@ public class PowerBox : ItemAbs
         }
     }
 }
+
