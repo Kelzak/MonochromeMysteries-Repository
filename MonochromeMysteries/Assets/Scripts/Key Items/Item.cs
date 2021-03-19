@@ -119,8 +119,6 @@ public class Item : MonoBehaviour
 
         player = Player.possessedObj;
 
-
-
         playerDistance = Vector3.Distance(this.transform.position, player.transform.position);
 
         // if() item is in the raycast hit array?

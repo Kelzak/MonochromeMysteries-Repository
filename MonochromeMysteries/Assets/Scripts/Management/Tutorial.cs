@@ -19,10 +19,10 @@ public class Tutorial : MonoBehaviour
 
     public delegate void TutorialEvent();
 
-    public GameObject[] invisibleWalls;
+    //public GameObject[] invisibleWalls;
 
     private Queue<string> objectives;
-    private TMP_Text objectiveText;
+    public TMP_Text objectiveText;
 
     public event TutorialEvent onFirstMovement;
     public event TutorialEvent onFirstTVEnter;
@@ -32,13 +32,21 @@ public class Tutorial : MonoBehaviour
     public event TutorialEvent onFirstCloseScrapbook;
     public event TutorialEvent onTutorialEnd;
 
+    public event TutorialEvent onFirstPossess;
+    //public event TutorialEvent onRead;
+    //public event TutorialEvent onPickupFuse;
+
+
     bool photographerEntered = false;
 
     public bool canEnterTV;
     public bool canEnterRat;
     public bool canBringMan;
 
-    private IEnumerator DialogueScript()
+    public bool canPickupFuse;
+    public bool canPossess;
+
+    /*private IEnumerator HotelDialogueScript()
     {
 
         yield return new WaitForSeconds(5f);
@@ -60,10 +68,25 @@ public class Tutorial : MonoBehaviour
         objectives.Enqueue("Press [Tab] to open your scrapbook and examine photos");
         Dialogue.AddLine(Dialogue.Character.Pete, "I’ve given you all the information I can at this point. From here on out, you’ll be on your own.", "This journey will be fraught with twists that will challenge your intellect, but I trust you will be successful. The fate of your heart depends on it.");
         TriggerTutorialEnd();
+    }*/
+
+    private IEnumerator TrainDialogueScript()
+    {
+
+        yield return new WaitForSeconds(2f);
+        Dialogue.AddLine(Dialogue.Character.Pete, "I see, you are finally awake. Behold, I am Osirus, Lord of the Underworld and Judge of the Dead. And you… you are deceased.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I have granted you the chance to be rebirthed which is why you are in your current form, a form that is trapped between the living world, and the after life.");
+        Dialogue.AddLine(Dialogue.Character.Pete, true,"In this Astral form, you are able to traverse the environment, but unable to interact with the living world in any way. Move around to get used to this new form.");
+        objectives.Enqueue("Move around using [W], [A], [S], and [D]");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "Although, this Astral form does come with its advantages, and that is by possessing the living and using them to fulfil your bidding. Find one now to get aquainted with your newfound power.");
+        objectives.Enqueue("Possess a lifeform on the train using [E]");
+        Dialogue.AddLine(Dialogue.Character.Pete, "You can use these lifeforms to pick items up, read, and find your way to hard to reach places depending on the life form you choose.","These life forms talents are also carried over, meaning if you possess someone or something with a skill, you can use that to your advantage");
+        Dialogue.AddLine(Dialogue.Character.Pete, "With all of this information, you are probably wondering why I brought you back. You were murdered, and your killer has fled.","Once you find the truth behind your murder, hunt down your killer, and bring yourself to justice, only then can your soul be free to join the afterlife.");
+        TriggerTutorialEnd();
     }
 
     Collider[] hit;
-    private IEnumerator WaitForPhotographerEnter()
+    /*private IEnumerator WaitForPhotographerEnter()
     {
         while (!photographerEntered && !isCompleted)
         {
@@ -77,11 +100,12 @@ public class Tutorial : MonoBehaviour
                 yield return null;
             }
         }
-    }
+    }*/
 
     private void Awake()
     {
         instance = this;
+        canPossess = false;
 
         isCompleted = false;
         objectives = new Queue<string>();
@@ -93,19 +117,20 @@ public class Tutorial : MonoBehaviour
         Debug.Log("canentertv is " + canEnterTV);
         //DontDestroyOnLoad(instance.transform.parent.gameObject);
         //Load
-        if (SaveSystem.gameData != null)
-            Load(SaveSystem.gameData.tutorialData);
+        /*if (SaveSystem.gameData != null)
+            Load(SaveSystem.gameData.tutorialData);*/
 
         if (!isCompleted && !tutorialTriggered)
         {
             tutorialTriggered = true;
-            StartCoroutine(DialogueScript());
+            //StartCoroutine(HotelDialogueScript());
+            StartCoroutine(TrainDialogueScript());
         }
         else
         {
             TriggerTutorialEnd();
         }
-        StartCoroutine(WaitForPhotographerEnter());
+        //StartCoroutine(WaitForPhotographerEnter());
 
 
     }
@@ -120,6 +145,9 @@ public class Tutorial : MonoBehaviour
         onFirstPhoto += TriggerFirstPhoto;
         onFirstCloseScrapbook += TriggerFirstCloseScrapbook;
 
+        onFirstPossess += OnFirstPossess;
+        //onRead += TriggerOnRead;
+        //onPickupFuse += TriggerPickupFuse;
     }
 
     private void OnDisable()
@@ -130,6 +158,10 @@ public class Tutorial : MonoBehaviour
         onPhotographerEnter -= TriggerPhotographerEnter;
         onFirstPhoto -= TriggerFirstPhoto;
         onFirstCloseScrapbook -= TriggerFirstCloseScrapbook;
+
+        onFirstPossess -= OnFirstPossess;
+        //onRead -= TriggerOnRead;
+        //onPickupFuse -= TriggerPickupFuse;
     }
 
 
@@ -150,6 +182,7 @@ public class Tutorial : MonoBehaviour
         instance.objectiveText.gameObject.SetActive(shouldShowObjective);
     }
 
+    //HOTEL OBJECTIVES
     public void OnFirstMovement()
     {
         onFirstMovement?.Invoke();
@@ -186,6 +219,60 @@ public class Tutorial : MonoBehaviour
         StartCoroutine(FirstMovement()); 
     }
 
+    //TRAIN OBJECTIVES
+    public void TriggerFirstPossess()
+    {
+        onFirstPossess?.Invoke();
+    }
+
+    private void OnFirstPossess()
+    {
+        StartCoroutine(FirstPossess());
+    }
+
+    public void TriggerOnRead()
+    {
+        //onRead?.Invoke();
+    }
+
+    public void TriggerPickupFuse()
+    {
+        //onPickupFuse?.Invoke();
+    }
+
+
+
+    private void TriggerOnReads()
+    {
+        StartCoroutine(OnRead());
+    }
+
+    private IEnumerator OnRead()
+    {
+        while (!Dialogue.holding || onFirstPossess != null)
+        {
+            yield return null;
+        }
+        canPickupFuse = true;
+        Dialogue.ContinueDialogue();
+        //onRead -= TriggerOnRead;
+    }
+
+    private void PickedUpFuse()
+    {
+        StartCoroutine(PickupFuse());
+    }
+
+    private IEnumerator PickupFuse()
+    {
+        while (!Dialogue.holding || onFirstPossess != null/* || onRead != null*/)
+        {
+            yield return null;
+        }
+        Dialogue.ContinueDialogue();
+        //onPickupFuse -= TriggerPickupFuse;
+    }
+
     private IEnumerator FirstMovement()
     {
         while(!Dialogue.holding)
@@ -193,8 +280,20 @@ public class Tutorial : MonoBehaviour
             yield return null;
         }
         canEnterTV = true;
+        canPossess = true;
         Dialogue.ContinueDialogue();
         onFirstMovement -= TriggerFirstMovement;
+    }
+
+    private IEnumerator FirstPossess()
+    {
+        Debug.Log("triggered");
+        while (!Dialogue.holding || onFirstMovement != null)
+        {
+            yield return null;
+        }
+        Dialogue.ContinueDialogue();
+        onFirstPossess -= OnFirstPossess;
     }
 
     //FIRST TV ENTERED
@@ -311,14 +410,14 @@ public class Tutorial : MonoBehaviour
        
 
         //INSERT CODE TO OCCUR AFTER TUTORIAL END HERE
-        foreach(GameObject wall in invisibleWalls)
+        /*foreach(GameObject wall in invisibleWalls)
         {
             Destroy(wall);
-        }
+        }*/
 
         isCompleted = true;
 
-        if (SaveSystem.gameData.tutorialData.tutorialCompleted == false)
+       if (SaveSystem.gameData.tutorialData.tutorialCompleted == false)
         {
             objectives.Enqueue("Solve your murder");
             UpdateObjective();
@@ -330,9 +429,9 @@ public class Tutorial : MonoBehaviour
 
     }
 
-    public static void Load(Data.TutorialData tutorialData)
+    /*public static void Load(Data.TutorialData tutorialData)
     {
         Debug.Log("Loading Tutorial isCompleted: " + tutorialData.tutorialCompleted + " | From Slot: " + SaveSystem.currentSaveSlot);
         instance.isCompleted = tutorialData.tutorialCompleted;
-    }
+    }*/
 }

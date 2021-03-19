@@ -44,6 +44,8 @@ public class Read : ItemAbs
     [Range(0.0f, 1.0f)]
     public float soundVolume = .5f;
 
+    public Tutorial tutorial;
+
     private void Awake()
     {
         flipLeftIcon = GameObject.FindGameObjectWithTag("leftFlip");
@@ -92,7 +94,10 @@ public class Read : ItemAbs
     public override void Activate()
     {
         if(!StateChecker.isGhost && !player.GetComponent<Rat>())
+        {
             Open();
+        }
+            
 
     }
 
@@ -195,7 +200,7 @@ public class Read : ItemAbs
             flipRightIcon.GetComponent<Image>().enabled = false;
             flipLeftIcon.GetComponentInChildren<TMP_Text>().enabled = false;
             flipRightIcon.GetComponentInChildren<TMP_Text>().enabled = false;
-
+            Tutorial.instance.TriggerOnRead();
             StartCoroutine(CloseTime());
         }
 

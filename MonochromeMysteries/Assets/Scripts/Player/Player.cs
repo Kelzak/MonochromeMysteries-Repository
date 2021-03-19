@@ -1404,6 +1404,11 @@ public class Player : MonoBehaviour
             Tutorial.instance.OnFirstRatPossession();
         }
 
+        if (target.GetComponent<Conductor>() && Dialogue.holding && tutorial.canPossess)
+        {
+            Tutorial.instance.TriggerFirstPossess();
+        }
+
         //If it's the main player (Ghost) then make it "disappear"
         if (gameObject == mainPlayer)
             gameObject.SetActive(false);

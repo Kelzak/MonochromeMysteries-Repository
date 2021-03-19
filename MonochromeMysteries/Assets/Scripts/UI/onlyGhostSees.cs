@@ -11,7 +11,7 @@ public class onlyGhostSees : MonoBehaviour
 
     public bool onlyGhostSee;
 
-    private MeshRenderer renderer;
+    private new MeshRenderer renderer;
 
     private Material mat;
 
