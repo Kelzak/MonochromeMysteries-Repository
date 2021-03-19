@@ -26,6 +26,8 @@ public class TestCinemachine : MonoBehaviour
 
     private bool alpha = false;
     private bool pause = false;
+    private bool clip1 = false;
+    private bool clip2 = false;
 
     private int index = 0;
     // Start is called before the first frame update
@@ -51,7 +53,18 @@ public class TestCinemachine : MonoBehaviour
         //    Invoke("StartClip", .5f);
         //}
 
-        if(alpha)
+        if(playableDirector.time > 25 && !clip1)
+        {
+            clip1 = true;
+            StartCoroutine("PlayClip");
+        }
+        if (playableDirector.time > 36 && !clip2)
+        {
+            clip2 = true;
+            StartCoroutine("PlayClip");
+        }
+
+        if (alpha)
         {
             videoPlayer.targetCameraAlpha = Mathf.Lerp(videoPlayer.targetCameraAlpha, 1, storyboardFadeTime * Time.deltaTime);
         }
@@ -97,6 +110,8 @@ public class TestCinemachine : MonoBehaviour
         StartCoroutine("PlayClip");
 
     }
+
+    //at 22, at 33
 
     void TogglePause()
     {
