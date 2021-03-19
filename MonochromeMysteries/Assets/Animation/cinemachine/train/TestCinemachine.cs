@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
 public class TestCinemachine : MonoBehaviour
@@ -28,8 +29,9 @@ public class TestCinemachine : MonoBehaviour
     private bool pause = false;
     private bool clip1 = false;
     private bool clip2 = false;
+    private bool clip3 = false;
 
-    private int index = 0;
+    private int index = -1;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,16 +55,24 @@ public class TestCinemachine : MonoBehaviour
         //    Invoke("StartClip", .5f);
         //}
 
-        if(playableDirector.time > 25 && !clip1)
+        
+
+        if(playableDirector.time > 22 && !clip1)
         {
             clip1 = true;
             StartCoroutine("PlayClip");
         }
-        if (playableDirector.time > 36 && !clip2)
+        if (playableDirector.time > 34 && !clip2)
         {
             clip2 = true;
             StartCoroutine("PlayClip");
         }
+        if (playableDirector.time > 47 && !clip3)
+        {
+            clip3 = true;
+            StartCoroutine("PlayClip");
+        }
+
 
         if (alpha)
         {
@@ -76,6 +86,15 @@ public class TestCinemachine : MonoBehaviour
     }
     IEnumerator PlayClip()
     {
+
+        index++;
+        if (index >= 3)
+        {
+            //scene change
+            print("change scene");
+            SceneManager.LoadScene(1);
+        }
+        print("current index: " + index);
         //pause virtual camera
         playableDirector.Pause();
         virtualCamera.Priority = 9;
@@ -102,7 +121,7 @@ public class TestCinemachine : MonoBehaviour
 
         //increase index, get ready for next marker
         //Invoke("StartClip", betweenClipTime[index]);
-        index++;
+        
     }
 
     void StartClip()
