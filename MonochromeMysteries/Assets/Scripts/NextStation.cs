@@ -17,6 +17,7 @@ public class NextStation : ItemAbs
     public Image fadeToBlackScreen;
     public TextMeshProUGUI toBeContinued;
 
+    public Animator _animator;
 
     // Start is called before the first frame update
     void Start()
