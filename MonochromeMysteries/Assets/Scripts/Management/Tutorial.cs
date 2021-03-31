@@ -74,7 +74,7 @@ public class Tutorial : MonoBehaviour
     {
 
         yield return new WaitForSeconds(2f);
-        Dialogue.AddLine(Dialogue.Character.Pete, "I see, you are finally awake. Behold, I am Osirus, Lord of the Underworld and Judge of the Dead. And you… you are deceased.");
+        Dialogue.AddLine(Dialogue.Character.Pete, "I see, you are finally awake. Behold, I am Osiris, Lord of the Underworld and Judge of the Dead. And you… you are deceased.");
         Dialogue.AddLine(Dialogue.Character.Pete, "I have granted you the chance to be rebirthed which is why you are in your current form, a form that is trapped between the living world, and the after life.");
         Dialogue.AddLine(Dialogue.Character.Pete, true,"In this Astral form, you are able to traverse the environment, but unable to interact with the living world in any way. Move around to get used to this new form.");
         objectives.Enqueue("Move around using [W], [A], [S], and [D]");

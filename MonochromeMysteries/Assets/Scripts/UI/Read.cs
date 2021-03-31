@@ -14,8 +14,8 @@ public class Read : ItemAbs
 {
     private Photographer photographer;
     private Endings ending;
-    private Player player;
-
+    //private Player player;
+    public GameObject player;
     public GameObject[] toRead;
 
 
@@ -58,8 +58,9 @@ public class Read : ItemAbs
         //flipRightIcon = GameController.mainHUD.transform.Find("RightMouseIcon").GetComponent<GameObject>();
         //photographer = FindObjectOfType<Photographer>();
         ending = FindObjectOfType<Endings>();
-        player = FindObjectOfType<Player>();
-        Background = player.darkBackground;
+        //player = FindObjectOfType<Player>();
+        //Background = player.darkBackground;
+        Background = GameObject.Find("HUD").transform.Find("DarkBackground").gameObject;
         pressEscToCloseText = GameObject.Find("HUD").transform.Find("PressEscToClose").gameObject;
         audioSource = GetComponent<AudioSource>();
         audioSource.volume = soundVolume;
@@ -77,14 +78,14 @@ public class Read : ItemAbs
 
         cameraIcon = FindObjectOfType<UIspriteManager>().cameraSprite;
 
-        player = FindObjectOfType<Player>();
+        //player = FindObjectOfType<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
 
+        player = Player.possessedObj;
 
         PageFlip();
         
@@ -93,7 +94,7 @@ public class Read : ItemAbs
     //activated for abstract class, just calls current functionality
     public override void Activate()
     {
-        if(!StateChecker.isGhost && !player.GetComponent<Rat>())
+        if(!player.GetComponent<Rat>() && !StateChecker.isGhost)
         {
             Open();
         }

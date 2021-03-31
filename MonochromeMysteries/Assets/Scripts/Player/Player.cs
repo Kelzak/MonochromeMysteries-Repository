@@ -205,7 +205,7 @@ public class Player : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            lookDebug = !lookDebug;
+            //lookDebug = !lookDebug;
         }
 
         
