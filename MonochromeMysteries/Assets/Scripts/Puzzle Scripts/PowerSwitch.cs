@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.ParticleSystemJobs;
 
 public class PowerSwitch : ItemAbs
 {
@@ -28,6 +29,8 @@ public class PowerSwitch : ItemAbs
     public AudioSource generatorAudioSource;
     public AudioClip switchTurnedOn;
     public AudioClip switchesTurnedOff;
+
+    public ParticleSystem sparks;
 
     // Start is called before the first frame update
     void Start()
@@ -60,6 +63,7 @@ public class PowerSwitch : ItemAbs
                 stationPowerOn = true;
                 correctCodeInputted = true;
                 generatorAudioSource.Play();
+                sparks.Play(true);
                 //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
                 Debug.Log("Correct!");
                 Destroy(gameObject.GetComponent<Item>());

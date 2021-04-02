@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using TMPro;
 using System;
 
@@ -45,10 +46,22 @@ public class NextStation : ItemAbs
                 audioSource.PlayOneShot(choochoo);
                 FadeToBlackScreen();
                 _animator.SetBool("flip", true);
+                Player.EnableControls(false);
+                Read.isReading = true;
+                StartCoroutine(SwitchToTitleScreen());
+                //GameController.TogglePause();
+                //Debug.Log("You win!");
                 //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
-                Debug.Log("You win!");
             }
         }
+    }
+
+    public IEnumerator SwitchToTitleScreen()
+    {
+        yield return new WaitForSeconds(6f);
+        Player.EnableControls(true);
+        Read.isReading = false;
+        SceneManager.LoadScene("TrainMainMenu");
     }
 
     private void FadeToBlackScreen()

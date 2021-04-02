@@ -15,6 +15,8 @@ public class PowerBox : ItemAbs
     public Transform fuse2Position;
     public Transform fuse3Position;
 
+    public ParticleSystem sparks;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +55,7 @@ public class PowerBox : ItemAbs
         Debug.Log("Switches on!");
         //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
         switchesOn = true;
+        sparks.Play();
         Instantiate(fuseObject, fuse1Position.position, Quaternion.identity);
         Instantiate(fuseObject, fuse2Position.position, Quaternion.identity);
         Instantiate(fuseObject, fuse3Position.position, Quaternion.identity);

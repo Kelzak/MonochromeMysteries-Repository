@@ -25,7 +25,9 @@ public class TrainMainMenu : MonoBehaviour
         optionsMenu = HUD.transform.Find("OptionsMenu").gameObject;
         fadeToBlackScreen = HUD.transform.Find("FadeToBlackScreen").gameObject.GetComponent<Image>();
         pressTabtoClose = HUD.transform.Find("PressTabToClose").gameObject;
-        
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         StartCoroutine(TitleScreenIntro());
     }
 
