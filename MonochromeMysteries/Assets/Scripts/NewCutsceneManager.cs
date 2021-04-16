@@ -5,6 +5,7 @@ using UnityEngine.Playables;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.Timeline;
+using Cinemachine;
 
 public class NewCutsceneManager : MonoBehaviour
 {
@@ -25,11 +26,13 @@ public class NewCutsceneManager : MonoBehaviour
     public PlayableAsset[] playableAssets;
     public TimelineAsset[] playableAssetz;
 
+    public PlayableDirector[] playableDirectors;
+
     public Image fadeImage;
-    public float fadeTime = 3f;
+    public float fadeTime;
     public bool playOnStart;
 
-    private bool dark;
+    private bool dark = false;
 
     //variables
     private int index = 0;
@@ -41,7 +44,7 @@ public class NewCutsceneManager : MonoBehaviour
     {
         //initialize fade settings
         fadeImage.color = Color.black;
-        dark = true;
+        dark = false;
 
 
         if (playOnStart)
@@ -51,7 +54,27 @@ public class NewCutsceneManager : MonoBehaviour
 
     }
 
-    void StartCutscene()
+    void Update()
+    {
+        if (dark)
+        {
+            print("fading to dark");
+            //fade color to clear
+            Color color = Color.Lerp(fadeImage.color, Color.black, fadeTime * Time.deltaTime);
+            fadeImage.color = color;
+
+
+        }
+        else
+        {
+            print("fading to clear");
+            Color color = Color.Lerp(fadeImage.color, Color.clear, fadeTime * Time.deltaTime);
+            fadeImage.color = color;
+
+        }
+    }
+
+    public void StartCutscene()
     {
         coroutine = camAnimationFirst ? PlayAnimation() : PlayClip();
         StartCoroutine(coroutine);
@@ -62,15 +85,22 @@ public class NewCutsceneManager : MonoBehaviour
         //initialize the clip on the video player
         clip = videoClips[index];
         videoPlayer.clip = clip;
-        videoPlayer.Play();     
+        
 
-        ToggleFade();
+           
 
-        yield return new WaitForSecondsRealtime((float)clip.length);
+        videoPlayer.Play();
+        yield return new WaitForSecondsRealtime(fadeTime);
+        ToggleFade(false);
 
-        ToggleFade();
+        yield return new WaitForSecondsRealtime((float)clip.length-fadeTime);
 
-        videoPlayer.Stop();
+        ToggleFade(true);
+
+        yield return new WaitForSecondsRealtime(fadeTime);
+        
+        videoPlayer.Stop();       
+        
 
         //continue
         if (camAnimationFirst)
@@ -79,42 +109,59 @@ public class NewCutsceneManager : MonoBehaviour
         }
         else
         {
+
             coroutine = PlayAnimation();
             StartCoroutine(coroutine);
         }
 
     }
 
-    void ToggleFade()
+    void ToggleFade(bool b)
     {
-        if (dark)
-        {
-            dark = false;
-        }
-        else
-        {
-            dark = true;
-        }
+        dark = b;
     }
 
     IEnumerator PlayAnimation()
     {
-        TimelineAsset temp = playableAssetz[index];
-        playableDirector.playableAsset = temp;
-        playableDirector.Play();
-        
 
-        //anim = animations[index];
-        //anim.Play();
+        print("playing camera animation");
+        playableDirectors[index].gameObject.GetComponent<CinemachineVirtualCamera>().Priority = playableDirectors[index].gameObject.GetComponent<CinemachineVirtualCamera>().Priority * 2;
+             
 
-        ToggleFade();
+        playableDirectors[index].Play();
+        yield return new WaitForSecondsRealtime(fadeTime);
+        ToggleFade(false);
 
-        yield return new WaitForSecondsRealtime((float)playableAssetz[index].duration);
+        yield return new WaitForSecondsRealtime((float)playableDirectors[index].playableAsset.duration - fadeTime);
 
-        ToggleFade();
+        ToggleFade(true);
+
+        yield return new WaitForSecondsRealtime(fadeTime);
+
+        playableDirectors[index].Stop();
+
+        ToggleFade(false);
+
+        //---
+
+        ////playableDirector.ClearGenericBinding(this);
+        //PlayableAsset temp = playableAssets[index];
+
+        //playableDirector.playableAsset = temp;
+        ////playableDirector.SetGenericBinding(temp, playableAssets[index]);
+
+        ////playableDirector.time = 0;
+        //playableDirector.Play(temp);
+
+
+        ////anim = animations[index];
+        ////anim.Play();
+
+        //---
+
 
         //anim.Stop();
-        playableDirector.Stop();
+        //playableDirector.Stop();
 
         //continue
         if (camAnimationFirst)
@@ -138,7 +185,7 @@ public class NewCutsceneManager : MonoBehaviour
         print("Cutscene cycle | index: " + index);
 
         //if  cam anim is first, do animation array length, otherwise do video clip array length
-        int temp = camAnimationFirst ? playableAssetz.Length : videoClips.Length;
+        int temp = camAnimationFirst ? playableAssets.Length : videoClips.Length;
 
         //end cutscene if it was last thing, or keep going
         if (index >= temp)
@@ -148,6 +195,7 @@ public class NewCutsceneManager : MonoBehaviour
         }
         else
         {
+            ToggleFade(true);
             coroutine = camAnimationFirst ? PlayAnimation() : PlayClip();
             StartCoroutine(coroutine);
         }
@@ -155,19 +203,5 @@ public class NewCutsceneManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (dark)
-        {
-            //fade color to clear
-            fadeImage.color = Color.Lerp(fadeImage.color, Color.black, fadeTime * Time.deltaTime);
-            
-        }
-        else
-        {
-            //fade color to clear
-            fadeImage.color = Color.Lerp(fadeImage.color, Color.clear, fadeTime * Time.deltaTime);
-            
-        }
-    }
+    
 }
