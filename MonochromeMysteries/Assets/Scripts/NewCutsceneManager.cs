@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.Timeline;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class NewCutsceneManager : MonoBehaviour
 {
@@ -192,6 +193,7 @@ public class NewCutsceneManager : MonoBehaviour
         {
             //end cutscene
             print("Cutscene end");
+            SceneManager.LoadScene(2);
         }
         else
         {
