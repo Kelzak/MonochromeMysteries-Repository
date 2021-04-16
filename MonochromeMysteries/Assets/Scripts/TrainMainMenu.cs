@@ -61,7 +61,7 @@ public class TrainMainMenu : MonoBehaviour
         Debug.Log("play");
         fadeToBlackScreen.gameObject.SetActive(true);
         fadeToBlackScreen.CrossFadeAlpha(1, 2, false);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("matt train");
     }
 

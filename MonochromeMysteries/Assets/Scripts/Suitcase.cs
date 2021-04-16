@@ -51,7 +51,7 @@ public class Suitcase : ItemAbs
 
         if (puzzleActivated)
         {
-            if(Input.GetKeyDown(KeyCode.Escape))
+            if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab))
             {
                 HidePadlock();
             }
@@ -69,16 +69,22 @@ public class Suitcase : ItemAbs
         {
             if (slot1 != 9)
                 slot1 += 1;
+            else
+                slot1 = 0;
         }
         if (buttonName.Contains("2"))
         {
             if (slot2 != 9)
                 slot2 += 1;
+            else
+                slot2 = 0;
         }
         if (buttonName.Contains("3"))
         {
             if (slot3 != 9)
                 slot3 += 1;
+            else
+                slot3 = 0;
         }
     }
 
@@ -86,18 +92,24 @@ public class Suitcase : ItemAbs
     {
         if (buttonName.Contains("1"))
         {
-            if(slot1 != 0)
+            if (slot1 != 0)
                 slot1 -= 1;
+            else
+                slot1 = 9;
         }
         if (buttonName.Contains("2"))
         {
             if (slot2 != 0)
                 slot2 -= 1;
+            else
+                slot2 = 9;
         }
         if (buttonName.Contains("3"))
         {
             if (slot3 != 0)
                 slot3 -= 1;
+            else
+                slot3 = 9;
         }
     }
 
@@ -117,6 +129,10 @@ public class Suitcase : ItemAbs
         else
         {
             Debug.Log("Wrong code try again");
+            slot1 = 0;
+            slot2 = 0;
+            slot3 = 0;
+            //ADD WRONG CODE SOUND EFFECT HERE
         }
     }
 

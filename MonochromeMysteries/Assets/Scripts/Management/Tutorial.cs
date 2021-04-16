@@ -78,9 +78,9 @@ public class Tutorial : MonoBehaviour
         Dialogue.AddLine(Dialogue.Character.Pete, "I have granted you the chance to be rebirthed which is why you are in your current form, a form that is trapped between the living world, and the after life.");
         Dialogue.AddLine(Dialogue.Character.Pete, true,"In this Astral form, you are able to traverse the environment, but unable to interact with the living world in any way. Move around to get used to this new form.");
         objectives.Enqueue("Move around using [W], [A], [S], and [D]");
-        Dialogue.AddLine(Dialogue.Character.Pete, true, "Although, this Astral form does come with its advantages, and that is by possessing the living and using them to fulfil your bidding. Find one now to get aquainted with your newfound power.");
+        Dialogue.AddLine(Dialogue.Character.Pete, true, "Although, this Astral form does come with its advantages. You have the power to control the living and use them to fulfil your bidding. Find one now to get aquainted with your newfound power.");
         objectives.Enqueue("Possess a lifeform on the train using [E]");
-        Dialogue.AddLine(Dialogue.Character.Pete, "You can use these lifeforms to pick items up, read, and find your way to hard to reach places depending on the life form you choose.","These life forms talents are also carried over, meaning if you possess someone or something with a skill, you can use that to your advantage");
+        Dialogue.AddLine(Dialogue.Character.Pete, "You can use these lifeforms to pick items up, read, and find your way to hard to reach places depending on the life form you choose.","These life form's talents are also carried over, meaning if you possess someone or something with a skill, you can use that to your advantage");
         Dialogue.AddLine(Dialogue.Character.Pete, "With all of this information, you are probably wondering why I brought you back. You were murdered, and your killer has fled.","Once you find the truth behind your murder, hunt down your killer, and bring yourself to justice, only then can your soul be free to join the afterlife.");
         TriggerTutorialEnd();
     }

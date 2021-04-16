@@ -111,7 +111,12 @@ public class Player : MonoBehaviour
 
     //pick up stuff / inventory
     public static List<GameObject> keys = new List<GameObject>();
+    public GameObject keyPic;
     public static List<GameObject> fuses = new List<GameObject>();
+    public GameObject fusePic1;
+    public GameObject fusePic2;
+    public GameObject fusePic3;
+
 
     //Puzzle Stuff
     public PadlockPuzzle safeManager;
@@ -1099,13 +1104,26 @@ public class Player : MonoBehaviour
                             if(selection.gameObject.name.Contains("Fuse"))
                             {
                                 fuses.Add(selection.gameObject);
-                                Log.AddEntry("Picked up: " + selection.gameObject.name + " (" + fuses.Count + "/3)");
+                                if(fuses.Count == 1)
+                                {
+                                    fusePic1.SetActive(true);
+                                }
+                                else if (fuses.Count == 2)
+                                {
+                                    fusePic2.SetActive(true);
+                                }
+                                else if (fuses.Count == 3)
+                                {
+                                    fusePic3.SetActive(true);
+                                }
+                                    Log.AddEntry("Picked up: " + selection.gameObject.name + " (" + fuses.Count + "/3)");
                                 Debug.Log("added fuse");
                             }
                             else
                             {
                                 Log.AddEntry("Picked up: " + selection.gameObject.name);
                                 keys.Add(selection.gameObject);
+                                keyPic.SetActive(true);
                                 Debug.Log("added key");
                             }
 

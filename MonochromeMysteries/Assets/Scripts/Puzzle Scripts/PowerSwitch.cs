@@ -59,15 +59,16 @@ public class PowerSwitch : ItemAbs
                 foreach (GameObject switchLight in switchLights)
                 {
                    switchLight.GetComponent<MeshRenderer>().material.color = Color.green;
+                    Destroy(gameObject.GetComponent<Item>());
+                    Destroy(gameObject.GetComponent<Outline>());
                 }
                 stationPowerOn = true;
                 correctCodeInputted = true;
                 generatorAudioSource.Play();
-                sparks.Play(true);
+                sparks.Play();
                 //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
                 Debug.Log("Correct!");
-                Destroy(gameObject.GetComponent<Item>());
-                Destroy(gameObject.GetComponent<Outline>());
+
             }
             else
             {

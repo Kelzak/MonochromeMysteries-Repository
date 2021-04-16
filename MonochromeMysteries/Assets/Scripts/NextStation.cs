@@ -58,7 +58,7 @@ public class NextStation : ItemAbs
 
     public IEnumerator SwitchToTitleScreen()
     {
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(5f);
         Player.EnableControls(true);
         Read.isReading = false;
         SceneManager.LoadScene("TrainMainMenu");
@@ -85,18 +85,25 @@ public class NextStation : ItemAbs
         {
             GetComponent<Item>().SetUI(null, null, null, "Spirit can't use", true);
         }
-        
-        if(PowerSwitch.stationPowerOn && player.GetComponent<Conductor>())
-        {
-            GetComponent<Item>().SetUI(null, null, null, "Press F to go to the Next Station", true);
-        }
-        else if(!PowerSwitch.stationPowerOn && player.GetComponent<Conductor>())
+
+        if (!PowerSwitch.stationPowerOn)
         {
             GetComponent<Item>().SetUI(null, null, null, "Needs Station Power on", true);
         }
-        else if(!PowerSwitch.stationPowerOn && !player.GetComponent<Conductor>())
+        else
         {
-            GetComponent<Item>().SetUI(null, null, null, "Needs Conductor", true);
+            if (player.GetComponent<Conductor>())
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Press F to go to the Next Station", true);
+            }
+            else//(!PowerSwitch.stationPowerOn && player.GetComponent<Technician>())
+            {
+                GetComponent<Item>().SetUI(null, null, null, "Needs Conductor", true);
+            }
+
         }
+
+
+
     }
 }

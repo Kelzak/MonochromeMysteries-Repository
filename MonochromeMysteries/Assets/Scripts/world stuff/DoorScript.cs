@@ -19,7 +19,7 @@ public class DoorScript : ItemAbs
     [Header("Lock and Key")]
     public bool isLocked = false;
     public GameObject key;
-
+    public GameObject keyPic;
 
     [Header("Door Settings")]
     [HideInInspector]
@@ -200,7 +200,7 @@ public class DoorScript : ItemAbs
             {
                 Log.AddEntry("Used: " + key.GetComponent<Item>().itemName);
                 //isLocked = false;
-
+                keyPic.SetActive(false);
                 int rand = Random.Range(0, unlockDoor.Length);
                 AudioClip sound = unlockDoor[rand];
                 audioSource.PlayOneShot(sound);

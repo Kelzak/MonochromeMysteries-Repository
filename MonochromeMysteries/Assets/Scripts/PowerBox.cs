@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class PowerBox : ItemAbs
 {
@@ -17,6 +18,12 @@ public class PowerBox : ItemAbs
 
     public ParticleSystem sparks;
 
+    public GameObject fusePic1;
+    public GameObject fusePic2;
+    public GameObject fusePic3;
+
+    public AudioSource sparkingSFX;
+    public AudioClip sparking;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,9 +63,15 @@ public class PowerBox : ItemAbs
         //gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
         switchesOn = true;
         sparks.Play();
+        sparkingSFX.Play();
+        fusePic1.SetActive(false);
+        fusePic2.SetActive(false);
+        fusePic3.SetActive(false);
         Instantiate(fuseObject, fuse1Position.position, Quaternion.identity);
         Instantiate(fuseObject, fuse2Position.position, Quaternion.identity);
         Instantiate(fuseObject, fuse3Position.position, Quaternion.identity);
+        Destroy(this);
+        Destroy(gameObject.GetComponent<Item>());
 
     }
 
