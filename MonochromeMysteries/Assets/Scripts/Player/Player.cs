@@ -1217,7 +1217,8 @@ public class Player : MonoBehaviour
         //Tutorial Bit
         if ((xMovement != 0 || yMovement != 0) && Dialogue.holding)
         {
-            Tutorial.instance.OnFirstMovement();
+
+            StartCoroutine(DelayMovementTutorial());
         }
 
         //Sprinting Modifier
@@ -1240,6 +1241,12 @@ public class Player : MonoBehaviour
         velocity += Physics.gravity;
 
         character.Move(velocity * Time.deltaTime);
+    }
+
+    public IEnumerator DelayMovementTutorial()
+    {
+        yield return new WaitForSeconds(1);
+        Tutorial.instance.OnFirstMovement();
     }
 
     /// <summary>
