@@ -967,11 +967,11 @@ public class Player : MonoBehaviour
         else if (gameObject.name == "Conductor")
         {
             itemImage.transform.parent.gameObject.SetActive(false);
-            characterImage.sprite = hunterImage;
+            characterImage.sprite = managerImage;
             characterRole.text = "\"The Conductor\"";
             characterRole.color = new Color32(220, 20, 60, 255); //red
             characterRoleForEnding = "Conductor";
-            characterName.text = "Boris Johnson";
+            characterName.text = "Emilia Paul";
             isRat = false;
         }
         else if (gameObject.name == "Technician")
@@ -981,7 +981,7 @@ public class Player : MonoBehaviour
             characterRole.text = "\"The Technician\"";
             characterRole.color = new Color32(255, 182, 163, 255); //violet
             characterRoleForEnding = "Technician";
-            characterName.text = "Scatman John";
+            characterName.text = "Harry Brown";
             isRat = false;
         }
         else

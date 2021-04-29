@@ -96,7 +96,7 @@ public class Readables : MonoBehaviour
 
     public void StopReadingLetter()
     {
-        if (isReadingLetter && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.F) && readtime))
+        if (isReadingLetter && (Input.GetKeyDown(KeyCode.Escape) || (Input.GetKeyDown(KeyCode.Tab)) || Input.GetKeyDown(KeyCode.F) && readtime))
         {
 
             GameController.TogglePause();
