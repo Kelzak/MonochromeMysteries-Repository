@@ -71,6 +71,10 @@ public class MusicBox : ItemAbs
 
     IEnumerator Skip()
     {
+        print("skipping");
+        CancelInvoke();
+        MusicSource.Stop();
+
         //audio static play
         AudioClip clip = staticSwitch[Random.Range(0, staticSwitch.Length)];
         MusicSource.PlayOneShot(clip);
@@ -117,7 +121,7 @@ public class MusicBox : ItemAbs
 
     public override void Activate()
     {
-        Skip();
+        SkipInvoke();
     }
 
     public override void SetItemUI()
