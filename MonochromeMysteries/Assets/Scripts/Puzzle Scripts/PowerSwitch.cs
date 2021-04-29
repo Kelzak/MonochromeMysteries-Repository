@@ -88,10 +88,10 @@ public class PowerSwitch : ItemAbs
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Y))
+        /*if (Input.GetKeyDown(KeyCode.Y))
         {
             stationPowerOn = true;
-        }
+        }*/
     }
 
     public override void Activate()

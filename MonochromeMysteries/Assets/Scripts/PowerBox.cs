@@ -35,10 +35,10 @@ public class PowerBox : ItemAbs
     {
         player = Player.possessedObj;
 
-        if(Input.GetKeyDown(KeyCode.F1))
+        /*if(Input.GetKeyDown(KeyCode.F1))
         {
             PowerBoxOn();
-        }
+        }*/
 
     }
 

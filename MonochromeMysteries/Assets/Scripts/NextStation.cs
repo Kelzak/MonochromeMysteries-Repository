@@ -58,7 +58,7 @@ public class NextStation : ItemAbs
 
     public IEnumerator SwitchToTitleScreen()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(7f);
         Player.EnableControls(true);
         Read.isReading = false;
         SceneManager.LoadScene("TrainMainMenu");
