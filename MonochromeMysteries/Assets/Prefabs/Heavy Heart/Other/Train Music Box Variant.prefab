@@ -14,6 +14,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
         type: 3}
+      propertyPath: staticSwitch.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
       propertyPath: music.Array.data[0]
       value: 
       objectReference: {fileID: 8300000, guid: 67bcf27fdb77e094bb0178ddfe52a765, type: 3}
@@ -42,6 +47,31 @@ PrefabInstance:
       propertyPath: music.Array.data[5]
       value: 
       objectReference: {fileID: 8300000, guid: 580952ea25827c1428e6f2ec5e0071c9, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: staticSwitch.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: ad94995ab6233494eb286fad91633747, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: staticSwitch.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 669f81a3190c66345957e0f8fcff25a9, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: staticSwitch.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: 18aa41465e6bca849a4a27f0f12b5c71, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: staticSwitch.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: e3cbcd424d9787143acdc73494b7f20b, type: 3}
+    - target: {fileID: 1335478303012133368, guid: a8239003fe3c1fe48ad59441391fb8f2,
+        type: 3}
+      propertyPath: staticSwitch.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 893ad4d2a1a6cc94fada807e15dcbc3d, type: 3}
     - target: {fileID: 1952661449728837619, guid: a8239003fe3c1fe48ad59441391fb8f2,
         type: 3}
       propertyPath: m_LocalPosition.x

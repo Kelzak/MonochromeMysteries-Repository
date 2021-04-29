@@ -13,6 +13,7 @@ public class MusicBox : ItemAbs
     private bool _isInsideTrigger = false;
 
     public AudioClip[] music;
+    public AudioClip[] staticSwitch;
     public AudioSource MusicSource;
 
     public Player player;
@@ -60,11 +61,24 @@ public class MusicBox : ItemAbs
         MusicSource.Stop();
         MusicSource.clip = clip;
         MusicSource.Play();
-        Invoke("Skip", MusicSource.clip.length);
+        Invoke("SkipInvoke", MusicSource.clip.length);
     }
 
-    public void Skip()
+    void SkipInvoke()
     {
+        StartCoroutine("Skip");
+    }
+
+    IEnumerator Skip()
+    {
+        //audio static play
+        AudioClip clip = staticSwitch[Random.Range(0, staticSwitch.Length)];
+        MusicSource.PlayOneShot(clip);
+
+
+        yield return new WaitForSeconds(clip.length);
+
+        //then carry on
 
         if (index >= music.Length - 1)
             index = 0;
@@ -75,6 +89,9 @@ public class MusicBox : ItemAbs
         PlayMusic(music[index]);
 
     }
+
+
+
 
     void OnTriggerEnter(Collider other)
     {
